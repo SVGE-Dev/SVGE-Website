@@ -4,3 +4,4 @@ src/**/*.js.map
 .build
 theme
 .env
+.vscode
