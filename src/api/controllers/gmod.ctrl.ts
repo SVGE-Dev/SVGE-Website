@@ -122,36 +122,16 @@ export class GmodSplashController
         const width = img.getWidth();
         const height = img.getHeight();
         const ar = width / height; // aspect ratio
-        console.log(`Width: ${width}\nHeight: ${height}\nAspect Ratio: ${ar}\nDesired AR: ${ASPECT_RATIO}`);
 
-        if(ar > ASPECT_RATIO) // image is wider/shorter AR than we want
-        {
-            console.log("FIRST");
-            img = img.resize(jimp.AUTO, SC_HEIGHT);
-            const newWidth = img.getWidth();
-            img = img.crop(
-                (width - SC_WIDTH) / 2, // x zero
-                0, // y zero
-                SC_WIDTH, // width
-                SC_HEIGHT // height
-            );
-        }
-        else // image is thinner/taller AR than we want
-        {
-            console.log("SECOND");
-            img = img.resize(SC_WIDTH, jimp.AUTO);
-            const newHeight = img.getHeight();
-            console.log(`New height: ${newHeight}, new width: ${img.getWidth()}`);
-            img = img.crop(
-                0, // x zero
-                (newHeight - SC_HEIGHT) / 2, // y zero
-                SC_WIDTH, // width
-                SC_HEIGHT // height
-            );
-        }
+        img = (ar > ASPECT_RATIO) ? img.resize(jimp.AUTO, SC_HEIGHT) : img.resize(SC_WIDTH, jimp.AUTO);
+        img = img.crop(
+            (img.getWidth() - SC_WIDTH) / 2,
+            (img.getHeight() - SC_HEIGHT) / 2,
+            SC_WIDTH,
+            SC_HEIGHT
+        );
 
         const newName : string = file.originalname.replace(/ /g, '_');
-        console.log(newName);
         img.write(join(this.SCREENSHOT_DIR, newName));
         return newName;
     }
