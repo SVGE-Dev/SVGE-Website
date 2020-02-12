@@ -26,9 +26,9 @@ class GmodQuoteQuery
     author : string;
 }
 
-const SC_WIDTH = 500;
-const SC_HEIGHT = 500;
-const whRatio = SC_WIDTH / SC_HEIGHT;
+const SC_WIDTH = 1280;
+const SC_HEIGHT = 720;
+const ASPECT_RATIO = SC_WIDTH / SC_HEIGHT;
 
 @Controller("/gmod-splash")
 export class GmodSplashController
@@ -37,7 +37,7 @@ export class GmodSplashController
 
     @Get("/")
     @Render("gmod-splash")
-    private async GetGmodSplash(@QueryParam("map") mapName : string, @QueryParam("steamid") steamId : string)
+    public async GetGmodSplash(@QueryParam("map") mapName : string, @QueryParam("steamid") steamId : string)
     {
         // parse steam ID:
         // https://wiki.facepunch.com/gmod/Loading_URL
@@ -56,8 +56,8 @@ export class GmodSplashController
         return {
             layout: false,
 
-            mapName: mapName,
-            steamId: parsedSteamInfoIdk,
+            mapName: mapName || "mapname_here",
+            steamId: parsedSteamInfoIdk || "6969",
 
             quote: randQuote.quote,
             quote_author: randQuote.author,
@@ -69,7 +69,7 @@ export class GmodSplashController
     @Get("/edit")
     @Render("gmod-splash-edit")
     @Authorized("GMod Rep")
-    private async EditGmodSplash()
+    public async EditGmodSplash()
     {
         const quotes = (await GmodQuote.find()).map((gq) => { return {id: gq.id, quote: gq.quote, author: gq.author}; });
         const screenshots = readdirSync(this.SCREENSHOT_DIR).map((gs_path) => basename(gs_path));
@@ -85,40 +85,14 @@ export class GmodSplashController
 
     @Post("/edit/screenshot")
     @Authorized("GMod Rep")
-    private async AddScreenshot(@UploadedFiles("newScreenshots", uploadOptions) files : File[])
+    public async AddScreenshot(@UploadedFiles("newScreenshots", uploadOptions) files : File[])
     {
+        const imageProcessing = new Array<Promise<string>>();
         files.forEach(async (file : File) =>
         {
             if(file)
             {
-                // should do some basic checks and wrap this lot in some try/catches
-                const img = await jimp.read(file.buffer);
-                const width = img.getWidth();
-                const height = img.getHeight();
-                const ar = width / height; // aspect ratio
-                if(ar > whRatio)
-                {
-                    img.resize(jimp.AUTO, SC_HEIGHT);
-                    const newWidth = img.getWidth();
-                    img.crop(
-                        (width - SC_WIDTH) / 2, // x zero
-                        0, // y zero
-                        SC_WIDTH, // width
-                        SC_HEIGHT // height
-                    );
-                }
-                else
-                {
-                    img.resize(SC_WIDTH, jimp.AUTO);
-                    const newHeight = height / ar;
-                    img.crop(
-                        0, // x zero
-                        (newHeight - SC_HEIGHT) / 2, // y zero
-                        SC_WIDTH, // width
-                        SC_HEIGHT // height
-                    );
-                }
-                img.write(`${__dirname}/../../public/images/gmod/${encodeURIComponent(file.originalname)}`);
+                imageProcessing.push(this.processFile(file));
             }
             else
             {
@@ -126,9 +100,9 @@ export class GmodSplashController
                 // probably means Multer wouldn't accept the file for some reason
             }
         });
-        return {
-            numberOfFiles: files.length
-        };
+
+        console.log("FINISHED!");
+        return Promise.all(imageProcessing);
     }
 
     @Post("/edit/quote")
@@ -140,5 +114,45 @@ export class GmodSplashController
         quote.author = q.author;
 
         return quote.save();
+    }
+
+    private async processFile(file : File)
+    {
+        let img = await jimp.read(file.buffer);
+        const width = img.getWidth();
+        const height = img.getHeight();
+        const ar = width / height; // aspect ratio
+        console.log(`Width: ${width}\nHeight: ${height}\nAspect Ratio: ${ar}\nDesired AR: ${ASPECT_RATIO}`);
+
+        if(ar > ASPECT_RATIO) // image is wider/shorter AR than we want
+        {
+            console.log("FIRST");
+            img = img.resize(jimp.AUTO, SC_HEIGHT);
+            const newWidth = img.getWidth();
+            img = img.crop(
+                (width - SC_WIDTH) / 2, // x zero
+                0, // y zero
+                SC_WIDTH, // width
+                SC_HEIGHT // height
+            );
+        }
+        else // image is thinner/taller AR than we want
+        {
+            console.log("SECOND");
+            img = img.resize(SC_WIDTH, jimp.AUTO);
+            const newHeight = img.getHeight();
+            console.log(`New height: ${newHeight}, new width: ${img.getWidth()}`);
+            img = img.crop(
+                0, // x zero
+                (newHeight - SC_HEIGHT) / 2, // y zero
+                SC_WIDTH, // width
+                SC_HEIGHT // height
+            );
+        }
+
+        const newName : string = file.originalname.replace(/ /g, '_');
+        console.log(newName);
+        img.write(join(this.SCREENSHOT_DIR, newName));
+        return newName;
     }
 }
