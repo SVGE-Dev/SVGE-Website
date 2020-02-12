@@ -20,8 +20,8 @@ debug(`Attempting to connect to databases on ${Configs.data.host}:${Configs.data
 createConnections(Configs.data.settings)
     .then(async (connections) =>
     {
-        debug(`Connected! Starting Discord bot...`);
-        Services.DiscordBot.init();
+        // debug(`Connected! Starting Discord bot...`);
+        // Services.DiscordBot.init();
 
         debug("Starting Express server...");
         const server = useExpressServer(app, Configs.server.settings).listen(Configs.server.port);

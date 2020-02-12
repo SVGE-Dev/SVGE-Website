@@ -1,6 +1,6 @@
 import { Controller, Get, Render, Param } from "routing-controllers";
 
-@Controller("/docs")
+//@Controller("/docs")
 export class ConstitutionController
 {
     @Get("/")
