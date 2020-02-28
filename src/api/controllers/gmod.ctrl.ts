@@ -8,7 +8,7 @@ import { File } from "../../config/_configs";
 
 // Jimp is a little retarded
 import Jimp from 'jimp';
-import { Z_FILTERED } from "zlib";
+import { cropAndResize } from "../../utils/cropAndResize";
 // tslint:disable-next-line: no-var-requires
 const jimp : Jimp = require('jimp');
 
@@ -117,21 +117,11 @@ export class GmodSplashController
 
     private async processFile(file : File)
     {
-        let img = await jimp.read(file.buffer);
-        const width = img.getWidth();
-        const height = img.getHeight();
-        const ar = width / height; // aspect ratio
-
-        img = (ar > ASPECT_RATIO) ? img.resize(jimp.AUTO, SC_HEIGHT) : img.resize(SC_WIDTH, jimp.AUTO);
-        img = img.crop(
-            (img.getWidth() - SC_WIDTH) / 2,
-            (img.getHeight() - SC_HEIGHT) / 2,
-            SC_WIDTH,
-            SC_HEIGHT
-        );
+        const image = await cropAndResize(1280, 720, file.buffer);
+        
 
         const newName : string = file.originalname.replace(/ /g, '_');
-        img.write(join(this.SCREENSHOT_DIR, newName));
+        image.write(join(this.SCREENSHOT_DIR, newName));
         return newName;
     }
 }
