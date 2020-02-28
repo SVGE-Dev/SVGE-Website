@@ -5,7 +5,7 @@ import * as path from 'path';
 
 
 
-export namespace handlebars
+export namespace Handlebars
 {
 	const options : ExphbsOptions = { // may export later if needed but probs not
 		extname: "hbs",

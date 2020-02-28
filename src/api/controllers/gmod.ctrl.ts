@@ -68,7 +68,7 @@ export class GmodSplashController
 
     @Get("/edit")
     @Render("gmod-splash-edit")
-    @Authorized("GMod Rep")
+    @Authorized(["GMod Rep", "Committee"])
     public async EditGmodSplash()
     {
         const quotes = (await GmodQuote.find()).map((gq) => { return {id: gq.id, quote: gq.quote, author: gq.author}; });
@@ -84,7 +84,7 @@ export class GmodSplashController
     }
 
     @Post("/edit/screenshot")
-    @Authorized("GMod Rep")
+    @Authorized(["GMod Rep", "Committee"])
     public async AddScreenshot(@UploadedFiles("newScreenshots", uploadOptions) files : File[])
     {
         const imageProcessing = new Array<Promise<string>>();
@@ -101,12 +101,11 @@ export class GmodSplashController
             }
         });
 
-        console.log("FINISHED!");
         return Promise.all(imageProcessing);
     }
 
     @Post("/edit/quote")
-    @Authorized("GMod Rep")
+    @Authorized(["GMod Rep", "Committee"])
     public async AddQuote(@QueryParams() q : any)
     {
         const quote = new GmodQuote();

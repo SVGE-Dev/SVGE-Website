@@ -6,12 +6,13 @@ import { Action } from "routing-controllers";
 import { VerifyCallback } from 'passport-oauth2';
 import { Profile as DiscordProfile } from 'passport-discord';
 import { Request } from "express";
+import { DiscordBot } from "./bot.service";
 
 const debug = require('debug')("auth");
 
 
 
-export namespace auth
+export namespace Auth
 {
 	export const init = (app : ExpressApp) =>
 	{
@@ -53,7 +54,11 @@ export namespace auth
 	{
 		if(action.request.user)
 		{
-			resolve(true);
+			const user : DiscordStrategy.Profile = action.request.user;
+			const allowed = DiscordBot.Utils.CheckForRole(
+				user.id, process.env.DISCORD_GUILD_ID, roles
+			);
+			resolve(allowed);
 		}
 		else
 		{
@@ -64,7 +69,12 @@ export namespace auth
 			{
 				if (err) return reject(err);
 				action.request.user = user;
-				return resolve(true);
+
+				const allowed = DiscordBot.Utils.CheckForRole(
+					user.id, process.env.DISCORD_GUILD_ID, roles
+				);
+				return resolve(allowed);
+
 			})(action.request, action.response, action.next);
 		}
 	});

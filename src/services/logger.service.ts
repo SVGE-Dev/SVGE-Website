@@ -5,7 +5,7 @@ import { Request, Response } from 'express';
 
 
 
-export namespace logger
+export namespace Logger
 {
 	export const init = (app : ExpressApp) =>
 	{

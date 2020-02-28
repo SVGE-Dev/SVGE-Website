@@ -1,5 +1,5 @@
 import { RoutingControllersOptions, Action } from "routing-controllers";
-import { auth } from "../services/auth.service";
+import { Auth } from "../services/auth.service";
 
 export namespace server
 {
@@ -8,7 +8,7 @@ export namespace server
 		controllers: [__dirname + "/../api/controllers/**/*.ctrl.ts"],
 		middlewares: [__dirname + "/../api/middlewares/**/*.mdlw.ts"],
 		cors: true,
-		authorizationChecker: auth.authCheck,
-		currentUserChecker: auth.userCheck
+		authorizationChecker: Auth.authCheck,
+		currentUserChecker: Auth.userCheck
 	};
 }
