@@ -1,6 +1,6 @@
 import { Controller, Get, Render, Param } from "routing-controllers";
 
-@Controller("/games")
+//@Controller("/games")
 export class GamesController
 {
     @Get("/")
