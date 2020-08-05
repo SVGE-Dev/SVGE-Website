@@ -1,5 +1,5 @@
 import * as express from 'express';
-import { Express as ExpressApp} from "express-serve-static-core";
+import { Express as ExpressApp } from "express-serve-static-core";
 import * as hbs from 'express-handlebars';
 import * as path from 'path';
 
@@ -12,6 +12,20 @@ export namespace Handlebars
 		defaultLayout: "layout",
 		layoutsDir: path.join(__dirname, "../views/layouts"),
 		partialsDir: path.join(__dirname, "../views/partials"),
+		helpers: {
+			eq: (v1 : any, v2 : any) => v1 === v2,
+			ne: (v1 : any, v2 : any) => v1 !== v2,
+			lt: (v1 : any, v2 : any) => v1 < v2,
+			gt: (v1 : any, v2 : any) => v1 > v2,
+			lte: (v1 : any, v2 : any) => v1 <= v2,
+			gte: (v1 : any, v2 : any) => v1 >= v2,
+			and() {
+				return Array.prototype.every.call(arguments, Boolean);
+			},
+			or() {
+				return Array.prototype.slice.call(arguments, 0, -1).some(Boolean);
+			},
+		}
 	};
 	
 	export const init = (app : ExpressApp) =>

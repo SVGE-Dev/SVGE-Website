@@ -18,8 +18,8 @@ export namespace Auth
 	{
 		passport.use(
 			new DiscordStrategy({
-				clientID: process.env.DISCORD_CLIENT_ID,
-				clientSecret: process.env.DISCORD_CLIENT_SECRET,
+				clientID: process.env.DISCORD_CLIENT_ID!,
+				clientSecret: process.env.DISCORD_CLIENT_SECRET!,
 				callbackURL: '/auth/redirect',
 				scope: [ "identify" ]
 			},
@@ -56,14 +56,14 @@ export namespace Auth
 		{
 			const user : DiscordStrategy.Profile = action.request.user;
 			const allowed = DiscordBot.Utils.CheckForRole(
-				user.id, process.env.DISCORD_GUILD_ID, roles
+				user.id, process.env.DISCORD_GUILD_ID!, roles
 			);
 			resolve(allowed);
 		}
 		else
 		{
 			const req = action.request as Request;
-			req.session.oauth2return = req.route.path;
+			req.session!.oauth2return = req.route.path;
 
 			passport.authenticate('discord', {}, (err : Error, user : DiscordProfile) =>
 			{
@@ -71,7 +71,7 @@ export namespace Auth
 				action.request.user = user;
 
 				const allowed = DiscordBot.Utils.CheckForRole(
-					user.id, process.env.DISCORD_GUILD_ID, roles
+					user.id, process.env.DISCORD_GUILD_ID!, roles
 				);
 				return resolve(allowed);
 

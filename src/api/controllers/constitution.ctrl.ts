@@ -4,7 +4,7 @@ import { Controller, Get, Render, Param } from "routing-controllers";
 export class ConstitutionController
 {
     @Get("/")
-    @Render("official-docs")
+    @Render("constitution")
     private officialDocs()
     {
         return {

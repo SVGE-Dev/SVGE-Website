@@ -14,11 +14,15 @@ export namespace DiscordBot
 
     namespace DiscordEventHandler
     {
-        export const ready = () => {
+        export const ready = () =>
+        {
             debug(`Logged into Discord as ${client.user.tag}!`);
         };
 
-        export const message = () => {};
+        export const message = () =>
+        {
+            //if()
+        };
     }
 
     export namespace Utils
@@ -27,9 +31,7 @@ export namespace DiscordBot
         {
             if(roles.length == 0) return true;
 
-            const guild : Discord.Guild | undefined = client
-                .guilds
-                .get(guildId);
+            const guild = GetGuild(guildId);
             if (!guild)
             {
                 debug(`Client is not a member of the guild with ID ${guildId}.`);
@@ -51,6 +53,45 @@ export namespace DiscordBot
             {
                 return rolesRegex.test(role.name);
             });
+        };
+
+        export const GetGuild = (guildId? : string) : Discord.Guild =>
+        {
+            if(!guildId)
+            {
+                throw new Error("Guild environment variable not set!");
+            }
+
+            const guild = client.guilds.get(guildId);
+            if(!guild)
+            {
+                throw new Error("Main guild ID is not a valid guild.");
+            }
+
+            return guild;
+        };
+
+        export const GetUserFromName = (username : string) : Discord.User | null =>
+        {
+            const guild = GetGuild(process.env.DISCORD_GUILD_ID);
+            const guildUsers = Array.from(guild.members.values());
+            
+            let guildUser = guildUsers.find((guildMember) => guildMember.user.username == username);
+            if(!guildUser)
+            {
+                guildUser = guildUsers.find((guildMember) => guildMember.user.username + "#" + guildMember.user.discriminator == username);
+                if(!guildUser)
+                {
+                    guildUser = guild.members.find("displayName", username);
+                }
+            }
+
+            if(!guildUser)
+            {
+                console.log("No guild user found");
+                return null;
+            }
+            return guildUser.user;
         };
     }
 }

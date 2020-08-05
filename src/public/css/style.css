@@ -1789,3 +1789,8 @@ figure figcaption {
         .comment-list li .comment-body .reply:hover {
           color: #fff;
           background: #7289da; }
+
+/*** Custom stuff: ***/
+.handler {
+  cursor: grab;
+}

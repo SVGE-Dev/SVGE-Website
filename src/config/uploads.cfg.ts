@@ -6,7 +6,7 @@ type Callback = (error : Error | null, acceptFile : boolean) => void;
 
 export namespace Uploads
 {
-    export const gmodScreenshots : Options = {
+    export const imgUploads : Options = {
         storage: memoryStorage(),
         fileFilter: (req : Request, file : File, acceptFile : Callback) => {
             const allowedMimeTypes = [

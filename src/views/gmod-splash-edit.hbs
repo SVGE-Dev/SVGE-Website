@@ -55,13 +55,12 @@
 </div>
 
 <script>
-  const saveQuote = () =>
-  {
+  const saveQuote = () => {
     const quote = document.getElementById("quote").value;
     const author = document.getElementById("author").value;
     console.log(`Quote: ${quote}, author: ${author}`);
     const url = `/gmod-splash/edit/quote?quote=${quote}&author=${author}`
-    
+
     $.ajax({
       type: "POST",
       url: url,
@@ -71,20 +70,17 @@
     });
   }
 
-  const saveScreenshot = () =>
-  {
+  const saveScreenshot = () => {
     const files = document.getElementById("scFiles").files;
     const formData = new FormData();
-    for (let i = 0; i < files.length; i++)
-    {
+    for (let i = 0; i < files.length; i++) {
       formData.append("newScreenshots", files[i]);
     }
 
     const ajax = new XMLHttpRequest();
     ajax.open("POST", "/gmod-splash/edit/screenshot");
-    ajax.onreadystatechange = () =>
-    {
-      if(ajax.readyState === 4) // "done" state
+    ajax.onreadystatechange = () => {
+      if (ajax.readyState === 4) // "done" state
       {
         console.log(ajax.response);
       }
@@ -95,5 +91,3 @@
 </script>
 
 {{> footer }}
-
-{{> scripts }}

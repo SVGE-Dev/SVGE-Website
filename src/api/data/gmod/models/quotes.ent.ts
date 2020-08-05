@@ -1,15 +1,11 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, getConnection } from "typeorm";
+import { Entity, BaseEntity, PrimaryGeneratedColumn, Column } from "typeorm";
 import { IsString } from "class-validator";
 
-@Entity()
+
+
+@Entity({ database: "svge-gmod"})
 export class GmodQuote extends BaseEntity
 {
-    constructor()
-    {
-        super();
-        GmodQuote.useConnection(getConnection("gmod"));
-    }
-
     @PrimaryGeneratedColumn()
     id : number;
 

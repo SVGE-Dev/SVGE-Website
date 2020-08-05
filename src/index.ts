@@ -1,11 +1,11 @@
-require('dotenv').config(); // inject values in .env into environment variables
+require('dotenv').config(); // inject values from .env into environment variables
 import * as Configs from "./config/_configs";
 import * as Services from "./services/_services";
 
 const debug = require('debug')("startup");
 
 import 'reflect-metadata';
-import { createConnections } from 'typeorm';
+import { createConnection } from 'typeorm';
 import { useExpressServer } from 'routing-controllers';
 import * as express from 'express';
 
@@ -16,8 +16,8 @@ Services.Handlebars.init(app);
 Services.Auth.init(app);
 Services.Logger.init(app); // log express with Morgan (must go after routes are setup)
 
-debug(`Attempting to connect to databases on ${Configs.data.host}:${Configs.data.port}...`);
-createConnections(Configs.data.settings)
+debug(`Attempting to connect to database on ${Configs.data.host}:${Configs.data.port}...`);
+createConnection(Configs.data.conenctionOptions)
     .then(async (connections) =>
     {
         debug(`Connected! Starting Discord bot...`);

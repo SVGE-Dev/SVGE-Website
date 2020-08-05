@@ -12,23 +12,12 @@ import { cropAndResize } from "../../utils/cropAndResize";
 // tslint:disable-next-line: no-var-requires
 const jimp : Jimp = require('jimp');
 
+
+
 const uploadOptions : UploadOptions = {
-    options: Config.Uploads.gmodScreenshots,
+    options: Config.Uploads.imgUploads,
     required: true
 };
-
-class GmodQuoteQuery
-{
-    @IsString()
-    quote : string;
-
-    @IsString()
-    author : string;
-}
-
-const SC_WIDTH = 1280;
-const SC_HEIGHT = 720;
-const ASPECT_RATIO = SC_WIDTH / SC_HEIGHT;
 
 @Controller("/gmod-splash")
 export class GmodSplashController

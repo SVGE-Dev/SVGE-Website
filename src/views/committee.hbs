@@ -1,0 +1,221 @@
+{{> header-small }}
+
+<!-- jsDelivr :: Sortable :: Latest (https://www.jsdelivr.com/package/npm/sortablejs) -->
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+
+<div class="site-section">
+	<div class="container" data-aos="fade-up">
+		<div class="row">
+			<div class="site-section-heading text-center mb-5 w-border col-md-6 mx-auto">
+				<h2 class="mb-5">The Main Committee</h2>
+				<p>The members of the main committee are responsible for running the society and making society-wide
+					decisions.
+					They apply to SUSU for funding, organise socials and events, manage society equipement, and liaise
+					with the NUEL and NSE
+					for supporting the society esports scene.
+				</p>
+			</div>
+		</div>
+		<div class="row">
+
+			{{#each main_committee}}
+			<div class="col-md-6 col-lg-4 mb-5 mb-lg-5">
+				<div class="team-member">
+
+					<img src="{{this.avatar}}" alt="Image" class="img-fluid">
+
+					<div class="text">
+						<h2 class="mb-2 font-weight-light h4">{{this.name}}</h2>
+						<span class="d-block mb-2 text-white-opacity-05"><i>{{this.pos_name}}</i></span><br />
+						<p class="mb-4">{{this.pos_desc}}</p><br />
+						<span class="d-block mb-2 text-white-opacity-05"><i>{{this.username}}</i></span>
+					</div>
+
+				</div>
+			</div>
+			{{/each}}
+
+		</div>
+	</div>
+
+	<div class="container" data-aos="fade-up">
+		<div class="row">
+			<div class="site-section-heading text-center mb-5 w-border col-md-6 mx-auto">
+				<h2 class="mb-5">Games Committee</h2>
+				<p>The members of the games committee represent the players of their respective games and are voted in
+					by them.
+					They help to organise events, support members in esports competitions, and represent their interests
+					to the main committee,
+					such as pushing for coaching and equipment.</p>
+			</div>
+		</div>
+		<div class="row">
+
+			{{#each games_committee}}
+			<div class="col-md-6 col-lg-4 mb-5 mb-lg-5">
+				<div class="team-member">
+
+					<img src="{{this.avatar}}" alt="Image" class="img-fluid">
+
+					<div class="text">
+						<h2 class="mb-2 font-weight-light h4">{{this.name}}</h2>
+						<span class="d-block mb-2 text-white-opacity-05"><i>{{this.pos_name}}</i></span>
+						<p class="mb-4">{{this.pos_desc}}</p>
+						<span class="d-block mb-2 text-white-opacity-05"><i>{{this.username}}</i></span>
+					</div>
+
+				</div>
+			</div>
+			{{/each}}
+
+		</div>
+	</div>
+
+	{{#if is_main_committee}}
+	<div class="site-section">
+		<div class="container">
+			<form action="/committee/update-all" class="contact-form">
+				<ol id="sortable">
+					{{#each main_committee}}
+					<li>
+						<h5>{{ pos_name }}</h5>
+						<div class="row">
+
+							<div class="col-md-12 col-lg-7 mb-5">
+
+								<div class="col-md-14 mb-3 mb-md-0">
+									<input type="text" name="pos_name" class="form-control" value="{{ pos_name }}"
+										placeholder="Committee Position Name">
+									<br />
+
+									<input type="text" name="name" class="form-control" value="{{ name }}"
+										placeholder="Name of Committee Member">
+									<br />
+
+									<input type="text" name="username" class="form-control" value="{{ username }}"
+										placeholder="Member's Discord Username">
+									<br />
+
+									<textarea name="pos_desc" class="form-control"
+										placeholder="Committee Position Description">{{ pos_desc }}</textarea>
+								</div>
+
+							</div>
+
+							<div class="col-lg-3 ml-auto">
+								<input type="file" id="scFiles" class="form-control">
+								<br />
+
+								<div class="text-right">
+									<input type="button" value="Reset Photo" class="btn py-2 px-4 w-100" onClick="">
+								</div>
+								<br />
+
+								<input type="text" name="discordId" class="form-control" value="{{ user_id }}"
+									placeholder="Member's Discord ID">
+								<br />
+
+								<div class="text-right">
+									<input type="button" value="Delete Position" class="btn btn-primary py-2 px-4 w-100"
+										onClick="">
+								</div>
+							</div>
+						</div>
+					</li>
+					<br>
+					{{/each}}
+				</ol>
+			</form>
+		</div>
+	</div>
+	{{else}}
+	<div class="site-section">
+		<div class="container">
+			<form action="/committee/update-all" class="contact-form">
+				<ol id="sortable">
+					{{#each own_positions}}
+					<li>
+						<h5>{{ pos_name }}</h5>
+						<div class="row">
+
+							<div class="col-md-12 col-lg-7 mb-5">
+
+								<div class="col-md-14 mb-3 mb-md-0">
+									<input type="text" name="pos_name" class="form-control" value="{{ pos_name }}"
+										placeholder="Committee Position Name">
+									<br />
+
+									<input type="text" name="name" class="form-control" value="{{ name }}"
+										placeholder="Name of Committee Member">
+									<br />
+
+									<input type="text" name="username" class="form-control" value="{{ username }}"
+										placeholder="Member's Discord Username">
+									<br />
+
+									<textarea name="pos_desc" class="form-control"
+										placeholder="Committee Position Description">{{ pos_desc }}</textarea>
+								</div>
+
+							</div>
+
+							<div class="col-lg-3 ml-auto">
+								<input type="file" id="scFiles" class="form-control">
+								<br />
+
+								<div class="text-right">
+									<input type="button" value="Reset Photo" class="btn py-2 px-4 w-100" onClick="">
+								</div>
+								<br />
+
+								<input type="text" name="discordId" class="form-control" value="{{ user_id }}"
+									placeholder="Member's Discord ID">
+								<br />
+
+								<div class="text-right">
+									<input type="button" value="Delete Position" class="btn btn-primary py-2 px-4 w-100"
+										onClick="">
+								</div>
+							</div>
+						</div>
+					</li>
+					<br>
+					{{/each}}
+				</ol>
+			</form>
+		</div>
+	</div>
+	{{/if}}
+</div>
+
+<script>
+	$(function () {
+		$("#sortable").sortable();
+	});
+</script>
+
+{{!-- <div class="container" data-aos="fade-up">
+		<div class="row">
+			<div class="site-section-heading text-center mb-5 w-border col-md-6 mx-auto">
+				<h2 class="mb-5">Edit</h2>
+				<p>Edit shiz here</p>
+			</div>
+		</div>
+		<div class="row">
+
+			{{#each main_committee}}
+			<div class="col-md-6 col-lg-4 mb-5 mb-lg-5">
+				{{#if is_main_committee}}
+					<h5>Position name, person's discord, order</h5>
+				{{/if}}
+				{{#if (or is_main_committee is_users_position)}}
+					<h5> Position description, person's name, photo</h5>
+				{{/if}}
+			</div>
+			{{/each}}
+
+		</div>
+	</div> --}}
+</div>
+
+{{> footer }}
