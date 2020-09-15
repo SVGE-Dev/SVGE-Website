@@ -1,4 +1,4 @@
-import { JsonController, Get, Render, CurrentUser, InternalServerError, Post, Body, UploadedFile, UploadOptions, ForbiddenError } from "routing-controllers";
+import { JsonController, Get, Render, CurrentUser, InternalServerError, Post, Body, UploadedFile, UploadOptions, ForbiddenError, Authorized, NotFoundError } from "routing-controllers";
 import { Profile as DiscordProfile } from 'passport-discord';
 import { DiscordBot } from "../../services/_services";
 import { Committee } from "../data/site/models/committee.ent";
@@ -59,18 +59,18 @@ export class CommitteeController
             order: {
                 posOrder: "ASC"
             }
-        });
+		});
+		const mainCommittee = committeePositions.filter((pos : Committee) => pos.isMainCommitteePos);
+        const gamesCommittee = committeePositions.filter((pos) => !pos.isMainCommitteePos);
 
         const guild = DiscordBot.Utils.GetGuild(process.env.DISCORD_GUILD_ID);
         if(!guild)
         {
             throw new InternalServerError(`Guild with id ${process.env.DISCORD_GUILD_ID} not found.`);
-        }
-
-        const mainCommittee = committeePositions.filter((pos : Committee) => pos.isMainCommitteePos);
-        const gamesCommittee = committeePositions.filter((pos) => !pos.isMainCommitteePos);
+		}
+		
         const ownPositions = user ? committeePositions.filter((pos) => pos.PageInfo().user_id == user.id) : [];
-        const isMainCommittee = user ? DiscordBot.Utils.CheckForRole(user.id, process.env.DISCORD_GUILD_ID, ["COMMITTEE ALUMNI"]) : false;
+        const isMainCommittee = user ? DiscordBot.Utils.CheckForRole(user.id, process.env.DISCORD_GUILD_ID, [process.env.COMMITTEE_ROLE_NAME]) : false;
 
         console.log(`Is main committee: ${isMainCommittee}`);
 
@@ -88,7 +88,7 @@ export class CommitteeController
     }
 
     @Post("/update-all")
-    //@Authorized("committee")
+    @Authorized(process.env.COMMITTEE_ROLE_NAME)
     private async UpdateAll(@Body() posInfoes : PosInfo[] )
     {
         console.log("Updating all");
@@ -164,7 +164,7 @@ export class CommitteeController
     }
 
     private uploadOptions : UploadOptions = {
-        options: Config.Uploads.imgUploads,
+        options: Config.uploadOptions,
         required: false
     };
 
@@ -177,8 +177,8 @@ export class CommitteeController
         const pos = await Committee.findOne(info.id);
         if(!pos)
         {
-            // sent a request with an id that doesn't exist, probably something shifty here
-            return;
+			// sent a request with an id that doesn't exist, probably something shifty here
+			throw new NotFoundError("There is no committee member with this id");
         }
 
         // if(pos.discordId != user.id)

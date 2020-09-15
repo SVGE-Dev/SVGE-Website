@@ -1,6 +1,6 @@
 import { Controller, Get, Render } from "routing-controllers";
 
-//@Controller("/")
+@Controller("/")
 export class IndexController
 {
     @Get("/")

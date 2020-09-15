@@ -1,4 +1,6 @@
 import { ConnectionOptions } from "typeorm";
+import { GmodQuote } from "../api/data/gmod/models/quotes.ent";
+import { Committee } from "../api/data/site/models/committee.ent";
 
 export namespace data
 {
@@ -14,8 +16,11 @@ export namespace data
         synchronize: true,
         //logging: ["info", "warn", "error"], <-- handled by "typeorm:info" etc in .env
         logger: "debug",
-        entities: [ __dirname + "/../api/data/**/models/*.ent.{ts,js}" ],
-        //migrations: [ __dirname + "/../api/data/site/migrations/**/*.ent.{ts,js}" ],
-        //subscribers: [ __dirname + "/../api/data/site/subscribers/**/*.ent.{ts,js}" ]
+        entities: [ 
+			GmodQuote,
+			Committee
+		],
+        //migrations: [ __dirname + "/../api/data/site/migrations/**/*.mgr.{ts,js}" ],
+        //subscribers: [ __dirname + "/../api/data/site/subscribers/**/*.sbs.{ts,js}" ]
     };
 }

@@ -15,7 +15,7 @@ const jimp : Jimp = require('jimp');
 
 
 const uploadOptions : UploadOptions = {
-    options: Config.Uploads.imgUploads,
+    options: Config.uploadOptions,
     required: true
 };
 

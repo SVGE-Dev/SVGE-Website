@@ -1,4 +1,4 @@
-import { Controller, Get, Render, Param } from "routing-controllers";
+import { Get, Render, Param } from "routing-controllers";
 
 //@Controller("/games")
 export class GamesController

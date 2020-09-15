@@ -38,9 +38,7 @@ export namespace DiscordBot
                 return false;
             }
 
-            const user : Discord.GuildMember | undefined = guild
-                .members
-                .find((member : Discord.GuildMember) => member.id == userId);
+            const user : Discord.GuildMember | undefined = guild.members.find((member : Discord.GuildMember) => member.id == userId);
             if(!user)
             {
                 debug(`Guild with ID ${guildId} has no member with ID ${userId}`);
