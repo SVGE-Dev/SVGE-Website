@@ -1,6 +1,6 @@
-import { Get, Render, Param } from "routing-controllers";
+import { Get, Render, Param, Controller } from "routing-controllers";
 
-//@Controller("/games")
+@Controller("/games")
 export class GamesController
 {
     @Get("/")
@@ -8,7 +8,9 @@ export class GamesController
     private games()
     {
         return {
-            tab_title: "SVGE | Games"
+			tab_title: "SVGE | Games",
+			page_title: "Our Games",
+            page_subtitle: "Just some of the games we play at SVGE"
         };
     }
 
@@ -17,7 +19,7 @@ export class GamesController
     private game(@Param("game") game : string)
     {
         return {
-            tab_title: `SVGE | ${game}`
+			tab_title: `SVGE | ${game}`
         };
     }
 }
