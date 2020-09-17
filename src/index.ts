@@ -16,18 +16,17 @@ Services.Handlebars.init(app);
 Services.Auth.init(app);
 Services.Logger.init(app); // log express with Morgan (must go after routes are setup)
 
-debug(`Attempting to connect to database on ${Configs.data.host}:${Configs.data.port}...`);
-createConnection(Configs.data.conenctionOptions)
-    .then(async (connections) =>
-    {
-        // debug(`Connected! Starting Discord bot...`);
-        // Services.DiscordBot.init();
 
-        debug("Starting Express server...");
-        const server = useExpressServer(app, Configs.server.settings).listen(Configs.server.port);
-        debug(`Express server listening on port ${Configs.server.port}.`);        
-    })
-    .catch((error) =>
-    {
-        debug(error);
-    });
+const main = async() =>
+{
+	debug(`Attempting to connect to database on ${Configs.data.host}:${Configs.data.port}...`);
+	const dbConnection = await createConnection(Configs.data.conenctionOptions);
+
+	debug(`Connected! Starting Discord bot...`);
+	Services.DiscordBot.init();
+
+	debug("Starting Express server...");
+	const server = useExpressServer(app, Configs.server.settings).listen(Configs.server.port);
+	debug(`Express server listening on port ${Configs.server.port}.`);        
+};
+main();
