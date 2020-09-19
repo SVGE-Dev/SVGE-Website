@@ -6,3 +6,4 @@ theme
 .env
 .vscode
 dist
+svge-website-*.tgz

@@ -1,5 +1,20 @@
 {
   "name": "svge-website",
+  "files": [
+	  "package.json",
+	  "dist",
+	  "public",
+	  "views",
+	  "README.md",
+	  "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc --project ./tsconfig.json",
+    "start": "node ./dist/index.js",
+	"start:dev": "yarn build && yarn start",
+	"start:watched": "nodemon .",
+	"prepack": "yarn build"
+  },
   "version": "0.0.1",
   "description": "Website for Southampton Video Games and Esports Society",
   "license": "MIT",
@@ -60,10 +75,5 @@
     "ts-node": "^8.4.1",
     "typeorm": "^0.2.0",
     "typescript": "^3.3.3333"
-  },
-  "scripts": {
-    "prestart": "tsc && ts-node ./scripts/CopyResources.ts",
-    "start": "node ./dist/index.js",
-    "start-dev": "nodemon ."
   }
 }

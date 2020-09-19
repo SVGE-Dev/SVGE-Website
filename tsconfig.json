@@ -1,7 +1,7 @@
 {
   "version": "2.4.2",
   "include": [ "src/**/*" ],
-  "exclude": [ "node_modules", "dist", "template-Deejee" ],
+  "exclude": [ "node_modules", "dist", "template-Deejee", "public", "views" ],
   "compilerOptions": {
     /* Basic Options */
     // "incremental": true,                   /* Enable incremental compilation */
