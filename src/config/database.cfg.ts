@@ -1,6 +1,6 @@
 import { ConnectionOptions } from "typeorm";
-import { GmodQuote } from "../api/data/gmod/models/quotes.ent";
-import { Committee } from "../api/data/site/models/committee.ent";
+import { GmodQuote } from "../api/entities/gmodQuotes.ent";
+import { Committee } from "../api/entities/committee.ent";
 
 export namespace data
 {
@@ -10,7 +10,8 @@ export namespace data
     export const conenctionOptions : ConnectionOptions = {
         type: "mysql",
         host: host,
-        port: port,
+		port: port,
+		database: process.env.DB_DATABASE,
         username: process.env.DB_USERNAME,
         password: process.env.DB_PASSWORD,
         synchronize: true,

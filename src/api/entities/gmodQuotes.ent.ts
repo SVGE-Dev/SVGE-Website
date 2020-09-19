@@ -3,7 +3,7 @@ import { IsString } from "class-validator";
 
 
 
-@Entity({ database: "svge-gmod"})
+@Entity()
 export class GmodQuote extends BaseEntity
 {
     @PrimaryGeneratedColumn()

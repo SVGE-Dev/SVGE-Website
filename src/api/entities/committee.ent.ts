@@ -3,7 +3,7 @@ import { IsString, IsBoolean, IsPositive, IsNumber } from "class-validator";
 
 
 
-@Entity({ database: "svge-website" })
+@Entity()
 export class Committee extends BaseEntity
 {
     @PrimaryGeneratedColumn("uuid")

@@ -1,23 +1,16 @@
 import { Controller, Get, Render, Authorized, Post, QueryParam, QueryParams, UploadedFiles, UploadOptions } from "routing-controllers";
-import { GmodQuote } from "../data/gmod/models/quotes.ent";
+import { GmodQuote } from "../entities/gmodQuotes.ent";
 import { readdirSync } from "fs";
 import { join, basename } from "path";
-import { IsString } from "class-validator";
-import * as Config from "../../config/_configs";
-import { File } from "../../config/_configs";
+import { File, imgUploadOptions } from "../../config/_configs";
 
 // Jimp is a little retarded
 import Jimp from 'jimp';
-import { cropAndResize } from "../../utils/cropAndResize";
 // tslint:disable-next-line: no-var-requires
 const jimp : Jimp = require('jimp');
+import { cropAndResize } from "../../utils/cropAndResize";
 
 
-
-const uploadOptions : UploadOptions = {
-    options: Config.uploadOptions,
-    required: true
-};
 
 @Controller("/gmod-splash")
 export class GmodSplashController
@@ -74,7 +67,7 @@ export class GmodSplashController
 
     @Post("/edit/screenshot")
     @Authorized(["GMod Rep", "Committee"])
-    public async AddScreenshot(@UploadedFiles("newScreenshots", uploadOptions) files : File[])
+    public async AddScreenshot(@UploadedFiles("newScreenshots", { required: true, options: imgUploadOptions }) files : File[])
     {
         const imageProcessing = new Array<Promise<string>>();
         files.forEach(async (file : File) =>

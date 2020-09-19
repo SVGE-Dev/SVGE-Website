@@ -1,13 +1,12 @@
-import { JsonController, Get, Render, CurrentUser, InternalServerError, Post, Body, UploadedFile, UploadOptions, ForbiddenError, Authorized, NotFoundError } from "routing-controllers";
+import { JsonController, Get, Render, CurrentUser, InternalServerError, Post, Body, UploadedFile, UploadOptions, Authorized, NotFoundError } from "routing-controllers";
 import { Profile as DiscordProfile } from 'passport-discord';
 import { DiscordBot } from "../../services/_services";
-import { Committee } from "../data/site/models/committee.ent";
+import { Committee } from "../entities/committee.ent";
 import { IsNumber, IsPositive, IsString, IsBoolean, IsUUID } from "class-validator";
 import axios from "axios";
 import { cropAndResize } from "../../utils/cropAndResize";
-import { Request } from "express";
 import * as Config from "../../config/_configs";
-import { File } from "../../config/_configs";
+import { File, imgUploadOptions } from "../../config/_configs";
 
 
 
@@ -163,16 +162,11 @@ export class CommitteeController
         return {};
     }
 
-    private uploadOptions : UploadOptions = {
-        options: Config.uploadOptions,
-        required: false
-    };
-
     @Post("/update-self")
     private async UpdateSelf(
         @Body() info : PosMemberInfo,
         //@CurrentUser() user : DiscordProfile,
-        @UploadedFile("avatar", this.uploadOptions) newAvatar : File) // change this from "any" at some point
+        @UploadedFile("avatar", { required: false, options: imgUploadOptions }) newAvatar : File) // change this from "any" at some point
     {
         const pos = await Committee.findOne(info.id);
         if(!pos)
