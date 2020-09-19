@@ -10,8 +10,8 @@ export namespace Handlebars
 	const options : ExphbsOptions = { // may export later if needed but probs not
 		extname: "hbs",
 		defaultLayout: "layout",
-		layoutsDir: path.join(__dirname, "../views/layouts"),
-		partialsDir: path.join(__dirname, "../views/partials"),
+		layoutsDir: "views/layouts",
+		partialsDir: "views/partials",
 		helpers: {
 			eq: (v1 : any, v2 : any) => v1 === v2,
 			ne: (v1 : any, v2 : any) => v1 !== v2,
@@ -32,7 +32,7 @@ export namespace Handlebars
 	{
 		app.engine("hbs", hbs(options)); // create handlebars engine
 		app.set("view engine", "hbs"); // set handlebars engine as our view engine
-		app.set("views", path.join(__dirname, "../views")); // set views folder
-		app.use(express.static(path.join(__dirname, "../public"))); // static folder for css etc.
+		app.set("views", "views"); // set views folder
+		app.use(express.static("public")); // static folder for css etc.
 	};
 }
