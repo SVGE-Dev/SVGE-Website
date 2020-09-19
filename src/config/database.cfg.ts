@@ -1,6 +1,8 @@
 import { ConnectionOptions } from "typeorm";
 import { GmodQuote } from "../api/entities/gmodQuotes.ent";
 import { Committee } from "../api/entities/committee.ent";
+import { Game } from "../api/entities/game.ent";
+import { GameRep } from "../api/entities/gameRep.ent";
 
 export namespace data
 {
@@ -19,7 +21,9 @@ export namespace data
         logger: "debug",
         entities: [ 
 			GmodQuote,
-			Committee
+			Committee,
+			Game,
+			GameRep
 		],
         //migrations: [ __dirname + "/../api/data/site/migrations/**/*.mgr.{ts,js}" ],
         //subscribers: [ __dirname + "/../api/data/site/subscribers/**/*.sbs.{ts,js}" ]
