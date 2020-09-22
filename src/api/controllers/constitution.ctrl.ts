@@ -17,6 +17,7 @@ export class ConstitutionController
     private doc(@Param("doc") doc : string)
     {
         return {
+			page: "consitution",
             tab_title: `SVGE | ${doc}`
         };
     }

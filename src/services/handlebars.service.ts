@@ -1,7 +1,6 @@
 import * as express from 'express';
 import { Express as ExpressApp } from "express-serve-static-core";
 import * as hbs from 'express-handlebars';
-import * as path from 'path';
 
 
 
@@ -36,3 +35,4 @@ export namespace Handlebars
 		app.use(express.static("public")); // static folder for css etc.
 	};
 }
+

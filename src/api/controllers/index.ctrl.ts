@@ -8,6 +8,7 @@ export class IndexController
     private async index()
     {
         return {
+			page: "home",
             tab_title: "SVGE | Home",
             page_title: "Southampton",
             page_subtitle: "Video Games and Esports Society",

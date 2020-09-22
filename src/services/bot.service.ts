@@ -69,27 +69,41 @@ export namespace DiscordBot
             return guild;
         };
 
-        export const GetUserFromName = (username : string) : Discord.User | null =>
+        export const getGuildMemberFromName = (username : string) : Discord.GuildMember | null =>
         {
             const guild = GetGuild(process.env.DISCORD_GUILD_ID);
-            const guildUsers = Array.from(guild.members.values());
+            const guildMembers = Array.from(guild.members.values());
             
-            let guildUser = guildUsers.find((guildMember) => guildMember.user.username == username);
-            if(!guildUser)
+            let guildMember = guildMembers.find((guildMember) => guildMember.user.username == username);
+            if(!guildMember)
             {
-                guildUser = guildUsers.find((guildMember) => guildMember.user.username + "#" + guildMember.user.discriminator == username);
-                if(!guildUser)
+                guildMember = guildMembers.find((guildMember) => guildMember.user.username + "#" + guildMember.user.discriminator == username);
+                if(!guildMember)
                 {
-                    guildUser = guild.members.find("displayName", username);
+                    guildMember = guild.members.find("displayName", username);
                 }
             }
 
-            if(!guildUser)
+            if(!guildMember)
             {
-                console.log("No guild user found");
+                console.log(`Failed to find user with username ${username}`);
                 return null;
             }
-            return guildUser.user;
-        };
+            return guildMember;
+		};
+		
+		export const getGuildMemberFromId = (id : string) : Discord.GuildMember | null =>
+		{
+			const guild = GetGuild(process.env.DISCORD_GUILD_ID); // could probably just stuff the environment variable lookup into the GetGuild function
+			const guildMembers = Array.from(guild.members.values());
+			
+			const guildMember = guildMembers.find((guildMember) => guildMember.user.id == id);
+			if(!guildMember)
+			{
+				console.log(`Failed to find user with id ${id}`);
+				return null;
+			}
+			return guildMember;
+		};
     }
 }

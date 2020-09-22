@@ -8,7 +8,7 @@
 			</div>
 			<div class="col-lg-6 order-lg-1" data-aos="fade-up" data-aos-delay="100">
 				<div class="site-section-heading text-left mb-5 w-border">
-					<h2>League of Legends</h2>
+					<h2>{{gameInfo.heading}}</h2>
 				</div>
 				<p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cupiditate accusamus
 					porro, iusto id
@@ -27,6 +27,19 @@
 					nemo, quis.</p>
 			</div>
 		</div>
+		{{#each reps}}
+		<div class="d-block d-md-flex podcast-entry bg-white mb-5" data-aos="fade-up">
+			<div class="image" style="background-image: url('{{this.avatar}}');"></div>
+			<div class="text">
+
+				<h3 class="font-weight-light"><a href="#">{{this.name}}</a></h3>
+				<div class=" mb-3 text-black"><span class="text-black-opacity-05"><small>{{this.username}} <span
+								class="sep">&vert;</span> {{this.role}}</small></span>
+				</div>
+				<p class="mb-4 text-black">{{this.msg}}</p>
+			</div>
+		</div>
+		{{/each}}
 	</div>
 </div>
 

@@ -1,61 +1,59 @@
 <div class="site-wrap">
-    <div class="site-navbar mt-4">
-        <div class="container py-1">
-            <div class="row align-items-center">
-                <div class="col-8 col-md-8 col-lg-4">
-                    <a href="/pacman">
-                        <img src="/images/logo.png" height="150px"/>
-                    </a>
-                </div>
-                <div class="col-4 col-md-4 col-lg-8">
-                    <nav class="site-navigation text-right text-md-right" role="navigation">
+	<div class="site-navbar mt-4">
+		<div class="container py-1">
+			<div class="row align-items-center">
+				<div class="col-8 col-md-8 col-lg-4">
+					<a href="/pacman">
+						<img src="/images/logo.png" height="150px" />
+					</a>
+				</div>
+				<div class="col-4 col-md-4 col-lg-8">
+					<nav class="site-navigation text-right text-md-right" role="navigation">
 
-                        <div class="d-inline-block d-lg-none ml-md-0 mr-auto py-3"><a href="#"
-                                class="site-menu-toggle js-menu-toggle text-white"><span
-                                    class="icon-menu h3"></span></a></div>
+						<div class="d-inline-block d-lg-none ml-md-0 mr-auto py-3"><a href="#"
+								class="site-menu-toggle js-menu-toggle text-white"><span
+									class="icon-menu h3"></span></a></div>
 
-                        <ul class="site-menu js-clone-nav d-none d-lg-block">
-                            <li class="active">
-                                <a href="/">Home</a>
-                            </li>
-                            <li class="has-children">
-                                <a href="/games">Games</a>
-                                <ul class="dropdown arrow-top">
-                                    <!-- Eventually generate this dynamically? -->
-                                    <li><a href="/games/csgo">Counter Strike: Global Offensive</a></li>
-                                    <li><a href="/games/league">League of Legends</a></li>
-                                    <li><a href="/games/overwatch">Overwatch</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="/events">Events</a></li>
-                            <li><a href="/esports">Esports</a></li>
-                            <li><a href="/committee">Committee</a></li>
-                            <li><a href="/constitution">Constitution</a></li>
-                        </ul>
-                    </nav>
-                </div>
-            </div>
-        </div>
-    </div>
+						<ul class="site-menu js-clone-nav d-none d-lg-block">
+							<li {{#if (eq page "home")}}class="active" {{/if}}><a href="/">Home
+								</a></li>
+							<li {{#if (eq page "games")}}class="active" {{/if}}><a href="/games">Games
+								</a></li>
+							<li {{#if (eq page "events")}}class="active" {{/if}}><a href="/events">Events
+								</a></li>
+							<li {{#if (eq page "esports")}}class="active" {{/if}}><a href="/esports">Esports
+								</a></li>
+							<li {{#if (eq page "committee")}}class="active" {{/if}}><a href="/committee">Committee
+								</a></li>
+							<li {{#if (eq page "constitution")}}class="active" {{/if}}><a
+									href="/constitution">Constitution
+								</a></li>
+						</ul>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 <div class="site-mobile-menu">
-    <div class="site-mobile-menu-header">
-        <div class="site-mobile-menu-close mt-3">
-            <span class="icon-close2 js-menu-toggle"></span>
-        </div>
-    </div>
-    <div class="site-mobile-menu-body"></div>
+	<div class="site-mobile-menu-header">
+		<div class="site-mobile-menu-close mt-3">
+			<span class="icon-close2 js-menu-toggle"></span>
+		</div>
+	</div>
+	<div class="site-mobile-menu-body"></div>
 </div> <!-- .site-mobile-menu -->
 
 <div class="site-blocks-cover overlay" style="background-image: url('/images/hero_bg_1.jpg');" data-aos="fade"
-    data-stellar-background-ratio="0.5" data-aos="fade">
-    <div class="container">
-        <div class="row align-items-center justify-content-center">
-            <div class="col-md-7 text-center" data-aos="fade-up" data-aos-delay="400">
-                <h1 class="mb-4"><strong>{{ page_title }}</strong><br />{{ page_subtitle }}</h1>
-                <p><a href="{{ button_link }}" class="btn btn-primary px-4 py-3" target="_blank">{{ button_text }}</a></p>
-            </div>
-        </div>
-    </div>
+	data-stellar-background-ratio="0.5" data-aos="fade">
+	<div class="container">
+		<div class="row align-items-center justify-content-center">
+			<div class="col-md-7 text-center" data-aos="fade-up" data-aos-delay="400">
+				<h1 class="mb-4"><strong>{{ page_title }}</strong><br />{{ page_subtitle }}</h1>
+				<p><a href="{{ button_link }}" class="btn btn-primary px-4 py-3" target="_blank">{{ button_text }}</a>
+				</p>
+			</div>
+		</div>
+	</div>
 </div>

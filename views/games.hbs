@@ -11,36 +11,42 @@
 			</div>
 		</div>
 		<div class="row">
+			{{#each games}}
 			<div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
-				<a href="/games/league-of-legends" class="unit-9">
+				<a href="/games/{{this.url}}" class="unit-9">
 					<div class="image"
 						style="background-image: url('http://getdrawings.com/free-icon/league-of-legends-desktop-icon-64.png');">
 					</div>
 					<div class="unit-9-content">
 						<h2>League of Legends</h2>
-						<span>Events &vert; Esports &vert; Ranked </span>
-						<span>Welcome to Summoner's Rift</span>
+						<span>{{this.brief}}</span>
+						<span>{{this.tagline}}</span>
 					</div>
 				</a>
 			</div>
+			{{/each}}
 
-			<div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
-				<a href="#" class="unit-9">
-					<div class="image" style="background-image: url('images/img_2.jpg');"></div>
+			{{!-- <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
+				<a href="/games/csgo" class="unit-9">
+					<div class="image"
+						style="background-image: url('https://seeklogo.com/images/C/csgo-logo-CAA0A4D48A-seeklogo.com.png');">
+					</div>
 					<div class="unit-9-content">
-						<h2>Electro Party</h2>
-						<span>Friday 1:00pm &mdash; 2:30pm</span>
-						<span>with Gaby Tenda</span>
+						<h2>Counter-Strike: Global Offensive</h2>
+						<span>I know nothing</span>
+						<span>About CS:GO</span>
 					</div>
 				</a>
 			</div>
 			<div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
-				<a href="#" class="unit-9">
-					<div class="image" style="background-image: url('images/img_3.jpg');"></div>
+				<a href="/games/gmod" class="unit-9">
+					<div class="image"
+						style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Garry%27s_Mod_logo.svg/768px-Garry%27s_Mod_logo.svg.png');">
+					</div>
 					<div class="unit-9-content">
-						<h2>Classic Hits</h2>
-						<span>Friday 1:00pm &mdash; 2:30pm</span>
-						<span>with James Tenda</span>
+						<h2>Garry's Mod</h2>
+						<span>Casual &vert; TTT &vert; Prop Hunt</span>
+						<span>Get One-Deaged!</span>
 					</div>
 				</a>
 			</div>
@@ -53,7 +59,7 @@
 						<span>with Troy Peters</span>
 					</div>
 				</a>
-			</div>
+			</div> --}}
 		</div>
 	</div>
 </div>
