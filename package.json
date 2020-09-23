@@ -2,7 +2,7 @@
   "name": "svge-website",
   "files": [
     "package.json",
-    "dist",
+    "build",
     "public",
     "views",
     "README.md",

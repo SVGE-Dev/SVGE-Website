@@ -7,3 +7,4 @@ theme
 .vscode
 dist
 svge-website-*.tgz
+build
