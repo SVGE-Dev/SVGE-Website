@@ -3,7 +3,7 @@ import { ExpressMiddlewareInterface } from "routing-controllers";
 
 type cb = (err? : any) => any;
 
-export class SeoNoIndex implements ExpressMiddlewareInterface
+export class NoSeoIndexing implements ExpressMiddlewareInterface
 {
 	use(req : Request, res : Response, next? : cb) : any
 	{
