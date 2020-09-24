@@ -6,11 +6,26 @@ import { File } from "../../config/_configs";
 import { DiscordBot } from "../../services/_services";
 import { cropAndResize } from "../../utils/cropAndResize";
 import { Profile as DiscordProfile } from 'passport-discord';
+import { UserAddRequest } from "../controllers/request_bodies/UserAddRequest";
 
 
 @Entity()
 export class SiteUser extends BaseEntity
 {
+	constructor(user : UserAddRequest, avatar : File, group : string, discordId : string)
+	{
+		super();
+		this.discordId = discordId;
+		this.group = group;
+		this.discordUsername = user.username;
+		this.name = user.name;
+		this.position = user.position;
+		this.title = user.title;
+		this.desc = user.desc;
+		this.message = user.message;
+		this.setAvatar(avatar);
+	}
+
     @PrimaryGeneratedColumn("uuid")
 	uuid : string | undefined;
 	
@@ -129,9 +144,9 @@ export class SiteUser extends BaseEntity
 	 * Re-orders the Site Users in a give group.
 	 * 
 	 * @param {string} group The group to re-order
-	 * @param {string} splitUser The UUID of the element to being re-ordering from
+	 * @param {string | undefined} splitUser The UUID of the element to being re-ordering from. If ommitted, elements will be re-ordered 1,2,3...
 	 */
-	public static async reorder(group : string, splitUserUuid : string)
+	public static async reorder(group : string, splitUserUuid? : string)
 	{
 		const users = await SiteUser.find({
 			where: {
@@ -140,20 +155,37 @@ export class SiteUser extends BaseEntity
 			select: [
 				"uuid",
 				"position"
-			]
+			],
+			order: {
+				position: "ASC"
+			}
 		});
 
-		const splitUser = users.find((u) => u.uuid == splitUserUuid);
-		if(!splitUser) return;
-
-		const splitPosition = splitUser.position;
-
-		const sortedUsers = users.filter((u) => u.uuid != splitUserUuid && u.position >= splitUser.position);
-		for(const sortedUser of sortedUsers)
+		if(!!splitUserUuid)
 		{
-			sortedUser.position += 1;
-		}
+			// this needs to be smarter than just adding one, especially since
+			// there's currently nothing stopping someone puting 65535 as the position
+			const splitUser = users.find((u) => u.uuid == splitUserUuid);
+			if(!splitUser) return;
 
-		await SiteUser.save(sortedUsers);
+			const splitPosition = splitUser.position;
+
+			const sortedUsers = users.filter((u) => u.uuid != splitUserUuid && u.position >= splitUser.position);
+			for(const sortedUser of sortedUsers)
+			{
+				sortedUser.position += 1;
+			}
+
+			await SiteUser.save(sortedUsers);
+		}
+		else
+		{
+			let pos = 1;
+			for(const user of users)
+			{
+				user.position = pos++;
+			}
+			await SiteUser.save(users);
+		}
 	}
 }
