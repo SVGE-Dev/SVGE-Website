@@ -1,6 +1,5 @@
 import { ConnectionOptions } from "typeorm";
 import { GmodQuote } from "../api/entities/gmodQuotes.ent";
-import { Committee } from "../api/entities/committee.ent";
 import { Game } from "../api/entities/game.ent";
 import { SiteUser } from "../api/entities/siteUser.ent";
 
@@ -23,7 +22,6 @@ export namespace data
         entities: [ 
 			GmodQuote,
 			//GmodStats,
-			Committee,
 			Game,
 			SiteUser
 		],

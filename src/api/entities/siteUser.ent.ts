@@ -12,9 +12,8 @@ import { UserAddRequest } from "../controllers/request_bodies/UserAddRequest";
 @Entity()
 export class SiteUser extends BaseEntity
 {
-	constructor(user : UserAddRequest, avatar : File, group : string, discordId : string)
+	public newUser(user : UserAddRequest, avatar : File, group : string, discordId : string) : this
 	{
-		super();
 		this.discordId = discordId;
 		this.group = group;
 		this.discordUsername = user.username;
@@ -24,6 +23,8 @@ export class SiteUser extends BaseEntity
 		this.desc = user.desc;
 		this.message = user.message;
 		this.setAvatar(avatar);
+
+		return this;
 	}
 
     @PrimaryGeneratedColumn("uuid")

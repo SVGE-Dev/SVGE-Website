@@ -73,7 +73,7 @@ export class CommitteeController
 
 		if(!!committeeMember) throw new BadRequestError("That user is already registered as a committee member.");
 
-		committeeMember = new SiteUser(newCommittee, avatar, "committee", committeeProfile.id);
+		committeeMember = new SiteUser().newUser(newCommittee, avatar, "committee", committeeProfile.id);
 		await committeeMember.save();
 		await SiteUser.reorder("committee", committeeMember.uuid);
 

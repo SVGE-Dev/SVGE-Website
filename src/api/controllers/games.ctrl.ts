@@ -279,7 +279,7 @@ export class GamesController
 		const group = `${gameUrl}_reps`;
 
 		//@ts-ignore Ignoring the fact that we're not setting the UUID or the avatar
-		rep = new SiteUser(newRep, avatar, group, repProfile.id);
+		rep = new SiteUser().newUser(newRep, avatar, group, repProfile.id);
 		rep = await rep.save();
 
 		await SiteUser.reorder(group, rep.uuid);
