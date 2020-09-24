@@ -1,199 +1,194 @@
-import { JsonController, Get, Render, CurrentUser, InternalServerError, Post, Body, UploadedFile, Authorized, NotFoundError } from "routing-controllers";
 import { Profile as DiscordProfile } from 'passport-discord';
-import { DiscordBot } from "../../services/_services";
-import { Committee } from "../entities/committee.ent";
-import { IsNumber, IsPositive, IsString, IsBoolean, IsUUID } from "class-validator";
-import axios from "axios";
-import { cropAndResize } from "../../utils/cropAndResize";
-import { File, imgUploadOptions } from "../../config/_configs";
+import { NoSeoIndexing } from "../middlewares/NoSeoIndexing.mdlw";
+import { SiteUser } from "../entities/siteUser.ent";
+import { DiscordBot } from '../../services/_services';
+import { File, imgUploadOptions } from '../../config/_configs';
+import {
+	JsonController,
+	Get,
+	Render,
+	CurrentUser,
+	UseBefore, Post, Authorized, Body, BadRequestError, UploadedFile, Put, Delete
+} from "routing-controllers";
+
+/*** Render Data ***/
+import { CommitteeRender } from './render_interfaces/CommitteeRender';
+
+/*** Request Bodies ***/
+import { UserAddRequest } from "./request_bodies/UserAddRequest";
+import { UserUpdateRequest } from "./request_bodies/UserUpdateRequest";
+import { UserDeleteRequest } from "./request_bodies/UserDeleteRequest";
+
+/*** Response Bodies ***/
+import { UserAddResponse } from "./response_bodies/UserAddResponse";
+import { UserUpdateResponse } from "./response_bodies/UserUpdateResponse";
+import { UserDeleteResponse } from "./response_bodies/UserDeleteResponse";
 
 
-
-class PosInfo
-{
-    @IsUUID()
-    id : string | null;
-
-    @IsString()
-    posName : string;
-
-    @IsString()
-    posDesc : string;
-
-    @IsNumber()
-    @IsPositive()
-    posOrder : number;
-
-    @IsBoolean()
-    isMainCommitteePos : boolean;
-
-    @IsString()
-    username : string;
-
-    @IsString()
-    memberName : string;
-}
-
-class PosMemberInfo
-{
-    @IsUUID()
-    id : string;
-
-    @IsString()
-    memberName : string | null;
-
-    @IsString()
-    posDesc : string | null;
-}
 
 @JsonController("/committee")
+@UseBefore(NoSeoIndexing)
 export class CommitteeController
 {
     @Get("/")
     @Render("committee")
-    private async index(@CurrentUser() user : DiscordProfile)
+    private async getCommittee(@CurrentUser({ required: false }) user : DiscordProfile) : Promise<CommitteeRender>
     {
-        const committeePositions = await Committee.find({
-            order: {
-                posOrder: "ASC"
-            }
+		const committee = await SiteUser.find({
+			where: {
+				group: "committee"
+			},
+			order: {
+				"position": "ASC"
+			}
 		});
-		const mainCommittee = committeePositions.filter((pos : Committee) => pos.isMainCommitteePos);
-        const gamesCommittee = committeePositions.filter((pos) => !pos.isMainCommitteePos);
 
-        const guild = DiscordBot.Utils.GetGuild(process.env.DISCORD_GUILD_ID);
-        if(!guild)
-        {
-            throw new InternalServerError(`Guild with id ${process.env.DISCORD_GUILD_ID} not found.`);
-		}
-		
-        const ownPositions = user ? committeePositions.filter((pos) => pos.PageInfo().user_id == user.id) : [];
-        const isMainCommittee = user ? DiscordBot.Utils.CheckForRole(user.id, process.env.DISCORD_GUILD_ID, [process.env.COMMITTEE_ROLE_NAME]) : false;
-
-        console.log(`Is main committee: ${isMainCommittee}`);
+		const isCommittee = !!user && !!committee.find((c) => c.discordId == user.id);
 
         return {
 			page: "committee",
             tab_title: "SVGE | Committee",
             page_title: "Committee",
-            page_subtitle: "Meet the SVGE Committee",
-            is_main_committee: isMainCommittee,
-            main_committee: mainCommittee.map((mc) => mc.PageInfo()),
-            games_committee: gamesCommittee.map((gc) => gc.PageInfo()),
-            own_poitions: ownPositions.map((op) => op.PageInfo()),
+			page_subtitle: "Meet the SVGE Committee",
+			committee: committee,
+			userIsCommittee: isCommittee,
             custom_css: [ "/css/jquery-sortable.css" ],
             custom_scripts: [ "/js/jquery-sortable.js" ]
         };
     }
 
-    @Post("/update-all")
-    @Authorized(process.env.COMMITTEE_ROLE_NAME)
-    private async UpdateAll(@Body() posInfoes : PosInfo[] )
-    {
-        console.log("Updating all");
-        const jobs = new Array<Promise<Committee>>();
+	@Post("/")
+	@Authorized([ process.env.COMMITTEE_ROLE ])
+	private async addCommittee(
+		@Body() newCommittee : UserAddRequest,
+		@UploadedFile("avatar", { required: false, options: imgUploadOptions }) avatar : File)
+		: Promise<UserAddResponse>
+	{
+		const committeeProfile = DiscordBot.Utils.getGuildMemberFromName(newCommittee.username);
+		let committeeMember = await SiteUser.findOne({
+			where: {
+				discordId: committeeProfile.id
+			}
+		});
 
-        posInfoes.forEach(async (posInfo) =>
-        {
-            if(posInfo.id == null)
-            {   
-                console.log("Creating new committee position...");
-                const newCommPos = new Committee();
-                newCommPos.posName = posInfo.posName;
-                newCommPos.posDesc = posInfo.posDesc;
-                newCommPos.posOrder = posInfo.posOrder;
-                newCommPos.isMainCommitteePos = posInfo.isMainCommitteePos;
-                newCommPos.memberName = posInfo.memberName;
+		if(!!committeeMember) throw new BadRequestError("That user is already registered as a committee member.");
 
-                const guildMember = DiscordBot.Utils.getGuildMemberFromName(posInfo.username);
-                if(!guildMember) return; // some error happened, probably means user isn't in the guild
+		committeeMember = new SiteUser(newCommittee, avatar, "committee", committeeProfile.id);
+		await committeeMember.save();
+		await SiteUser.reorder("committee", committeeMember.uuid);
 
-                const job = async () =>
-                {
-                    newCommPos.discordId = guildMember.id;
-                    newCommPos.username = `${guildMember.user.username}#${guildMember.user.discriminator}`;
-                    newCommPos.customAvatar = false;
+		return {
+			uuid : committeeMember.uuid,
+			discordUsername : committeeMember.discordUsername,
+			name : committeeMember.name,
+			position : committeeMember.position,
+			title : committeeMember.title,
+			desc : committeeMember.desc,
+			message : committeeMember.message,
+			avatarBase64 : committeeMember.avatarBase64
+		}
+	}
 
-                    const res = await axios.get(guildMember.user.avatarURL, { responseType: "arraybuffer" });
-                    const imgBuffer = Buffer.from(res.data, "utf-8");
-                    const img = await cropAndResize(2048, 2048, imgBuffer);
-                    newCommPos.avatar = await img.getBufferAsync("image/png");
+	@Put("/")
+	@Authorized([ process.env.COMMITTEE_ROLE ])
+	private async updateCommittee(
+		@Body() updateCommittee : UserUpdateRequest,
+		@UploadedFile("avatar", { required: false, options: imgUploadOptions }) avatar : File)
+		: Promise<UserUpdateResponse>
+	{
+		let committee = await SiteUser.findOne({
+			where: {
+				group: "committee",
+				uuid: updateCommittee.uuid
+			}
+		});
+		if(!committee) throw new BadRequestError("That committee member does not exist. Please stop probing our API.");
 
-                    return newCommPos;
-                };
-                jobs.push(job());
-            }
-            else
-            {
-                console.log("Updating committee position...");
-                const commPos = await Committee.findOne(posInfo.id);
-                if(!commPos) return; // should probably throw an error here
+		// could move this lot into the SiteUser class
+		let changed = false;
+		if(!!updateCommittee.name && committee.name != updateCommittee.name)
+		{
+			changed = true;
+			committee.name = updateCommittee.name;
+		}
+		let positionChanged = false;
+		if(!!updateCommittee.position && committee.position != updateCommittee.position)
+		{
+			changed = true;
+			positionChanged = true;
+			committee.position = updateCommittee.position;
+		}
+		if(!!updateCommittee.title && committee.title != updateCommittee.title)
+		{
+			changed = true;
+			committee.title = updateCommittee.title;
+		}
+		if(!!updateCommittee.desc && committee.desc != updateCommittee.desc)
+		{
+			changed = true;
+			committee.desc = updateCommittee.desc;
+		}
+		if(!!updateCommittee.message && committee.message != updateCommittee.message)
+		{
+			changed = true;
+			committee.message = updateCommittee.message;
+		}
+		if(updateCommittee.resetAvatar)
+		{
+			if(committee.avatarIsCustom)
+			{
+				changed = true;
+				await committee.setAvatar(); // reset it
+			}
+		}
+		else
+		{
+			if(!!avatar)
+			{
+				changed = true;
+				await committee.setAvatar(avatar);
+			}
+		}
 
-                commPos.posName = posInfo.posName; 
-                commPos.posDesc = posInfo.posDesc;
-                commPos.posOrder = posInfo.posOrder;
-                commPos.isMainCommitteePos = posInfo.isMainCommitteePos;
-                commPos.memberName = posInfo.memberName;
-                
-                const guildMember = DiscordBot.Utils.getGuildMemberFromName(posInfo.username);
-                if(!guildMember) return; // throw some error? Return some more info so you can get a big red X?
-                
-                const job = async () =>
-                {
-                    if(commPos.discordId != guildMember.id)
-                    {
-                        commPos.discordId = guildMember.id;
-                        commPos.username = `${guildMember.user.username}#${guildMember.user.discriminator}`;
-                        commPos.customAvatar = false;
-                        const res = await axios.get(guildMember.user.avatarURL, { responseType: "arraybuffer" });
-                        const imgBuffer = Buffer.from(res.data, "utf-8");
-                        const img = await cropAndResize(2048, 2048, imgBuffer);
-                        commPos.avatar = await img.getBufferAsync("image/png");
-                    }
-                    return commPos;
-                };
-                jobs.push(job());
-            }
-        });
+		if(changed)
+		{
+			await committee.save();
+			if(positionChanged)
+			{
+				await SiteUser.reorder("committee", committee.uuid);
+			}
+		}
 
-        const committee = await Promise.all(jobs);
-        console.log(`Number of positions: ${committee.length}`);
-        await Committee.save(committee);
-        return {};
-    }
+		return {
+			uuid: committee.uuid,
+			discordUsername: committee.discordUsername,
+			name: committee.name,
+			position: committee.position,
+			title: committee.title,
+			desc: committee.desc,
+			message: committee.message,
+			avatarBase64: committee.avatarBase64
+		};
+	}
 
-    @Post("/update-self")
-    private async UpdateSelf(
-        @Body() info : PosMemberInfo,
-        //@CurrentUser() user : DiscordProfile,
-        @UploadedFile("avatar", { required: false, options: imgUploadOptions }) newAvatar : File) // change this from "any" at some point
-    {
-        const pos = await Committee.findOne(info.id);
-        if(!pos)
-        {
-			// sent a request with an id that doesn't exist, probably something shifty here
-			throw new NotFoundError("There is no committee member with this id");
-        }
+	@Delete("/")
+	@Authorized([ process.env.COMMITTEE_ROLE ])
+	private async deleteCommittee(
+		@Body() delCommittee : UserDeleteRequest)
+		: Promise<UserDeleteResponse>
+	{
+		const committee = await SiteUser.findOne({
+			where: {
+				group: "committee",
+				uuid: delCommittee.uuid
+			}
+		});
+		if(!committee) throw new BadRequestError("That committee member does not exist. Please stop probing our API.");
 
-        // if(pos.discordId != user.id)
-        // {
-        //     throw new ForbiddenError("This committee position is not yours to edit!");
-        // }
+		await committee.remove();
+		await SiteUser.reorder("committee");
 
-
-        pos.memberName = info.memberName;
-        pos.posDesc = info.posDesc;
-        if(newAvatar)
-        {
-            pos.customAvatar = true;
-            const avatar = await cropAndResize(2048, 2048, newAvatar.buffer);
-            pos.avatar = await avatar.getBufferAsync(newAvatar.mimetype);
-            
-        }
-
-        await pos.save();
-
-        return {};
-    }
+		return;
+	}
 }
 

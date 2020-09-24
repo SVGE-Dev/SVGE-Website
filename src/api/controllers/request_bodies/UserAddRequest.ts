@@ -12,10 +12,6 @@ export class UserAddRequest
 	@IsShorterThan(24) // might need to be longer depending on people's names
 	name : string;
 
-	// this is the group of users that this entry belongs to, such as committee members, esports team members etc.
-	@IsShorterThan(36) // 32 character limit of game short name, plus "_rep"
-	group : string;
-
 	// position in which users in this group will be listed
 	@IsPositive()
 	@IsInt()

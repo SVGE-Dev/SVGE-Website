@@ -4,7 +4,6 @@ import { DiscordBot } from "../../services/_services";
 import { Game } from "../entities/game.ent";
 import { SiteUser } from "../entities/siteUser.ent";
 import { NoSeoIndexing } from "../middlewares/NoSeoIndexing.mdlw";
-import { GameRender } from "./render_interfaces/GameRender";
 import { cropAndResize } from "../../utils/cropAndResize";
 import { Request } from "express";
 import {
@@ -27,6 +26,7 @@ const multer = require('multer');
 
 /*** Render Data ***/
 import { GamesRender } from "./render_interfaces/GamesRender";
+import { GameRender } from "./render_interfaces/GameRender";
 
 /*** Request Bodies ***/
 import { GameAddRequest } from "./request_bodies/GameAddRequest";
@@ -37,12 +37,12 @@ import { UserUpdateRequest } from "./request_bodies/UserUpdateRequest";
 import { UserDeleteRequest } from "./request_bodies/UserDeleteRequest";
 
 /*** Response Bodies ***/
-import { UserAddResponse } from "./response_bodies/UserAddResponse";
-import { UserUpdateResponse } from "./response_bodies/UserUpdateResponse";
-import { UserDeleteResponse } from "./response_bodies/UserDeleteResponse";
 import { GameAddResponse } from "./response_bodies/GameAddResponse";
 import { GameUpdateResponse } from "./response_bodies/GameUpdateResponse";
 import { GameDeleteResponse } from "./response_bodies/GameDeleteResponse";
+import { UserAddResponse } from "./response_bodies/UserAddResponse";
+import { UserUpdateResponse } from "./response_bodies/UserUpdateResponse";
+import { UserDeleteResponse } from "./response_bodies/UserDeleteResponse";
 
 
 
@@ -415,8 +415,8 @@ export class GamesController
 			}
 		});
 		if(!repEntity) throw new NotFoundError("Failed to find the rep you wish to delete. Please stop probing our API.");
-		await repEntity.remove();
 
+		await repEntity.remove();
 		await SiteUser.reorder(`${gameUrl}_reps`);
 
 		return;
