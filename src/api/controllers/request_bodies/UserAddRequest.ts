@@ -1,8 +1,9 @@
-import { IsInt, IsNumber, IsOptional, IsPositive } from "class-validator";
+import { Transform } from "class-transformer";
+import { IsInt, IsOptional, IsPositive } from "class-validator";
 import { IsDiscordUsername } from "../validators/IsDiscordUsername";
 import { IsShorterThan } from "../validators/IsShorterThan";
 
-export class NewUserRequest
+export class UserAddRequest
 {
 	@IsDiscordUsername()
 	username : string;
@@ -18,6 +19,7 @@ export class NewUserRequest
 	// position in which users in this group will be listed
 	@IsPositive()
 	@IsInt()
+	@Transform((val) => typeof val == "number" ? val : parseInt(val))
 	position : number;
 
 	// this could be a committee position name, rep name, etc...

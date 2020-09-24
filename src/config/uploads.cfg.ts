@@ -1,12 +1,11 @@
-import { Options, memoryStorage } from "multer";
+import { Options as MulterOptions, memoryStorage, FileFilterCallback } from "multer";
 import { Request } from "express";
 
 export type File = Express.Multer.File;
-type Callback = (error : Error | null, acceptFile : boolean) => void;
 
-export const imgUploadOptions : Options = {
+export const imgUploadOptions : MulterOptions = {
 	storage: memoryStorage(),
-	fileFilter: (req : Request, file : File, acceptFile : Callback) => {
+	fileFilter: (req : Request, file : File, acceptFile : FileFilterCallback) => {
 		const allowedMimeTypes = [
 			"image/jpeg",
 			"image/png",

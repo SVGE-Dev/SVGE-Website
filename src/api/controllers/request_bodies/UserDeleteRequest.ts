@@ -1,6 +1,6 @@
 import { IsUUID } from "class-validator";
 
-export class DeleteUserRequest
+export class UserDeleteRequest
 {
 	@IsUUID()
 	uuid : string;

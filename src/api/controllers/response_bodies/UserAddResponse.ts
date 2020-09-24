@@ -1,9 +1,8 @@
-export interface NewUserResponse
+export interface UserAddResponse
 {
 	uuid : string;
 	discordUsername : string;
 	name : string;
-	group : string;
 	position : number;
 	title : string;
 	desc : string;

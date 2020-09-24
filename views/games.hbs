@@ -6,60 +6,24 @@
 			<div class="site-section-heading text-center mb-5 w-border col-md-6 mx-auto">
 				<h2 class="mb-5">Our Games</h2>
 				<p>Here at SVGE, we play all manner of games, both casual and competitive. So whether you're looking to
-					get into esports tournaments, or just find some new friends to play your favourite games, we're open
-					to anyone playing anything.</p>
+					get into esports tournaments, or just find some new friends to play your favourite games with, we're
+					open to anyone playing anything.</p>
 			</div>
 		</div>
 		<div class="row">
 			{{#each games}}
 			<div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
-				<a href="/games/{{this.url}}" class="unit-9">
-					<div class="image"
-						style="background-image: url('http://getdrawings.com/free-icon/league-of-legends-desktop-icon-64.png');">
+				<a href="/games/{{this.game.url}}" class="unit-9">
+					<div class="image" style="background-image: url('{{this.icon}}');">
 					</div>
 					<div class="unit-9-content">
-						<h2>League of Legends</h2>
-						<span>{{this.brief}}</span>
-						<span>{{this.tagline}}</span>
+						<h2>{{this.game.nameShort}}</h2>
+						<span>{{this.game.brief}}</span>
+						<span>{{this.game.tagline}}</span>
 					</div>
 				</a>
 			</div>
 			{{/each}}
-
-			{{!-- <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
-				<a href="/games/csgo" class="unit-9">
-					<div class="image"
-						style="background-image: url('https://seeklogo.com/images/C/csgo-logo-CAA0A4D48A-seeklogo.com.png');">
-					</div>
-					<div class="unit-9-content">
-						<h2>Counter-Strike: Global Offensive</h2>
-						<span>I know nothing</span>
-						<span>About CS:GO</span>
-					</div>
-				</a>
-			</div>
-			<div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
-				<a href="/games/gmod" class="unit-9">
-					<div class="image"
-						style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Garry%27s_Mod_logo.svg/768px-Garry%27s_Mod_logo.svg.png');">
-					</div>
-					<div class="unit-9-content">
-						<h2>Garry's Mod</h2>
-						<span>Casual &vert; TTT &vert; Prop Hunt</span>
-						<span>Get One-Deaged!</span>
-					</div>
-				</a>
-			</div>
-			<div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="400">
-				<a href="#" class="unit-9">
-					<div class="image" style="background-image: url('images/img_4.jpg');"></div>
-					<div class="unit-9-content">
-						<h2>Classic Songs</h2>
-						<span>Friday 1:00pm &mdash; 2:30pm</span>
-						<span>with Troy Peters</span>
-					</div>
-				</a>
-			</div> --}}
 		</div>
 	</div>
 </div>

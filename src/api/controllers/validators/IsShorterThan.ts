@@ -11,7 +11,7 @@ export const IsShorterThan = (length : number) : PropertyDecorator =>
 	return (object : Object, propertyName : string) =>
 	{
 		registerDecorator({
-			name: "isDiscordUsername",
+			name: "isShorterThanOrEqualTo",
 			target: object.constructor,
 			propertyName: propertyName,
 			validator: {

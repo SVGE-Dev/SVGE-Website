@@ -5,14 +5,16 @@ import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm";
 import { File } from "../../config/_configs";
 import { DiscordBot } from "../../services/_services";
 import { cropAndResize } from "../../utils/cropAndResize";
+import { Profile as DiscordProfile } from 'passport-discord';
 
 
 @Entity()
 export class SiteUser extends BaseEntity
 {
     @PrimaryGeneratedColumn("uuid")
-	private uuid : string;
+	uuid : string | undefined;
 	
+	// this shouldn't be exposed on the website
 	@Column({type: "varchar", length: 32})
     discordId : string;
 
@@ -45,13 +47,48 @@ export class SiteUser extends BaseEntity
 	@Column({ type: "varchar", length: 1024 })
 	message : string = "";
 
+	// either a custom photo or their Discord avatar
 	@Column({ type: "mediumblob" })
 	avatar : Buffer;
 
+	// so we don't update it from Discord
 	@Column({ type: "boolean" })
 	avatarIsCustom : boolean = false;
 
+	// flag for whether a user should be shown or not
+	@Column({ type: "boolean" })
+	show : boolean = true;
+
 	private discordGuildMember : GuildMember | undefined;
+	private discordProfile : DiscordProfile;
+	public set profile(p : DiscordProfile) { this.discordProfile = p; }
+
+	public static async findFromProfile(profile : DiscordProfile, group? : string) : Promise<SiteUser | SiteUser[]>
+	{
+		if(!!group)
+		{
+			const user = await SiteUser.findOne({
+				discordId: profile.id,
+				group: group
+			});
+			if(!!user) user.profile = profile;
+			return user;
+		}
+		else
+		{
+			const users = await SiteUser.find({
+				discordId: profile.id
+			});
+			if(!!users)
+			{
+				for(const user of users)
+				{
+					user.profile = profile;
+				}
+			}
+			return users;
+		}
+	}
 
 
 	public async setAvatar(img? : File) : Promise<boolean>
@@ -76,7 +113,7 @@ export class SiteUser extends BaseEntity
 		return Buffer.from(res.data, "utf-8");
 	}
 
-	public avatarBase64()
+	public get avatarBase64()
 	{
 		return `data:image/png;base64,${this.avatar.toString("base64")}`;
 	}
@@ -85,5 +122,38 @@ export class SiteUser extends BaseEntity
 	{
 		this.discordGuildMember = DiscordBot.Utils.getGuildMemberFromId(this.discordId);
 		if(!!this.discordGuildMember) this.discordUsername = this.discordGuildMember.user.username;
+	}
+
+
+	/**
+	 * Re-orders the Site Users in a give group.
+	 * 
+	 * @param {string} group The group to re-order
+	 * @param {string} splitUser The UUID of the element to being re-ordering from
+	 */
+	public static async reorder(group : string, splitUserUuid : string)
+	{
+		const users = await SiteUser.find({
+			where: {
+				group: group
+			},
+			select: [
+				"uuid",
+				"position"
+			]
+		});
+
+		const splitUser = users.find((u) => u.uuid == splitUserUuid);
+		if(!splitUser) return;
+
+		const splitPosition = splitUser.position;
+
+		const sortedUsers = users.filter((u) => u.uuid != splitUserUuid && u.position >= splitUser.position);
+		for(const sortedUser of sortedUsers)
+		{
+			sortedUser.position += 1;
+		}
+
+		await SiteUser.save(sortedUsers);
 	}
 }
