@@ -11,9 +11,7 @@ export class IndexController
 			page: "home",
             tab_title: "SVGE | Home",
             page_title: "Southampton",
-            page_subtitle: "Video Games and Esports Society",
-            button_text: "Join us on Discord",
-            button_link: "http://discord.io/svge"
+            page_subtitle: "Video Games and Esports Society"
         };
     }
 }
