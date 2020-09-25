@@ -1,6 +1,7 @@
 import { Transform } from "class-transformer";
 import { IsInt, IsOptional, IsPositive } from "class-validator";
 import { IsDiscordUsername } from "../validators/IsDiscordUsername";
+import { IsLongerThan } from "../validators/IsLongerThan";
 import { IsShorterThan } from "../validators/IsShorterThan";
 
 export class UserAddRequest
@@ -19,14 +20,17 @@ export class UserAddRequest
 	position : number;
 
 	// this could be a committee position name, rep name, etc...
+	@IsLongerThan(4)
 	@IsShorterThan(32)
 	title : string;
 
 	// a slightly longer piece of text, such as the description of a committee position
+	@IsLongerThan(32)
 	@IsShorterThan(128)
 	desc : string;
 
 	// a much longer piece of text, such as about them, about what they can do for you, etc
+	@IsLongerThan(128)
 	@IsShorterThan(1024)
 	@IsOptional()
 	message : string | undefined;
