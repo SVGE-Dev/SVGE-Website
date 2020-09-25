@@ -195,7 +195,8 @@ export class GamesController
 				"text",
 				"img",
 				"name",
-				"nameShort"
+				"nameShort",
+				"url"
 			]
 		});
 
