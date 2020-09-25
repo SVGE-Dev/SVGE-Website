@@ -2,30 +2,36 @@
 
 <div class="site-section">
 	<div class="container">
-		<div class="row align-items-center">
-			<div class="col-lg-5 ml-auto order-lg-2 mb-5" data-aos="fade-up" data-aos-delay="200">
+		<div class="row align-items-start">
+			<div class="col-lg-5 ml-auto order-lg-2 mb-3" data-aos="fade-up" data-aos-delay="200">
 				<img src="{{img}}" alt="Image" class="img-fluid">
 			</div>
 			<div class="col-lg-6 order-lg-1" data-aos="fade-up" data-aos-delay="100">
-				<div class="site-section-heading text-left mb-5 w-border">
+				<div class="site-section-heading text-left w-border">
 					<h2>{{game.heading}}</h2>
 				</div>
 				{{{game.text}}}
 			</div>
 		</div>
-		{{#each reps}}
-		<div class="d-block d-md-flex podcast-entry bg-white mb-5" data-aos="fade-up">
-			<div class="image" style="background-image: url('{{this.avatar}}');"></div>
-			<div class="text">
-
-				<h3 class="font-weight-light"><a href="#">{{this.name}}</a></h3>
-				<div class=" mb-3 text-black"><span class="text-black-opacity-05"><small>{{this.username}} <span
-								class="sep">&vert;</span> {{this.role}}</small></span>
-				</div>
-				<p class="mb-4 text-black">{{this.msg}}</p>
+		{{#if reps}}
+			<div class="site-section-heading text-left mt-5 w-border" data-aos="fade-up" data-aos-delay="100">
+				<h2>Reps</h2>
 			</div>
-		</div>
-		{{/each}}
+			{{#each reps}}
+			<div class="d-block d-md-flex podcast-entry bg-dark mb-5" data-aos="fade-up">
+				<div class="image" style="background-image: url('{{this.avatar}}');"></div>
+				<div class="text">
+					<h3 class="font-weight-light"><a href="#">{{this.name}}</a></h3>
+					<div class="mb-3 text-white">
+						<span class="text-black-opacity-05"><small>
+							{{this.discordUsername}} <span class="sep">&vert;</span>
+						</small></span>
+					</div>
+					<p class="mb-4 text-white">{{this.message}}</p>
+				</div>
+			</div>
+			{{/each}}
+		{{/if}}
 	</div>
 </div>
 
