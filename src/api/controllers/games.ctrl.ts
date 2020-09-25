@@ -260,7 +260,7 @@ export class GamesController
 	private async addRep(
 		@Param("game") gameUrl : string,
 		@Body() newRep : UserAddRequest,
-        @CurrentUser({ required: true }) currentUser : DiscordProfile,
+        //@CurrentUser({ required: true }) currentUser : DiscordProfile,
 		@UploadedFile("avatar", { required: false, options: imgUploadOptions }) avatar : File)
 		: Promise<UserAddResponse>
 	{
@@ -279,7 +279,7 @@ export class GamesController
 		const group = `${gameUrl}_reps`;
 
 		//@ts-ignore Ignoring the fact that we're not setting the UUID or the avatar
-		rep = new SiteUser().newUser(newRep, avatar, group, repProfile.id);
+		rep = await new SiteUser().newUser(newRep, avatar, group, repProfile.id);
 		rep = await rep.save();
 
 		await SiteUser.reorder(group, rep.uuid);
