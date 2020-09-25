@@ -2,7 +2,6 @@ import { RoutingControllersOptions } from "routing-controllers";
 import { Auth } from "../services/auth.service";
 import { AuthController } from "../api/controllers/auth.ctrl";
 import { CommitteeController } from "../api/controllers/committee.ctrl";
-import { ConstitutionController } from "../api/controllers/constitution.ctrl";
 import { GamesController } from "../api/controllers/games.ctrl";
 import { GmodSplashController } from "../api/controllers/gmod.ctrl";
 import { IndexController } from "../api/controllers/index.ctrl";
@@ -15,7 +14,6 @@ export namespace server
 		controllers: [
 			AuthController,
 			CommitteeController,
-			ConstitutionController,
 			GamesController,
 			GmodSplashController,
 			IndexController,
