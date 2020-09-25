@@ -195,7 +195,8 @@ export class GamesController
 				"text",
 				"img",
 				"name",
-				"nameShort"
+				"nameShort",
+				"url"
 			]
 		});
 
@@ -249,7 +250,7 @@ export class GamesController
 			tab_title: `SVGE | ${game.nameShort}`,
 			page_title: game.name,
 			game: game,
-			reps: reps.filter((r) => r.show),
+			reps: reps.filter((r) => r.show).map(r => ({rep: r, icon: r.avatarBase64})),
 			img: game.imgBase64,
 			canEditAll: isCommittee,
 			canEditSelf: canEditSelf
