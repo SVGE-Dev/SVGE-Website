@@ -19,15 +19,15 @@
 			</div>
 			{{#each reps}}
 			<div class="d-block d-md-flex podcast-entry bg-dark mb-5" data-aos="fade-up">
-				<div class="image" style="background-image: url('{{this.avatar}}');"></div>
+				<div class="image" style="background-image: url('{{this.icon}}');"></div>
 				<div class="text">
-					<h3 class="font-weight-light"><a href="#">{{this.name}}</a></h3>
+					<h3 class="font-weight-light"><a href="#">{{this.rep.name}}</a></h3>
 					<div class="mb-3 text-white">
 						<span class="text-black-opacity-05"><small>
-							{{this.discordUsername}} <span class="sep">&vert;</span>
+							{{this.rep.discordUsername}} <span class="sep">&vert;</span>
 						</small></span>
 					</div>
-					<p class="mb-4 text-white">{{this.message}}</p>
+					<p class="mb-4 text-white">{{this.rep.message}}</p>
 				</div>
 			</div>
 			{{/each}}
