@@ -117,6 +117,12 @@ export class SiteUser extends BaseEntity
 
 		const avatar = await cropAndResize(2048, 2048, imgBuffer);
 		this.avatar = await avatar.getBufferAsync(imgMimetype);
+		console.log(this.avatar.length);
+		if(this.avatar.length > 16000000)
+		{
+			avatar.quality(100 * (this.avatar.length / 16000000));
+			this.avatar = await avatar.getBufferAsync(imgMimetype);
+		}
 		return true;
 	}
 
