@@ -15,7 +15,7 @@ import { cropAndResize } from "../../utils/cropAndResize";
 @Controller("/gmod-splash")
 export class GmodSplashController
 {
-    SCREENSHOT_DIR = join(__dirname, "../../public/images/gmod");
+    SCREENSHOT_DIR = "public/images/gmod";
 
     @Get("/")
     @Render("gmod-splash")
@@ -29,28 +29,36 @@ export class GmodSplashController
         const quotes = await GmodQuote.find({
             select: [ "quote", "author" ],
         });
-        const randQuote = quotes[Math.floor(Math.random()*quotes.length)];
+        const randQuote = (!!quotes && quotes.length > 0) ? quotes[Math.floor(Math.random()*quotes.length)] : undefined;
 
         // get a random screenshot
         const screenshots = readdirSync(this.SCREENSHOT_DIR);
-        const screenshot = basename( screenshots[Math.floor( Math.random() * screenshots.length )] );
+		const screenshot = (!!screenshots && screenshots.length > 0)
+			? basename( screenshots[Math.floor( Math.random() * screenshots.length )])
+			: "";
         
         return {
-            layout: false,
-
             mapName: mapName || "mapname_here",
             steamId: parsedSteamInfoIdk || "6969",
 
-            quote: randQuote.quote,
-            quote_author: randQuote.author,
+            quote: randQuote?.quote || "This is a quote",
+            quote_author: randQuote?.author || "This is an author",
             screenshot: screenshot,
-            stats: "Ollie needs to get writing some LUA :)"
+			stats: "Ollie needs to get writing some LUA :)",
+			
+            custom_scripts: [
+				"/js/gmod/downlingFile.js",
+				"/js/gmod/gameDetails.js",
+				"/js/gmod/setFilesNeeded.js",
+				"/js/gmod/setFilesTotal.js",
+				"/js/gmod/setStatusChanged.js",
+			]
         };
     }
 
     @Get("/edit")
     @Render("gmod-splash-edit")
-    @Authorized(["GMod Rep", "Committee"])
+    @Authorized(["GMod Rep", process.env.COMMITTEE_ROLE_NAME])
     public async EditGmodSplash()
     {
         const quotes = (await GmodQuote.find()).map((gq) => { return {id: gq.id, quote: gq.quote, author: gq.author}; });
