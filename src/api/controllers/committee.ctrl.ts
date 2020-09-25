@@ -50,7 +50,12 @@ export class CommitteeController
             tab_title: "SVGE | Committee",
             page_title: "Committee",
 			page_subtitle: "Meet the SVGE Committee",
-			committee: committee,
+			committee: committee.map((c) => {
+				return {
+					user: c,
+					avatar: c.avatarBase64
+				}
+			}),
 			userIsCommittee: isCommittee,
             custom_css: [ "/css/jquery-sortable.css" ],
             custom_scripts: [ "/js/jquery-sortable.js" ]
@@ -58,7 +63,7 @@ export class CommitteeController
     }
 
 	@Post("/")
-	@Authorized([ process.env.COMMITTEE_ROLE ])
+	//@Authorized([ process.env.COMMITTEE_ROLE ])
 	private async addCommittee(
 		@Body() newCommittee : UserAddRequest,
 		@UploadedFile("avatar", { required: false, options: imgUploadOptions }) avatar : File)
@@ -67,13 +72,14 @@ export class CommitteeController
 		const committeeProfile = DiscordBot.Utils.getGuildMemberFromName(newCommittee.username);
 		let committeeMember = await SiteUser.findOne({
 			where: {
-				discordId: committeeProfile.id
+				discordId: committeeProfile.id,
+				group: "committee"
 			}
 		});
 
 		if(!!committeeMember) throw new BadRequestError("That user is already registered as a committee member.");
 
-		committeeMember = new SiteUser().newUser(newCommittee, avatar, "committee", committeeProfile.id);
+		committeeMember = await new SiteUser().newUser(newCommittee, avatar, "committee", committeeProfile.id);
 		await committeeMember.save();
 		await SiteUser.reorder("committee", committeeMember.uuid);
 
@@ -86,7 +92,7 @@ export class CommitteeController
 			desc : committeeMember.desc,
 			message : committeeMember.message,
 			avatarBase64 : committeeMember.avatarBase64
-		}
+		};
 	}
 
 	@Put("/")

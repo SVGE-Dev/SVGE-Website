@@ -12,7 +12,7 @@ import { UserAddRequest } from "../controllers/request_bodies/UserAddRequest";
 @Entity()
 export class SiteUser extends BaseEntity
 {
-	public newUser(user : UserAddRequest, avatar : File, group : string, discordId : string) : this
+	public async newUser(user : UserAddRequest, avatar : File, group : string, discordId : string) : Promise<this>
 	{
 		this.discordId = discordId;
 		this.group = group;
@@ -22,7 +22,7 @@ export class SiteUser extends BaseEntity
 		this.title = user.title;
 		this.desc = user.desc;
 		this.message = user.message;
-		this.setAvatar(avatar);
+		await this.setAvatar(avatar);
 
 		return this;
 	}

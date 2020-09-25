@@ -71,18 +71,20 @@ export namespace DiscordBot
 
         export const getGuildMemberFromName = (username : string) : Discord.GuildMember | null =>
         {
-            const guild = GetGuild(process.env.DISCORD_GUILD_ID);
+			const guild = GetGuild(process.env.DISCORD_GUILD_ID);
             const guildMembers = Array.from(guild.members.values());
-            
-            let guildMember = guildMembers.find((guildMember) => guildMember.user.username == username);
+
+			username = username.replace(/\s+/g, "");
+			
+            let guildMember = guildMembers.find((guildMember) => guildMember.user.username.replace(/\s+/g, "") == username);
             if(!guildMember)
             {
-                guildMember = guildMembers.find((guildMember) => guildMember.user.username + "#" + guildMember.user.discriminator == username);
-                if(!guildMember)
-                {
-                    guildMember = guild.members.find("displayName", username);
-                }
-            }
+                guildMember = guildMembers.find((guildMember) => (guildMember.user.username + "#" + guildMember.user.discriminator).replace(/\s+/g, "") == username);
+			}
+			if(!guildMember)
+			{
+				guildMember = guild.members.find("displayName", username);
+			}
 
             if(!guildMember)
             {

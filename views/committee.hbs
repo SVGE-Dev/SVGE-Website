@@ -7,133 +7,49 @@
 	<div class="container" data-aos="fade-up">
 		<div class="row">
 			<div class="site-section-heading text-center mb-5 w-border col-md-6 mx-auto">
-				<h2 class="mb-5">The Main Committee</h2>
-				<p>The members of the main committee are responsible for running the society and making society-wide
-					decisions.
-					They apply to SUSU for funding, organise socials and events, manage society equipement, and liaise
-					with the NUEL and NSE
-					for supporting the society esports scene.
+				<h2 class="mb-5">Your Committee</h2>
+				<p>Here at SVGE, to help ensure the best possible society experience for you, we run two committees. Our
+					main committee is voted in by every member each year at our AGM, whilst game reps (find them on
+					their <a href="/games">games pages</a>) form a smaller games committee and are voted in by the
+					members of their gaming community to represent their interests.
 				</p>
 			</div>
 		</div>
 		<div class="row">
-
-			{{#each main_committee}}
-			<div class="col-md-6 col-lg-4 mb-5 mb-lg-5">
-				<div class="team-member">
-
-					<img src="{{this.avatar}}" alt="Image" class="img-fluid">
-
-					<div class="text">
-						<h2 class="mb-2 font-weight-light h4">{{this.name}}</h2>
-						<span class="d-block mb-2 text-white-opacity-05"><i>{{this.pos_name}}</i></span><br />
-						<p class="mb-4">{{this.pos_desc}}</p><br />
-						<span class="d-block mb-2 text-white-opacity-05"><i>{{this.username}}</i></span>
-					</div>
-
+			{{#each committee}}
+			{{#if (multipleOf @index 2)}}
+			<div class="d-block d-md-flex podcast-entry bg-white mb-5" data-aos="fade-up">
+				<div class="image" style="background-image: url({{this.avatar}});"></div>
+				<div class="text">
+					<h3 class="font-weight-light"><a href="#">{{this.user.role}}</a></h3>
+					<div class=" mb-3 text-black"><span class="text-black-opacity-05"><small>{{this.user.name}}<span
+									class="sep">|</span>{{this.user.discordUsername}}</small></span></div>
+					<p class="mb-4 text-black lead">{{this.user.desc}}</p>
+					<p class="mb-4 text-black">{{this.user.message}}</p>
 				</div>
 			</div>
+			{{else}}
+			<div class="d-block d-md-flex podcast-entry bg-white mb-5" data-aos="fade-up">
+				<div class="text">
+					<h3 class="font-weight-light"><a href="#">{{this.user.role}}</a></h3>
+					<div class=" mb-3 text-black"><span class="text-black-opacity-05"><small>{{this.user.name}}<span
+									class="sep">|</span>{{this.user.discordUsername}}</small></span></div>
+					<p class="mb-4 text-black lead">{{this.user.desc}}</p>
+					<p class="mb-4 text-black">{{this.user.message}}</p>
+				</div>
+				<div class="image" style="background-image: url({{this.avatar}});"></div>
+			</div>
+			{{/if}}
 			{{/each}}
-
 		</div>
 	</div>
 
-	<div class="container" data-aos="fade-up">
-		<div class="row">
-			<div class="site-section-heading text-center mb-5 w-border col-md-6 mx-auto">
-				<h2 class="mb-5">Games Committee</h2>
-				<p>The members of the games committee represent the players of their respective games and are voted in
-					by them.
-					They help to organise events, support members in esports competitions, and represent their interests
-					to the main committee,
-					such as pushing for coaching and equipment.</p>
-			</div>
-		</div>
-		<div class="row">
-
-			{{#each games_committee}}
-			<div class="col-md-6 col-lg-4 mb-5 mb-lg-5">
-				<div class="team-member">
-
-					<img src="{{this.avatar}}" alt="Image" class="img-fluid">
-
-					<div class="text">
-						<h2 class="mb-2 font-weight-light h4">{{this.name}}</h2>
-						<span class="d-block mb-2 text-white-opacity-05"><i>{{this.pos_name}}</i></span>
-						<p class="mb-4">{{this.pos_desc}}</p>
-						<span class="d-block mb-2 text-white-opacity-05"><i>{{this.username}}</i></span>
-					</div>
-
-				</div>
-			</div>
-			{{/each}}
-
-		</div>
-	</div>
-
-	{{#if is_main_committee}}
+	{{#if userIsCommittee}}
 	<div class="site-section">
 		<div class="container">
 			<form action="/committee/update-all" class="contact-form">
 				<ol id="sortable">
 					{{#each main_committee}}
-					<li>
-						<h5>{{ pos_name }}</h5>
-						<div class="row">
-
-							<div class="col-md-12 col-lg-7 mb-5">
-
-								<div class="col-md-14 mb-3 mb-md-0">
-									<input type="text" name="pos_name" class="form-control" value="{{ pos_name }}"
-										placeholder="Committee Position Name">
-									<br />
-
-									<input type="text" name="name" class="form-control" value="{{ name }}"
-										placeholder="Name of Committee Member">
-									<br />
-
-									<input type="text" name="username" class="form-control" value="{{ username }}"
-										placeholder="Member's Discord Username">
-									<br />
-
-									<textarea name="pos_desc" class="form-control"
-										placeholder="Committee Position Description">{{ pos_desc }}</textarea>
-								</div>
-
-							</div>
-
-							<div class="col-lg-3 ml-auto">
-								<input type="file" id="scFiles" class="form-control">
-								<br />
-
-								<div class="text-right">
-									<input type="button" value="Reset Photo" class="btn py-2 px-4 w-100" onClick="">
-								</div>
-								<br />
-
-								<input type="text" name="discordId" class="form-control" value="{{ user_id }}"
-									placeholder="Member's Discord ID">
-								<br />
-
-								<div class="text-right">
-									<input type="button" value="Delete Position" class="btn btn-primary py-2 px-4 w-100"
-										onClick="">
-								</div>
-							</div>
-						</div>
-					</li>
-					<br>
-					{{/each}}
-				</ol>
-			</form>
-		</div>
-	</div>
-	{{else}}
-	<div class="site-section">
-		<div class="container">
-			<form action="/committee/update-all" class="contact-form">
-				<ol id="sortable">
-					{{#each own_positions}}
 					<li>
 						<h5>{{ pos_name }}</h5>
 						<div class="row">
