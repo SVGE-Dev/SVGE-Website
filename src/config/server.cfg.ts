@@ -20,7 +20,8 @@ export namespace server
 			PacmanController
 		],
 		//middlewares: [__dirname + "/../api/middlewares/**/*.mdlw.{ts,js}"],
-		cors: true,
+		//cors: true,
+		cors: false,
 		authorizationChecker: Auth.authCheck,
 		currentUserChecker: Auth.userCheck
 	};

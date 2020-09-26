@@ -381,10 +381,12 @@ export class GamesController
 			tab_title: `SVGE | ${game.nameShort}`,
 			page_title: game.name,
 			game: game,
-			reps: reps.filter((r) => r.show).map((r) => ({rep: r, icon: r.avatarBase64})),
+			people: reps.filter((r) => r.show).map((r) => ({user: r, avatar: r.avatarBase64})),
 			img: game.imgBase64,
 			canEditAll: isCommittee,
-			canEditSelf: canEditSelf
+			canEditSelf: canEditSelf,
+			peopleGroup: "Game Rep",
+			endpoint: `/games/${gameUrl}/rep`
 		};
 	}
 	

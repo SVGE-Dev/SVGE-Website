@@ -1,10 +1,6 @@
-import { SiteUser } from "../../entities/siteUser.ent";
-import { RenderRequest } from "./RenderRequest";
+import { UserManageableRender } from "./UserManageableRender";
 
-export interface CommitteeRender extends RenderRequest
+export interface CommitteeRender extends UserManageableRender
 {
-	committee : Array<{
-		user : SiteUser,
-		avatar : string}>; // handlebars doesn't like getters
 	userIsCommittee : boolean; // so we know whether or not they can 
 }

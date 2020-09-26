@@ -31,6 +31,7 @@ import { UserDeleteResponse } from "./response_bodies/UserDeleteResponse";
 
 
 
+
 @JsonController("/committee")
 @UseBefore(NoSeoIndexing)
 export class CommitteeController
@@ -56,15 +57,17 @@ export class CommitteeController
             tab_title: "SVGE | Committee",
             page_title: "Committee",
 			page_subtitle: "Meet the SVGE Committee",
-			committee: committee.map((c) => {
+			people: committee.map((c) => {
 				return {
 					user: c,
 					avatar: c.avatarBase64
 				};
 			}),
 			userIsCommittee: isCommittee,
-            custom_css: [ "/css/jquery-sortable.css" ],
-            custom_scripts: [ "/js/jquery-sortable.js" ]
+            //custom_css: [ "/css/jquery-sortable.css" ],
+			//custom_scripts: [ "/js/jquery-sortable.js" ],
+			peopleGroup: "Committee Member",
+			endpoint: "/committee"
         };
     }
 
@@ -75,6 +78,7 @@ export class CommitteeController
 		@UploadedFile("avatar", { required: false, options: imgUploadOptions }) avatar : File)
 		: Promise<UserAddResponse>
 	{
+		console.log("Adding committee member!");
 		const committeeProfile = DiscordBot.Utils.getGuildMemberFromName(newCommittee.username);
 		let committeeMember = await SiteUser.findOne({
 			where: {
@@ -102,12 +106,13 @@ export class CommitteeController
 	}
 
 	@Post("/edit")
-	@Authorized([ process.env.COMMITTEE_ROLE_NAME, process.env.ADMIN_ROLE_NAME ])
+	//@Authorized([ process.env.COMMITTEE_ROLE_NAME, process.env.ADMIN_ROLE_NAME ])
 	private async updateCommittee(
 		@Body() updateCommittee : UserUpdateRequest,
 		@UploadedFile("avatar", { required: false, options: imgUploadOptions }) avatar : File)
 		: Promise<UserUpdateResponse>
 	{
+		console.log("Editing committee member!");
 		let committee = await SiteUser.findOne({
 			where: {
 				group: "committee",
@@ -189,6 +194,7 @@ export class CommitteeController
 		@Body() delCommittee : UserDeleteRequest)
 		: Promise<UserDeleteResponse>
 	{
+		console.log("Deleting committee member :(");
 		const committee = await SiteUser.findOne({
 			where: {
 				group: "committee",

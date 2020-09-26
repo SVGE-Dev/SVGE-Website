@@ -1,24 +1,9 @@
-{{> header-small }}
+{{> header-small  }}
 
 <!-- jsDelivr :: Sortable :: Latest (https://www.jsdelivr.com/package/npm/sortablejs) -->
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-<script src="/js/jquery-3.3.1.min.js"></script>
+{{!-- <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+<script src="/js/jquery-3.3.1.min.js"></script> --}}
 
-<script>
-	function updateCommittee(e, formID) {
-		console.log("function called")
-		e.preventDefault();
-		$.ajax({
-			url: '/committee/edit',
-			type: 'post',
-			data: $("#" + formID).serialize(),
-			success: function(){
-				alert("Rep successfully updated");
-				location.reload();
-			}
-		});
-	}
-</script>
 
 <div class="site-section">
 	<div class="container" data-aos="fade-up">
@@ -33,152 +18,44 @@
 			</div>
 		</div>
 		<div class="row">
-			{{#each committee}}
-			{{#if (multipleOf @index 2)}}
+			{{#each people }}
+			{{#if (multipleOf @index 2) }}
 			<div class="d-block d-md-flex podcast-entry bg-white mb-5" data-aos="fade-up">
-				<div class="image" style="background-image: url({{this.avatar}});"></div>
+				<div class="image" style="background-image: url({{ avatar }});"></div>
 				<div class="text">
-					<h3 class="font-weight-light"><a href="#">{{this.user.role}}</a></h3>
-					<div class=" mb-3 text-black"><span class="text-black-opacity-05"><small>{{this.user.name}}<span
-									class="sep">|</span>{{this.user.discordUsername}}</small></span></div>
-					<p class="mb-4 text-black lead">{{this.user.desc}}</p>
-					<p class="mb-4 text-black">{{this.user.message}}</p>
+					<h3 class="font-weight-light"><a href="#">{{ user.role }}</a></h3>
+					<div class=" mb-3 text-black"><span class="text-black-opacity-05"><small>{{ user.name }}<span
+									class="sep">|</span>{{ user.discordUsername }}</small></span></div>
+					<p class="mb-4 text-black lead">{{ user.desc }}</p>
+					<p class="mb-4 text-black">{{ user.message }}</p>
 				</div>
 			</div>
-			{{else}}
+			{{else }}
 			<div class="d-block d-md-flex podcast-entry bg-white mb-5" data-aos="fade-up">
 				<div class="text">
-					<h3 class="font-weight-light"><a href="#">{{this.user.role}}</a></h3>
-					<div class=" mb-3 text-black"><span class="text-black-opacity-05"><small>{{this.user.name}}<span
-									class="sep">|</span>{{this.user.discordUsername}}</small></span></div>
-					<p class="mb-4 text-black lead">{{this.user.desc}}</p>
-					<p class="mb-4 text-black">{{this.user.message}}</p>
+					<h3 class="font-weight-light"><a href="#">{{ user.role }}</a></h3>
+					<div class=" mb-3 text-black"><span class="text-black-opacity-05"><small>{{ user.name }}<span
+									class="sep">|</span>{{ user.discordUsername }}</small></span></div>
+					<p class="mb-4 text-black lead">{{ user.desc }}</p>
+					<p class="mb-4 text-black">{{ user.message }}</p>
 				</div>
-				<div class="image" style="background-image: url({{this.avatar}});"></div>
+				<div class="image" style="background-image: url({{ avatar }});"></div>
 			</div>
-			{{/if}}
-			{{/each}}
+			{{/if }}
+			{{/each }}
 		</div>
 	</div>
 
-	{{#if userIsCommittee}}
-
-	<div class="container mb-5">
-		<h2>Add new Committee Member</h2>
-		<form id="new_committee_member" method="POST">
-			<div class="row">
-				<div class="col-md-12 col-lg-7">
-
-					<div class="form-group">
-						<label for="username">Discord Username</label>
-						<input type="text" class="form-control" name="username" id="username"
-							placeholder="Bot#101" required />
-					</div>
-
-					<div class="form-group">
-						<label for="name">IRL Name</label>
-						<input type="text" class="form-control" name="name" id="name" maxlength="24"
-							placeholder="Kevin" required />
-					</div>
-
-					<div class="form-group">
-						<label for="position">Position in List</label>
-						<input type="number" min=1 class="form-control" name="position" id="position"
-							placeholder=1 required />
-					</div>
-
-					<div class="form-group">
-						<label for="title">Title</label>
-						<input type="text" class="form-control" name="title" id="title" maxlength="32"
-							placeholder="General Committee" required />
-					</div>
-
-				</div>
-
-				<div class="col-lg-5 ml-auto">
-
-					<div class="form-group">
-						<label for="desc">Description</label>
-						<textarea name="desc" class="form-control" id="desc" minlength="32" maxlength="128"
-							placeholder="Committee Position Description" required>{{ user.desc }}</textarea>
-					</div>
-
-					<div class="form-group">
-						<label for="message">Message</label>
-						<textarea name="message" class="form-control" id="message" minlength="128" maxlength="1024"
-							placeholder="Committee Position Description">{{ user.desc }}</textarea>
-					</div>
-
-					<div class="form-group">
-						<label for="scFiles">Avatar image</label>
-						<input type="file" id="scFiles" class="form-control">
-					</div>
-
-					<button class="btn btn-primary w-100" type="submit">Add Committee Member</button>
-				</div>
-			</div>
-		</form>
-	</div>
-
-	<div class="container">
-		<h2>Edit existing Committee Members</h2>
-		<ol id="sortable">
-			{{#each committee}}
-			<li>
-				<h3>{{ user.name }}</h3>
-				<form id="{{user.name}}_form">
-					<div class="row">
-						<div class="col-md-12 col-lg-7">
-
-							<div class="form-group">
-								<label for="uuid">UUID</label>
-								<input type="text" class="form-control" readonly="readonly" name="uuid" id="uuid" value="{{ user.uuid }}" />
-							</div>
-
-							<div class="form-group">
-								<label for="title">Title</label>
-								<input type="text" class="form-control" name="title" id="title" value="{{ user.title }}"
-									placeholder="Committee Position Name" />
-							</div>
-
-							<div class="form-group">
-								<label for="name">Name</label>
-								<input type="text" class="form-control" name="name" id="name" value="{{ user.name }}"
-									placeholder="Name of Committee Member" />
-							</div>
-
-							<div class="form-group">
-								<label for="desc">Description</label>
-								<textarea name="desc" class="form-control" id="desc"
-									placeholder="Committee Position Description">{{ user.desc }}</textarea>
-							</div>
-
-						</div>
-
-						<div class="col-lg-5 ml-auto">
-							<div class="form-group">
-								<label for="scFiles">Avatar image</label>
-								<input type="file" id="scFiles" class="form-control">
-							</div>
-
-							<button class="btn btn-primary w-100" onclick="updateRep(event, '{{user.name}}_form')">Update Rep</button>
-							<button value="Delete Position" class="btn btn-danger py-2 my-2 w-100" onClick="">
-								Delete Position
-							</button>
-						</div>
-					</div>
-				</form>
-			</li>
-			{{/each}}
-		</ol>
-	</div>
+	{{#if userIsCommittee }}
+	{{> user-manager }}
+	{{/if }}
 </div>
-{{/if}}
 
-<script>
+
+{{!-- <script>
 	$(function () {
 		$("#sortable").sortable();
 	});
-</script>
+</script> --}}
 
-{{> footer }}
+{{> footer  }}

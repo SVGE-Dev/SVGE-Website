@@ -1,5 +1,5 @@
 import { Transform } from "class-transformer";
-import { IsOptional, IsPositive, IsUUID } from "class-validator";
+import { IsBoolean, IsOptional, IsPositive, IsUUID } from "class-validator";
 import { IsShorterThan } from "../validators/IsShorterThan";
 
 export class UserUpdateRequest
@@ -35,5 +35,6 @@ export class UserUpdateRequest
 	message? : string | undefined;
 
 	// whether or not we're resetting to their Discord pic
+	@IsBoolean()
 	resetAvatar : boolean = false;
 }
