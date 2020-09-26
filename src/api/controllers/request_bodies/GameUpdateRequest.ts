@@ -18,11 +18,11 @@ export class GameUpdateRequest
 	nameShort? : string;
 
 	@IsOptional()
-	@IsShorterThan(26)
+	@IsShorterThan(32)
 	brief? : string;
 
 	@IsOptional()
-	@IsShorterThan(26)
+	@IsShorterThan(32)
 	tagline? : string;
 
 	@IsOptional()
@@ -30,7 +30,7 @@ export class GameUpdateRequest
 	heading? : string;
 
 	@IsOptional()
-	@IsShorterThan(512)
+	@IsShorterThan(2048)
 	@IsLongerThan(256)
 	text? : string;
 

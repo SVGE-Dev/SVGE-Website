@@ -11,15 +11,15 @@ export class Game extends BaseEntity
 	name : string;
 
 	// used for the URL and on the game list
-	@Column({ type: "varchar", length: 26 })
+	@Column({ type: "varchar", length: 32 })
 	nameShort : string;
 
 	// On the list of games, this is the upper line in the black box
-	@Column({ type: "varchar", length: 26 })
+	@Column({ type: "varchar", length: 32 })
 	brief : string;
 
 	// On the list of games, this is the lower line in the black box
-	@Column({ type: "varchar", length: 26 })
+	@Column({ type: "varchar", length: 32 })
 	tagline : string;
 
 	// heading above the main text on the game's page
