@@ -34,5 +34,5 @@ export class UserAddRequest
 	@IsLongerThan(128)
 	@IsShorterThan(1024)
 	@IsOptional()
-	message : string = "";
+	message : string | undefined;
 }

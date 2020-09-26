@@ -101,7 +101,7 @@ export class CommitteeController
 			position : committeeMember.position,
 			title : committeeMember.title,
 			desc : committeeMember.desc,
-			message : committeeMember.message,
+			message : committeeMember.message || "",
 			avatarBase64 : committeeMember.avatarBase64
 		};
 	}
