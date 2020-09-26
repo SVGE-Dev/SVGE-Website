@@ -8,7 +8,12 @@ import {
 	Get,
 	Render,
 	CurrentUser,
-	UseBefore, Post, Authorized, Body, BadRequestError, UploadedFile, Put, Delete
+	UseBefore,
+	Post,
+	Authorized,
+	Body,
+	BadRequestError,
+	UploadedFile
 } from "routing-controllers";
 
 /*** Render Data ***/
@@ -54,7 +59,7 @@ export class CommitteeController
 				return {
 					user: c,
 					avatar: c.avatarBase64
-				}
+				};
 			}),
 			userIsCommittee: isCommittee,
             custom_css: [ "/css/jquery-sortable.css" ],
@@ -95,7 +100,7 @@ export class CommitteeController
 		};
 	}
 
-	@Put("/")
+	@Post("/edit")
 	@Authorized([ process.env.COMMITTEE_ROLE ])
 	private async updateCommittee(
 		@Body() updateCommittee : UserUpdateRequest,
@@ -177,7 +182,7 @@ export class CommitteeController
 		};
 	}
 
-	@Delete("/")
+	@Post("/del")
 	@Authorized([ process.env.COMMITTEE_ROLE ])
 	private async deleteCommittee(
 		@Body() delCommittee : UserDeleteRequest)
