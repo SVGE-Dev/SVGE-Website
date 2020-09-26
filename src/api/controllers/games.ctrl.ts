@@ -10,8 +10,6 @@ import {
 	JsonController,
 	Get,
 	Post,
-	Put,
-	Delete,
 	Render,
 	Param,
 	Body,
@@ -129,8 +127,17 @@ export class GamesController
 		});
 		if(game) throw new BadRequestError("That game already exists.");
 
-		const img : File = req.files["img"][0];
-		const icon : File = req.files["icon"][0];
+		let img : File;
+		let icon : File;
+
+		try {
+			img = req.files["img"][0];
+			icon = req.files["icon"][0];
+		}
+		catch(e)
+		{
+			throw new BadRequestError("Images for the game icon and page image must be provided.");
+		}
 
 		const gameImage = await cropAndResize(1280, 720, img.buffer);
 		const gameIcon = await cropAndResize(480, 480, icon.buffer);
@@ -160,20 +167,143 @@ export class GamesController
 		};
 	}
 
-	@Put("/")
+	@Post("/edit")
+	// janky work around because Routing Controllers doesn't yet allow mutliple file upload fields
+	@UseBefore(multer(imgUploadOptions).fields([
+		{ maxCount: 1, name: "img"},
+		{ maxCount: 1, name: "icon"}
+	]))
 	private async updateGame(
-		@Body() game : GameUpdateRequest)
-		//: Promise<GameUpdateResponse>
+		@Body() gameUpdate : GameUpdateRequest,
+		@Req() req : Request,
+		@CurrentUser({ required: true }) currentUser : DiscordProfile)
+		: Promise<GameUpdateResponse>
 	{
-		// remember to update the rep's "group" if the short name/URL has changed
+		const usersInfoes = await SiteUser.findFromProfile(currentUser) as any as SiteUser[];
+		if(!usersInfoes || usersInfoes.length == 0) throw new ForbiddenError("Your details do not exist on our system. Please stop probing our API.");
+
+		const game = await Game.findOne({
+			where: {
+				uuid: gameUpdate.uuid
+			}
+		});
+		if(!game) throw new NotFoundError("Game not found. Please stop probing our API.");
+
+		const reps = await SiteUser.find({
+			where: {
+				group: `${game.url}_reps`
+			},
+			select: [
+				"group",
+				"discordId"
+			]
+		});
+
+		if(!usersInfoes.find((u) => u.group == "committee") && !reps.find((r) => r.discordId == currentUser.id))
+		{
+			throw new ForbiddenError("You are not a committee member, nor are you the rep for this game!");
+		}
+
+		const img : File | undefined = req.files["img"][0];
+		const icon : File | undefined = req.files["icon"][0];
+
+		let gameChanged = false;
+		let repsChanged = false;
+		if(!!gameUpdate.name && game.name != gameUpdate.name)
+		{
+			game.name = gameUpdate.name;
+			gameChanged = true;
+		}
+		if(!!gameUpdate.nameShort && game.nameShort != gameUpdate.nameShort)
+		{
+			game.nameShort = gameUpdate.nameShort;
+			game.url = gameUpdate.nameShort.toLowerCase().replace(/ /g, "-");
+			reps.forEach((rep) => rep.group = `${game.url}_reps`);
+			gameChanged = true;
+			repsChanged = true;
+		}
+		if(!!gameUpdate.brief && game.brief != gameUpdate.brief)
+		{
+			game.brief = gameUpdate.brief;
+			gameChanged = true;
+		}
+		if(!!gameUpdate.tagline && game.tagline != gameUpdate.tagline)
+		{
+			game.tagline = gameUpdate.tagline;
+			gameChanged = true;
+		}
+		if(!!gameUpdate.heading && game.heading != gameUpdate.heading)
+		{
+			game.heading = gameUpdate.heading;
+			gameChanged = true;
+		}
+		if(!!gameUpdate.text && game.text != gameUpdate.text)
+		{
+			game.text = gameUpdate.text;
+			gameChanged = true;
+		}
+		if(!!img)
+		{
+			game.img = await (await cropAndResize(1280, 720, img.buffer)).getBufferAsync(img.mimetype);
+			gameChanged = true;
+		}
+		if(!!icon)
+		{
+			game.icon = await (await cropAndResize(480, 480, icon.buffer)).getBufferAsync(icon.mimetype);
+			gameChanged = true;
+		}
+		if(gameChanged)
+		{
+			await game.save();
+			if(!!gameUpdate.position && game.position != gameUpdate.position)
+			{
+				await Game.reorder(game.uuid);
+			}
+		}
+		
+		if(repsChanged)
+		{
+			await SiteUser.save(reps);
+		}
+
+		return {
+			uuid: game.uuid,
+			nameShort: game.nameShort,
+			brief: game.brief,
+			tagline: game.tagline,
+			icon: game.iconBase64
+		};
 	}
 
-	@Delete("/")
+	@Post("/del")
 	private async delGame(
-		@Body() game : GameDeleteRequest)
-		//: Promise<GameDeleteResponse>
+		@Body() gameDel : GameDeleteRequest,
+		@CurrentUser({ required: true }) currentUser : DiscordProfile)
+		: Promise<GameDeleteResponse>
 	{
 		// include deleting all reps
+		// check they're committee
+		const siteUser = await SiteUser.findFromProfile(currentUser, "committee");
+		if(!siteUser) throw new ForbiddenError("You are not a member of the Society's main committee.");
+
+		const game = await Game.findOne({
+			where: {
+				uuid: gameDel.uuid
+			}
+		});
+		if(!game) throw new BadRequestError("That game does not exist.");
+
+		const reps = await SiteUser.find({
+			where: {
+				group: `${game.url}_reps`
+			}
+		});
+
+		await game.remove();
+		await SiteUser.remove(reps);
+		await Game.reorder();
+
+		return {};
 	}
 
 
@@ -250,7 +380,7 @@ export class GamesController
 			tab_title: `SVGE | ${game.nameShort}`,
 			page_title: game.name,
 			game: game,
-			reps: reps.filter((r) => r.show).map(r => ({rep: r, icon: r.avatarBase64})),
+			reps: reps.filter((r) => r.show).map((r) => ({rep: r, icon: r.avatarBase64})),
 			img: game.imgBase64,
 			canEditAll: isCommittee,
 			canEditSelf: canEditSelf
@@ -279,7 +409,6 @@ export class GamesController
 
 		const group = `${gameUrl}_reps`;
 
-		//@ts-ignore Ignoring the fact that we're not setting the UUID or the avatar
 		rep = await new SiteUser().newUser(newRep, avatar, group, repProfile.id);
 		rep = await rep.save();
 
@@ -297,7 +426,7 @@ export class GamesController
 		};
 	}
 
-	@Put("/:game/rep")
+	@Post("/:game/rep/edit")
 	private async updateRep(
 		@Param("game") gameUrl : string,
 		@Body() repUpdate : UserUpdateRequest,
@@ -398,7 +527,7 @@ export class GamesController
 		};
 	}
 
-	@Delete("/:game/rep")
+	@Post("/:game/rep/del")
 	private async delRep(
 		@Param("game") gameUrl : string,
 		@Body() rep : UserDeleteRequest,
