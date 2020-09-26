@@ -9,14 +9,14 @@ export const imgUploadOptions : MulterOptions = {
 		const allowedMimeTypes = [
 			"image/jpeg",
 			"image/png",
-			"image/gif",
-			"image/bmp",
-			"image/tiff"
+			//"image/gif",
+			//"image/bmp",
+			//"image/tiff"
 		];
 		acceptFile(null, allowedMimeTypes.includes(file.mimetype));
 	},
 	limits: {
 		fileSize: 1024 * 1024 * 8, // 8MB max file size
-		files: 5 // max of five files at a time; this is more about ensuring endpoint is restful.
+		files: 2 // max of five files at a time; this is more about ensuring endpoint is restful.
 	}
 };
