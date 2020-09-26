@@ -27,7 +27,7 @@ export class Game extends BaseEntity
 	heading : string;
 
 	// the text that appears on the game's page
-	@Column({ type: "varchar", length: 512 })
+	@Column({ type: "varchar", length: 2048 })
 	text : string;
 
 	// this is the image on the game's main page, cropped to 1920x1080

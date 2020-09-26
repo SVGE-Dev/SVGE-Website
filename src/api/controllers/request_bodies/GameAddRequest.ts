@@ -20,7 +20,7 @@ export class GameAddRequest
 	@IsShorterThan(32)
 	heading : string;
 
-	@IsShorterThan(512)
+	@IsShorterThan(2048)
 	@IsLongerThan(256)
 	text : string;
 
