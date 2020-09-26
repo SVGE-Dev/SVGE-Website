@@ -20,7 +20,7 @@ export class UserAddRequest
 	position : number;
 
 	// this could be a committee position name, rep name, etc...
-	@IsLongerThan(4)
+	@IsLongerThan(1)
 	@IsShorterThan(32)
 	title : string;
 
