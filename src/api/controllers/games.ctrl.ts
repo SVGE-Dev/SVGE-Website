@@ -10,8 +10,6 @@ import {
 	JsonController,
 	Get,
 	Post,
-	Put,
-	Delete,
 	Render,
 	Param,
 	Body,
@@ -169,7 +167,7 @@ export class GamesController
 		};
 	}
 
-	@Put("/")
+	@Post("/edit")
 	// janky work around because Routing Controllers doesn't yet allow mutliple file upload fields
 	@UseBefore(multer(imgUploadOptions).fields([
 		{ maxCount: 1, name: "img"},
@@ -277,7 +275,7 @@ export class GamesController
 		};
 	}
 
-	@Delete("/")
+	@Post("/del")
 	private async delGame(
 		@Body() gameDel : GameDeleteRequest,
 		@CurrentUser({ required: true }) currentUser : DiscordProfile)
@@ -428,7 +426,7 @@ export class GamesController
 		};
 	}
 
-	@Put("/:game/rep")
+	@Post("/:game/rep/edit")
 	private async updateRep(
 		@Param("game") gameUrl : string,
 		@Body() repUpdate : UserUpdateRequest,
@@ -529,7 +527,7 @@ export class GamesController
 		};
 	}
 
-	@Delete("/:game/rep")
+	@Post("/:game/rep/del")
 	private async delRep(
 		@Param("game") gameUrl : string,
 		@Body() rep : UserDeleteRequest,
