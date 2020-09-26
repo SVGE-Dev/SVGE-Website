@@ -64,26 +64,42 @@ export class Game extends BaseEntity
 	 * 
 	 * @param {string} splitGameId The ID of the element to being re-ordering from
 	 */
-	public static async reorder(splitGameId : string)
+	public static async reorder(splitGameId? : string)
 	{
-		const users = await Game.find({
+		const games = await Game.find({
 			select: [
 				"uuid",
 				"position"
-			]
+			],
+			order: {
+				position: "ASC"
+			}
 		});
 
-		const splitGame = users.find((u) => u.uuid == splitGameId);
-		if(!splitGame) return;
-
-		const splitPosition = splitGame.position;
-
-		const sortedGames = users.filter((u) => u.uuid != splitGameId && u.position >= splitGame.position);
-		for(const sortedUser of sortedGames)
+		if(!!splitGameId)
 		{
-			sortedUser.position += 1;
-		}
 
-		await Game.save(sortedGames);
+			const splitGame = games.find((u) => u.uuid == splitGameId);
+			if(!splitGame) return;
+
+			const splitPosition = splitGame.position;
+
+			const sortedGames = games.filter((u) => u.uuid != splitGameId && u.position >= splitGame.position);
+			for(const sortedUser of sortedGames)
+			{
+				sortedUser.position += 1;
+			}
+
+			await Game.save(sortedGames);
+		}
+		else
+		{
+			let pos = 1;
+			for(const game of games)
+			{
+				game.position = pos++;
+			}
+			await Game.save(games);
+		}
 	}
 }
