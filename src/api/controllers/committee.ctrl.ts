@@ -48,9 +48,8 @@ export class CommitteeController
 			}
 		});
 
-		
-
-		const isCommittee = !!user && !!committee.find((c) => c.discordId == user.id);
+		// TEST STUFF EDIT OUT LATER!!
+		const isCommittee = true; //!!user && !!committee.find((c) => c.discordId == user.id);
 
         return {
 			page: "committee",
@@ -70,7 +69,7 @@ export class CommitteeController
     }
 
 	@Post("/")
-	//@Authorized([ process.env.COMMITTEE_ROLE ])
+	//@Authorized([ process.env.COMMITTEE_ROLE_NAME, process.env.ADMIN_ROLE_NAME ])
 	private async addCommittee(
 		@Body() newCommittee : UserAddRequest,
 		@UploadedFile("avatar", { required: false, options: imgUploadOptions }) avatar : File)
@@ -103,13 +102,12 @@ export class CommitteeController
 	}
 
 	@Post("/edit")
-	@Authorized([ process.env.COMMITTEE_ROLE ])
+	@Authorized([ process.env.COMMITTEE_ROLE_NAME, process.env.ADMIN_ROLE_NAME ])
 	private async updateCommittee(
 		@Body() updateCommittee : UserUpdateRequest,
 		@UploadedFile("avatar", { required: false, options: imgUploadOptions }) avatar : File)
 		: Promise<UserUpdateResponse>
 	{
-		console.log("editing")
 		let committee = await SiteUser.findOne({
 			where: {
 				group: "committee",
@@ -186,7 +184,7 @@ export class CommitteeController
 	}
 
 	@Post("/del")
-	@Authorized([ process.env.COMMITTEE_ROLE ])
+	@Authorized([ process.env.COMMITTEE_ROLE_NAME, process.env.ADMIN_ROLE_NAME ])
 	private async deleteCommittee(
 		@Body() delCommittee : UserDeleteRequest)
 		: Promise<UserDeleteResponse>
