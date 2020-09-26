@@ -66,6 +66,7 @@ export class CommitteeController
 			userIsCommittee: isCommittee,
             //custom_css: [ "/css/jquery-sortable.css" ],
 			//custom_scripts: [ "/js/jquery-sortable.js" ],
+			custom_scripts: [ "/js/api/updateUser.js" ],
 			peopleGroup: "Committee Member",
 			endpoint: "/committee"
         };
@@ -189,7 +190,7 @@ export class CommitteeController
 	}
 
 	@Post("/del")
-	@Authorized([ process.env.COMMITTEE_ROLE_NAME, process.env.ADMIN_ROLE_NAME ])
+	//@Authorized([ process.env.COMMITTEE_ROLE_NAME, process.env.ADMIN_ROLE_NAME ])
 	private async deleteCommittee(
 		@Body() delCommittee : UserDeleteRequest)
 		: Promise<UserDeleteResponse>

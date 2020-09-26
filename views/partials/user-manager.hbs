@@ -24,7 +24,7 @@
 
 				<div class="form-group">
 					<label for="title">Role Title</label>
-					<input type="text" class="form-control" name="title" id="title" maxlength="32"
+					<input type="text" class="form-control" name="title" id="title" maxlength="32" minlength="1"
 						placeholder="Website Maker" required />
 				</div>
 
@@ -40,7 +40,7 @@
 
 				<div class="form-group">
 					<label for="message">User Message</label>
-					<textarea name="message" class="form-control" id="message" maxlength="1024"
+					<textarea name="message" class="form-control" id="message" maxlength="1024" minlength="128"
 						placeholder="A personal message from the user">{{ user.desc }}</textarea>
 				</div>
 
@@ -75,7 +75,7 @@
 						<div class="form-group">
 							<label for="name">Name (IRL or pseudonym)</label>
 							<input type="text" class="form-control" name="name" id="name" value="{{ user.name }}"
-								placeholder="Name of {{../peopleGroup}}" />
+								minlength="1" maxlength="24" placeholder="Name of {{../peopleGroup}}" />
 						</div>
 
 						<div class="form-group">
@@ -87,12 +87,12 @@
 						<div class="form-group">
 							<label for="title">Role Title</label>
 							<input type="text" class="form-control" name="title" id="title" value="{{ user.title }}"
-								placeholder="Tole Name" />
+								minlength="1" maxlength="32" placeholder="Tole Name" />
 						</div>
 
 						<div class="form-group">
 							<label for="desc">Role Description</label>
-							<textarea name="desc" class="form-control" id="desc"
+							<textarea name="desc" class="form-control" id="desc" minlength="32" maxlength="128"
 								placeholder="Role Description">{{ user.desc }}</textarea>
 						</div>
 
@@ -101,7 +101,7 @@
 
 						<div class="form-group">
 							<label for="message">User Message</label>
-							<textarea name="message" class="form-control" id="message" maxlength="1024"
+							<textarea name="message" class="form-control" id="message" maxlength="1024" minlength="128"
 								placeholder="A personal message from the user">{{ user.message }}</textarea>
 						</div>
 
@@ -126,7 +126,9 @@
 	</ol>
 </div>
 
-<script>
+
+
+{{!-- <script>
 	function updateUser(event, form, endpoint) {
 		console.log(`Updating user with endpoint ${endpoint}.`);
 		event.preventDefault();
@@ -144,8 +146,9 @@
 			processData: false,
 			enctype: "multipart/form-data",
 			contentType: false,
-			success: function () {
-				console.log("User successfully updated");
+			success: function (res) {
+				console.log("User successfully updated:");
+				console.log(res.toString());
 				//location.search = "";
 			},
 			error: function (jqXHR, textStatus, errorThrown) {
@@ -173,8 +176,9 @@
 			processData: false,
 			enctype: "multipart/form-data",
 			contentType: false,
-			success: function () {
+			success: function (res) {
 				console.log("User successfully deleted");
+				console.log(res.toString());
 				//location.search = "";
 			},
 			error: function (jqXHR, textStatus, errorThrown) {
@@ -183,4 +187,4 @@
 			}
 		});
 	}
-</script>
+</script> --}}

@@ -10,6 +10,7 @@ export class UserAddRequest
 	username : string;
 
 	// the person's name that they want to show on the site
+	@IsLongerThan(1)
 	@IsShorterThan(24) // might need to be longer depending on people's names
 	name : string;
 
