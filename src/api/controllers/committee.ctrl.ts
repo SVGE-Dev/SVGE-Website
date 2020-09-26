@@ -109,6 +109,7 @@ export class CommitteeController
 		@UploadedFile("avatar", { required: false, options: imgUploadOptions }) avatar : File)
 		: Promise<UserUpdateResponse>
 	{
+		console.log("editing")
 		let committee = await SiteUser.findOne({
 			where: {
 				group: "committee",
