@@ -26,6 +26,86 @@
 			{{/each}}
 		</div>
 	</div>
+
+	{{#if canEditAll}}
+	<div class="container mb-5">
+		<h2>Add new Game</h2>
+		<form method="POST">
+			<div class="row">
+				<div class="col-lg-6">
+
+					<div class="form-group">
+						<label for="name">Name</label>
+						<input type="text" class="form-control" id="name" name="name" maxlength="64"
+							placeholder="League Of Legends" required />
+					</div>
+
+					<div class="form-group">
+						<label for="nameShort">Short Name</label>
+						<input type="text" class="form-control" id="nameShort" name="nameShort" maxlength="32"
+							placeholder="League" required />
+					</div>
+
+					<div class="form-group">
+						<label for="brief">Brief</label>
+						<input type="text" class="form-control" id="brief" name="brief" maxlength="32" placeholder="LoL"
+							required />
+					</div>
+
+					<div class="form-group">
+						<label for="tagline">Tagline</label>
+						<input type="text" class="form-control" id="tagline" name="tagline" maxlength="32"
+							placeholder="5v5 kill each other's base" required />
+					</div>
+
+					<div class="form-group">
+						<label for="heading">Heading</label>
+						<input type="text" class="form-control" id="heading" name="heading" maxlength="32"
+							placeholder="Heading goes here" required />
+					</div>
+				</div>
+
+				<div class="col-lg-6 ml-auto">
+
+					<div class="form-group">
+						<label for="position">Position in List</label>
+						<input type="number" min=1 class="form-control" name="position" id="position" placeholder=1
+							required />
+					</div>
+
+					<div class="form-group">
+						<label for="heading">Game Description</label>
+						<textarea class="form-control" id="heading" name="heading" minlength="256" maxlength="2048"
+							placeholder="League of Legends is a..." required ></textarea>
+					</div>
+
+					<div class="form-group">
+						<label for="icon">Icon</label>
+						<input type="file" id="icon" name="icon" class="form-control" required>
+						<small id="iconHelp" class="form-text text-muted">
+							.png file type, as close to 1024x1024 as you can get it
+						</small>
+					</div>
+
+					<div class="form-group">
+						<label for="img">Large Image</label>
+						<input type="file" id="img" name="img" class="form-control" required>
+					</div>
+				</div>
+
+			</div>
+
+			<div class="row">
+				<button class="btn btn-primary w-100">Add Game</button>
+			</div>
+		</form>
+	</div>
+
+	<div class="container">
+		<h2>Edit existing games</h2>
+		<p>TODO</p>
+	</div>
+	{{/if}}
 </div>
 
 {{> footer }}
