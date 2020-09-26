@@ -1,7 +1,7 @@
 // Jimp is a little retarded
 import Jimp from 'jimp';
 // tslint:disable-next-line: no-var-requires
-const jimp : Jimp = require('jimp');
+const jimp : Jimp = require('jimp'); // don't change the import style!!!
 
 export const cropAndResize = async (targetWidth : number, targetHeight : number, file : Buffer) : Promise<Jimp> =>
 {
