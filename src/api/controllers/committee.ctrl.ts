@@ -43,6 +43,8 @@ export class CommitteeController
 			}
 		});
 
+		
+
 		const isCommittee = !!user && !!committee.find((c) => c.discordId == user.id);
 
         return {

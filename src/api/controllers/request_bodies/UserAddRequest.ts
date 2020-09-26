@@ -29,5 +29,5 @@ export class UserAddRequest
 	// a much longer piece of text, such as about them, about what they can do for you, etc
 	@IsShorterThan(1024)
 	@IsOptional()
-	message : string | undefined;
+	message : string = "";
 }
