@@ -1,6 +1,6 @@
 <div class="container mb-5">
 	<h2>Add new {{peopleGroup}}</h2>
-	<form id="new_site_user" method="POST">
+	<form id="new_site_user" method="POST" enctype="multipart/form-data" action="{{endpoint}}">
 		<div class="row">
 			<div class="col-md-12 col-lg-7">
 
@@ -73,9 +73,7 @@
 					</small>
 				</div>
 
-				<button class="btn btn-primary w-100" onclick="sendForm(event, this.form, '{{endpoint}}')">Add
-					{{peopleGroup}}
-				</button>
+				<button class="btn btn-primary w-100">Add {{peopleGroup}}</button>
 			</div>
 		</div>
 	</form>
@@ -89,7 +87,7 @@
 		{{/if}}
 		<li>
 			<h3>{{ user.name }}</h3>
-			<form id="{{this.user.name}}_form">
+			<form id="{{this.user.name}}_form" enctype="multipart/form-data" action="{{../endpoint}}/edit" method="POST">
 				<div class="row">
 					<div class="col-md-12 col-lg-7">
 
@@ -157,12 +155,10 @@
 							</small>
 						</div>
 
-						<button class="btn btn-primary w-100"
-							onclick="sendForm(event, this.form, '{{../endpoint}}/edit')">Update
-							{{../peopleGroup}}
+						<button class="btn btn-primary w-100" type="submit">
+							Update {{../peopleGroup}}
 						</button>
-						<button class="btn btn-danger py-2 my-2 w-100"
-							onClick="deleteUser(event, this.form.uuid.value, '{{../endpoint}}/del')">
+						<button class="btn btn-danger py-2 my-2 w-100" type="submit" formaction="{{../endpoint}}/del">
 							Delete {{../peopleGroup}}
 						</button>
 					</div>
@@ -172,22 +168,3 @@
 		{{/each}}
 	</ol>
 </div>
-
-<script>
-	function deleteUser(event, uuid, endpoint) {
-		const confirmDeletion = confirm("Please confirm that you wish to delete this committtee member.");
-		if (confirmDeletion) {
-			sendUuid(event, uuid, endpoint);
-		}
-	}
-</script>
-
-
-{{!-- Basically prototypes for the intellisense --}}
-
-{{!-- <script>
-	function sendForm(event, form, endpoint) { }
-</script> --}}
-{{!-- <script>
-	function sendUuid(event, uuid, endpoint) { }
-</script> --}}

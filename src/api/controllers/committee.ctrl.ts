@@ -11,9 +11,10 @@ import {
 	UseBefore,
 	Post,
 	Authorized,
+	UploadedFiles,
 	Body,
 	BadRequestError,
-	UploadedFile
+	UploadedFile, Redirect
 } from "routing-controllers";
 
 /*** Render Data ***/
@@ -76,6 +77,7 @@ export class CommitteeController
     }
 
 	@Post("/")
+	@Redirect("/committee") // Redirect is relative to site root
 	//@Authorized([ process.env.COMMITTEE_ROLE_NAME, process.env.ADMIN_ROLE_NAME ])
 	private async addCommittee(
 		@Body() newCommittee : UserAddRequest,
@@ -110,6 +112,7 @@ export class CommitteeController
 	}
 
 	@Post("/edit")
+	@Redirect("/committee") // Redirect is relative to site root
 	//@Authorized([ process.env.COMMITTEE_ROLE_NAME, process.env.ADMIN_ROLE_NAME ])
 	private async updateCommittee(
 		@Body() updateCommittee : UserUpdateRequest,
@@ -193,9 +196,15 @@ export class CommitteeController
 	}
 
 	@Post("/del")
+	@Redirect("/committee") // Redirect is relative to site root
 	//@Authorized([ process.env.COMMITTEE_ROLE_NAME, process.env.ADMIN_ROLE_NAME ])
 	private async deleteCommittee(
-		@Body() delCommittee : UserDeleteRequest)
+		@Body() delCommittee : UserDeleteRequest,
+		/**
+		 * The form includes files when invoked from the page so the data is received with enctype="multipart/form-data"
+		 * we have to include the UploadedFiles decorator here to make sure it's parsed correctly
+		 */ 
+		@UploadedFiles("", { required: false}) imgs : File[])
 		: Promise<UserDeleteResponse>
 	{
 		console.log(`Deleting committee member with uuid:`);
