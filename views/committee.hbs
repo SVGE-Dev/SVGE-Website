@@ -23,7 +23,7 @@
 			<div class="d-block d-md-flex podcast-entry bg-white mb-5" data-aos="fade-up">
 				<div class="image" style="background-image: url({{ avatar }});"></div>
 				<div class="text">
-					<h3 class="font-weight-light"><a href="#">{{ user.role }}</a></h3>
+					<h3 class="font-weight-light"><a href="#">{{ user.title }}</a></h3>
 					<div class=" mb-3 text-black"><span class="text-black-opacity-05"><small>{{ user.name }}<span
 									class="sep">|</span>{{ user.discordUsername }}</small></span></div>
 					<p class="mb-4 text-black lead">{{ user.desc }}</p>
@@ -33,7 +33,7 @@
 			{{else }}
 			<div class="d-block d-md-flex podcast-entry bg-white mb-5" data-aos="fade-up">
 				<div class="text">
-					<h3 class="font-weight-light"><a href="#">{{ user.role }}</a></h3>
+					<h3 class="font-weight-light"><a href="#">{{ user.title }}</a></h3>
 					<div class=" mb-3 text-black"><span class="text-black-opacity-05"><small>{{ user.name }}<span
 									class="sep">|</span>{{ user.discordUsername }}</small></span></div>
 					<p class="mb-4 text-black lead">{{ user.desc }}</p>
