@@ -20,7 +20,7 @@ function sendUuid(event, uuid, endpoint)
 		},
 		error: function (jqXHR, textStatus, errorThrown) {
 			console.log(textStatus, errorThrown);
-			location.search = "";
+			//location.search = "";
 		}
 	});
 }
