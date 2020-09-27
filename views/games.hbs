@@ -38,30 +38,45 @@
 						<label for="name">Name</label>
 						<input type="text" class="form-control" id="name" name="name" maxlength="64"
 							placeholder="League Of Legends" required />
+						<small id="iconHelp" class="form-text text-muted">
+							name of the game, up to 64 characters
+						</small>
 					</div>
 
 					<div class="form-group">
 						<label for="nameShort">Short Name</label>
 						<input type="text" class="form-control" id="nameShort" name="nameShort" maxlength="32"
 							placeholder="League" required />
+						<small id="iconHelp" class="form-text text-muted">
+							a shorter version of the game name (up to 32 characters), used for the URL
+						</small>
 					</div>
 
 					<div class="form-group">
 						<label for="brief">Brief</label>
-						<input type="text" class="form-control" id="brief" name="brief" maxlength="32" placeholder="LoL"
-							required />
+						<input type="text" class="form-control" id="brief" name="brief" maxlength="32"
+							placeholder="Events | Socials | Tournaments" required />
+						<small id="iconHelp" class="form-text text-muted">
+							very short description of what the game community does (32 character limit)
+						</small>
 					</div>
 
 					<div class="form-group">
 						<label for="tagline">Tagline</label>
 						<input type="text" class="form-control" id="tagline" name="tagline" maxlength="32"
-							placeholder="5v5 kill each other's base" required />
+							placeholder="Welcome to Summoner's Rift!" required />
+						<small id="iconHelp" class="form-text text-muted">
+							a fun quote or saying from the game (32 character limit)
+						</small>
 					</div>
 
 					<div class="form-group">
 						<label for="heading">Heading</label>
 						<input type="text" class="form-control" id="heading" name="heading" maxlength="32"
 							placeholder="Heading goes here" required />
+						<small id="iconHelp" class="form-text text-muted">
+							the heading that appears appears on the games page (32 character limit)
+						</small>
 					</div>
 				</div>
 
@@ -71,25 +86,43 @@
 						<label for="position">Position in List</label>
 						<input type="number" min=1 class="form-control" name="position" id="position" placeholder=1
 							required />
+						<small id="iconHelp" class="form-text text-muted">
+							the position in the list of games that this will appear
+						</small>
 					</div>
 
 					<div class="form-group">
 						<label for="text">Game Description</label>
 						<textarea class="form-control" id="text" name="text" minlength="256" maxlength="2048"
 							placeholder="League of Legends is a..." required></textarea>
+						<small id="iconHelp" class="form-text text-muted">
+							the text that shows on the game page (256-2048 characters)
+						</small>
+						<small id="iconHelp" class="form-text text-muted">
+							you can have paragraphs by wrapping them in &lt;p&gt; and &lt;/p&gt; tags
+						</small>
 					</div>
 
 					<div class="form-group">
 						<label for="icon">Icon</label>
 						<input type="file" id="icon" name="icon" class="form-control" required>
 						<small id="iconHelp" class="form-text text-muted">
-							.png file type, as close to 1024x1024 as you can get it
+							used as the icon on the list of games above
+						</small>
+						<small id="iconHelp" class="form-text text-muted">
+							.png file type, as close to 1024x1024 as you can get it, supports transparency
 						</small>
 					</div>
 
 					<div class="form-group">
 						<label for="img">Large Image</label>
 						<input type="file" id="img" name="img" class="form-control" required>
+						<small id="iconHelp" class="form-text text-muted">
+							this is the large picture on the game's page
+						</small>
+						<small id="iconHelp" class="form-text text-muted">
+							.png or .jpg file type, as close to 1920x1080 as you can get it
+						</small>
 					</div>
 				</div>
 
@@ -113,27 +146,47 @@
 
 					<div class="form-group">
 						<label for="name">Name</label>
-						<input type="text" class="form-control" id="name" name="name" maxlength="64" value="{{game.name}}"/>
+						<input type="text" class="form-control" id="name" name="name" maxlength="64"
+							value="{{game.name}}" />
+						<small id="iconHelp" class="form-text text-muted">
+							name of the game, up to 64 characters
+						</small>
 					</div>
 
 					<div class="form-group">
 						<label for="nameShort">Short Name</label>
-						<input type="text" class="form-control" id="nameShort" name="nameShort" maxlength="32" value="{{game.nameShort}}"/>
+						<input type="text" class="form-control" id="nameShort" name="nameShort" maxlength="32"
+							value="{{game.nameShort}}" />
+						<small id="iconHelp" class="form-text text-muted">
+							a shorter version of the game name (up to 32 characters), used for the URL
+						</small>
 					</div>
 
 					<div class="form-group">
 						<label for="brief">Brief</label>
-						<input type="text" class="form-control" id="brief" name="brief" maxlength="32" value="{{game.brief}}" />
+						<input type="text" class="form-control" id="brief" name="brief" maxlength="32"
+							value="{{game.brief}}" />
+						<small id="iconHelp" class="form-text text-muted">
+							very short description of what the game community does (32 character limit)
+						</small>
 					</div>
 
 					<div class="form-group">
 						<label for="tagline">Tagline</label>
-						<input type="text" class="form-control" id="tagline" name="tagline" maxlength="32" value="{{game.tagline}}" />
+						<input type="text" class="form-control" id="tagline" name="tagline" maxlength="32"
+							value="{{game.tagline}}" />
+						<small id="iconHelp" class="form-text text-muted">
+							a fun quote or saying from the game (32 character limit)
+						</small>
 					</div>
 
 					<div class="form-group">
 						<label for="heading">Heading</label>
-						<input type="text" class="form-control" id="heading" name="heading" maxlength="32" value="{{game.heading}}" />
+						<input type="text" class="form-control" id="heading" name="heading" maxlength="32"
+							value="{{game.heading}}" />
+						<small id="iconHelp" class="form-text text-muted">
+							the heading that appears appears on the games page (32 character limit)
+						</small>
 					</div>
 				</div>
 
@@ -141,25 +194,45 @@
 
 					<div class="form-group">
 						<label for="position">Position in List</label>
-						<input type="number" min=1 class="form-control" name="position" id="position" value="{{game.position}}" />
+						<input type="number" min=1 class="form-control" name="position" id="position"
+							value="{{game.position}}" />
+						<small id="iconHelp" class="form-text text-muted">
+							the position in the list of games that this will appear
+						</small>
 					</div>
 
 					<div class="form-group">
 						<label for="text">Game Description</label>
-						<textarea class="form-control" id="text" name="text" minlength="256" maxlength="2048" >{{game.text}}</textarea>
+						<textarea class="form-control" id="text" name="text" minlength="256"
+							maxlength="2048">{{game.text}}</textarea>
+						<small id="iconHelp" class="form-text text-muted">
+							the text that shows on the game page (256-2048 characters)
+						</small>
+						<small id="iconHelp" class="form-text text-muted">
+							you can have paragraphs by wrapping them in &lt;p&gt; and &lt;/p&gt; tags
+						</small>
 					</div>
 
 					<div class="form-group">
 						<label for="icon">Icon</label>
-						<input type="file" id="icon" name="icon" class="form-control"/>
+						<input type="file" id="icon" name="icon" class="form-control" />
 						<small id="iconHelp" class="form-text text-muted">
-							.png file type, as close to 1024x1024 as you can get it
+							used as the icon on the list of games above
+						</small>
+						<small id="iconHelp" class="form-text text-muted">
+							.png file type, as close to 1024x1024 as you can get it, supports transparency
 						</small>
 					</div>
 
 					<div class="form-group">
 						<label for="img">Large Image</label>
-						<input type="file" id="img" name="img" class="form-control"/>
+						<input type="file" id="img" name="img" class="form-control" />
+						<small id="iconHelp" class="form-text text-muted">
+							this is the large picture on the game's page
+						</small>
+						<small id="iconHelp" class="form-text text-muted">
+							.png or .jpg file type, as close to 1920x1080 as you can get it
+						</small>
 					</div>
 
 					<button class="btn btn-primary w-100">

@@ -287,7 +287,7 @@ export class GamesController
 	@Post("/del")
 	@Redirect("/games") // Redirect is relative to root of the site
 	private async delGame(
-		@Body() gameDel: GameDeleteRequest,
+		@Body() gameDel : GameDeleteRequest,
 		/**
 		 * The form includes files when invoked from the page so the data is received with enctype="multipart/form-data"
 		 * we have to include the UploadedFiles decorator here to make sure it's parsed correctly
