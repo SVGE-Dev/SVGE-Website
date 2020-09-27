@@ -15,6 +15,7 @@ import {
 	Param,
 	Body,
 	UploadedFile,
+	UploadedFiles,
 	CurrentUser,
 	UseBefore,
 	NotFoundError,
@@ -61,7 +62,12 @@ export class GamesController
 				"brief",
 				"tagline",
 				"nameShort",
-				"icon"
+				"icon",
+				"name",
+				"text",
+				"heading",
+				"position",
+				"uuid"
 			],
 			order: {
 				"position": "ASC"
@@ -106,7 +112,7 @@ export class GamesController
 	}
 	
 	@Post("/")
-	@Redirect("/games")
+	@Redirect("/games") // Redirect is relative to root of the site
 	// janky work around because Routing Controllers doesn't yet allow mutliple file upload fields
 	@UseBefore(multer(imgUploadOptions).fields([
 		{ maxCount: 1, name: "img"},
@@ -170,6 +176,7 @@ export class GamesController
 	}
 
 	@Post("/edit")
+	@Redirect("/games")// Redirect is relative to root of the site
 	// janky work around because Routing Controllers doesn't yet allow mutliple file upload fields
 	@UseBefore(multer(imgUploadOptions).fields([
 		{ maxCount: 1, name: "img"},
@@ -278,16 +285,23 @@ export class GamesController
 	}
 
 	@Post("/del")
+	@Redirect("/games") // Redirect is relative to root of the site
 	private async delGame(
-		@Body() gameDel : GameDeleteRequest,
-		@CurrentUser({ required: true }) currentUser : DiscordProfile)
+		@Body() gameDel: GameDeleteRequest,
+		/**
+		 * The form includes files when invoked from the page so the data is received with enctype="multipart/form-data"
+		 * we have to include the UploadedFiles decorator here to make sure it's parsed correctly
+		 */ 
+		@UploadedFiles("", { required: false}) imgs : File[], 
+		@CurrentUser({ required: true }) currentUser : DiscordProfile
+	)
 		: Promise<GameDeleteResponse>
 	{
 		// include deleting all reps
 		// check they're committee
 		const siteUser = await SiteUser.findFromProfile(currentUser, "committee");
 		if(!siteUser) throw new ForbiddenError("You are not a member of the Society's main committee.");
-
+		console.log(gameDel);
 		const game = await Game.findOne({
 			where: {
 				uuid: gameDel.uuid

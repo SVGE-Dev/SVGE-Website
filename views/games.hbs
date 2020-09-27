@@ -76,7 +76,7 @@
 					<div class="form-group">
 						<label for="text">Game Description</label>
 						<textarea class="form-control" id="text" name="text" minlength="256" maxlength="2048"
-							placeholder="League of Legends is a..." required ></textarea>
+							placeholder="League of Legends is a..." required></textarea>
 					</div>
 
 					<div class="form-group">
@@ -102,8 +102,77 @@
 	</div>
 
 	<div class="container">
-		<h2>Edit existing games</h2>
-		<p>TODO</p>
+		<h2 class="text-center">Edit existing games</h2>
+		{{#each games}}
+		<form method="POST" enctype="multipart/form-data" action="/games/edit">
+			<h2>{{game.name}}</h2>
+			<div class="row">
+				<div class="col-lg-6">
+
+					<input type="hidden" id="uuid" name="uuid" value="{{game.uuid}}" />
+
+					<div class="form-group">
+						<label for="name">Name</label>
+						<input type="text" class="form-control" id="name" name="name" maxlength="64" value="{{game.name}}"/>
+					</div>
+
+					<div class="form-group">
+						<label for="nameShort">Short Name</label>
+						<input type="text" class="form-control" id="nameShort" name="nameShort" maxlength="32" value="{{game.nameShort}}"/>
+					</div>
+
+					<div class="form-group">
+						<label for="brief">Brief</label>
+						<input type="text" class="form-control" id="brief" name="brief" maxlength="32" value="{{game.brief}}" />
+					</div>
+
+					<div class="form-group">
+						<label for="tagline">Tagline</label>
+						<input type="text" class="form-control" id="tagline" name="tagline" maxlength="32" value="{{game.tagline}}" />
+					</div>
+
+					<div class="form-group">
+						<label for="heading">Heading</label>
+						<input type="text" class="form-control" id="heading" name="heading" maxlength="32" value="{{game.heading}}" />
+					</div>
+				</div>
+
+				<div class="col-lg-6 ml-auto">
+
+					<div class="form-group">
+						<label for="position">Position in List</label>
+						<input type="number" min=1 class="form-control" name="position" id="position" value="{{game.position}}" />
+					</div>
+
+					<div class="form-group">
+						<label for="text">Game Description</label>
+						<textarea class="form-control" id="text" name="text" minlength="256" maxlength="2048" >{{game.text}}</textarea>
+					</div>
+
+					<div class="form-group">
+						<label for="icon">Icon</label>
+						<input type="file" id="icon" name="icon" class="form-control"/>
+						<small id="iconHelp" class="form-text text-muted">
+							.png file type, as close to 1024x1024 as you can get it
+						</small>
+					</div>
+
+					<div class="form-group">
+						<label for="img">Large Image</label>
+						<input type="file" id="img" name="img" class="form-control"/>
+					</div>
+
+					<button class="btn btn-primary w-100">
+						Update Game
+					</button>
+					<button class="btn btn-danger py-2 my-2 w-100" formaction="/games/del">
+						Delete Game
+					</button>
+				</div>
+
+			</div>
+		</form>
+		{{/each}}
 	</div>
 	{{/if}}
 </div>
