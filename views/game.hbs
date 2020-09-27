@@ -15,12 +15,14 @@
 
 <div class="site-section">
 	<div class="container">
+		<div class="site-section-heading text-left w-border mt-sm-2 mt-lg-0">
+			<h2>{{game.heading}}</h2>
+		</div>
 		<div class="row" data-aos="fade-up" data-aos-delay="100">
-			<img src="{{img}}" alt="Image" class="game float-lg-right">
-			<div class="site-section-heading text-left w-border mt-sm-2 mt-lg-0">
-				<h2>{{game.heading}}</h2>
-			</div>
-			{{{game.text}}}
+			<p>
+				<img src="{{img}}" alt="Image" class="game float-lg-right">
+				{{{game.text}}}
+			</p>
 		</div>
 		{{#if reps}}
 			<div class="site-section-heading text-left mt-5 w-border row" data-aos="fade-up" data-aos-delay="100">
