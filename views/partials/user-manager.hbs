@@ -8,24 +8,36 @@
 					<label for="username">Discord Username</label>
 					<input type="text" class="form-control" name="username" id="username" placeholder="Bot#101"
 						required />
+					<small id="iconHelp" class="form-text text-muted">
+						right-click them, go to profile, copy and paste with the #1234 discriminator
+					</small>
 				</div>
 
 				<div class="form-group">
 					<label for="name">Name (IRL or pseudonym)</label>
-					<input type="text" class="form-control" name="name" id="name" maxlength="24"
+					<input type="text" class="form-control" name="name" id="name" minlength="1" maxlength="24"
 						placeholder="Joe Bloggs" required />
+					<small id="iconHelp" class="form-text text-muted">
+						Can be whatever name the {{peopleGroup}} would like to show (1-24 characters)
+					</small>
 				</div>
 
 				<div class="form-group">
-					<label for="position">Position in List</label>
+					<label for="position">Position</label>
 					<input type="number" min=1 class="form-control" name="position" id="position" placeholder=1
 						required />
+					<small id="iconHelp" class="form-text text-muted">
+						This is the order in which the user will show up in the list above
+					</small>
 				</div>
 
 				<div class="form-group">
 					<label for="title">Role Title</label>
 					<input type="text" class="form-control" name="title" id="title" maxlength="32" minlength="1"
 						placeholder="Website Maker" required />
+					<small id="iconHelp" class="form-text text-muted">
+						The name of their role, such as President, Lol Rep etc. (1-32 characters)
+					</small>
 				</div>
 
 			</div>
@@ -34,19 +46,31 @@
 
 				<div class="form-group">
 					<label for="desc">Role Description</label>
-					<textarea name="desc" class="form-control" id="desc" minlength="32" maxlength="128"
+					<textarea name="desc" class="form-control" id="desc" minlength="32" maxlength="90"
 						placeholder="Description of their role" required></textarea>
+					<small id="iconHelp" class="form-text text-muted">
+						A short description of their role. (32-90 characters)
+					</small>
 				</div>
 
 				<div class="form-group">
 					<label for="message">User Message</label>
-					<textarea name="message" class="form-control" id="message" maxlength="1024" minlength="128"
+					<textarea name="message" class="form-control" id="message" maxlength="256" minlength="64"
 						placeholder="A personal message from the user"></textarea>
+					<small id="iconHelp" class="form-text text-muted">
+						The slightly longer message from the user (64-256 characters)
+					</small>
 				</div>
 
 				<div class="form-group">
 					<label for="scFiles">Avatar image</label>
 					<input type="file" id="scFiles" class="form-control">
+					<small id="iconHelp" class="form-text text-muted">
+						.png or .jpg file type, as close to 1024x1024 as you can get it
+					</small>
+					<small id="iconHelp" class="form-text text-muted">
+						if ommitted, defaults to their Discord profile picture
+					</small>
 				</div>
 
 				<button class="btn btn-primary w-100" onclick="sendForm(event, this.form, '{{endpoint}}')">Add
@@ -78,24 +102,36 @@
 							<label for="name">Name (IRL or pseudonym)</label>
 							<input type="text" class="form-control" name="name" id="name" value="{{ user.name }}"
 								minlength="1" maxlength="24" placeholder="Name of {{../peopleGroup}}" />
+							<small id="iconHelp" class="form-text text-muted">
+								Can be whatever name the {{peopleGroup}} would like to show (1-24 characters)
+							</small>
 						</div>
 
 						<div class="form-group">
 							<label for="position">Position in List</label>
 							<input value={{user.position}} type="number" min=1 class="form-control" name="position"
 								id="position" placeholder={{ user.position }} required />
+							<small id="iconHelp" class="form-text text-muted">
+								This is the order in which the user will show up in the list above
+							</small>
 						</div>
 
 						<div class="form-group">
 							<label for="title">Role Title</label>
 							<input type="text" class="form-control" name="title" id="title" value="{{ user.title }}"
 								minlength="1" maxlength="32" placeholder="Tole Name" />
+							<small id="iconHelp" class="form-text text-muted">
+								The name of their role, such as President, Lol Rep etc. (1-32 characters)
+							</small>
 						</div>
 
 						<div class="form-group">
 							<label for="desc">Role Description</label>
-							<textarea name="desc" class="form-control" id="desc" minlength="32" maxlength="128"
+							<textarea name="desc" class="form-control" id="desc" minlength="32" maxlength="90"
 								placeholder="Role Description">{{ user.desc }}</textarea>
+							<small id="iconHelp" class="form-text text-muted">
+								A short description of their role. (32-90 characters)
+							</small>
 						</div>
 
 					</div>
@@ -103,13 +139,22 @@
 
 						<div class="form-group">
 							<label for="message">User Message</label>
-							<textarea name="message" class="form-control" id="message" maxlength="1024" minlength="128"
+							<textarea name="message" class="form-control" id="message" maxlength="256" minlength="64"
 								placeholder="A personal message from the user">{{ user.message }}</textarea>
+							<small id="iconHelp" class="form-text text-muted">
+								The slightly longer personal from the user (64-256 characters)
+							</small>
 						</div>
 
 						<div class="form-group">
 							<label for="scFiles">Avatar image</label>
 							<input type="file" id="scFiles" class="form-control">
+							<small id="iconHelp" class="form-text text-muted">
+								.png or .jpg file type, as close to 1024x1024 as you can get it
+							</small>
+							<small id="iconHelp" class="form-text text-muted">
+								if ommitted, defaults to their Discord profile picture
+							</small>
 						</div>
 
 						<button class="btn btn-primary w-100"

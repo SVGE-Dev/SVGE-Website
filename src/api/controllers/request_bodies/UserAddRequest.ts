@@ -27,12 +27,12 @@ export class UserAddRequest
 
 	// a slightly longer piece of text, such as the description of a committee position
 	@IsLongerThan(32)
-	@IsShorterThan(128)
+	@IsShorterThan(90)
 	desc : string;
 
 	// a much longer piece of text, such as about them, about what they can do for you, etc
-	@IsLongerThan(128)
-	@IsShorterThan(1024)
+	@IsLongerThan(64)
+	@IsShorterThan(256)
 	@IsOptional()
 	message : string | undefined;
 }

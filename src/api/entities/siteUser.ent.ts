@@ -115,7 +115,7 @@ export class SiteUser extends BaseEntity
 		const imgMimetype = !!img ? img.mimetype : "image/png";
 		this.avatarIsCustom = !!img;
 
-		const avatar = await cropAndResize(2048, 2048, imgBuffer);
+		const avatar = await cropAndResize(1024, 1024, imgBuffer);
 		this.avatar = await avatar.getBufferAsync(imgMimetype);
 		console.log(this.avatar.length);
 		if(this.avatar.length > 16000000)
