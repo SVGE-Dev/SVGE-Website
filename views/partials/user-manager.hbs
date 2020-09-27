@@ -117,7 +117,7 @@
 							{{../peopleGroup}}
 						</button>
 						<button class="btn btn-danger py-2 my-2 w-100"
-							onClick="sendUuid(event, this.form.uuid.value, '{{../endpoint}}/del')">
+							onClick="deleteUser(event, this.form.uuid.value, '{{../endpoint}}/del')">
 							Delete {{../peopleGroup}}
 						</button>
 					</div>
@@ -128,6 +128,14 @@
 	</ol>
 </div>
 
+<script>
+	function deleteUser(event, uuid, endpoint) {
+		const confirmDeletion = confirm("Please confirm that you wish to delete this committtee member.");
+		if (confirmDeletion) {
+			sendUuid(event, uuid, endpoint);
+		}
+	}
+</script>
 
 
 {{!-- Basically prototypes for the intellisense --}}
