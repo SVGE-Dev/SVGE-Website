@@ -11,6 +11,7 @@ import {
 	Get,
 	Post,
 	Render,
+	Redirect,
 	Param,
 	Body,
 	UploadedFile,
@@ -105,6 +106,7 @@ export class GamesController
 	}
 	
 	@Post("/")
+	@Redirect("/games")
 	// janky work around because Routing Controllers doesn't yet allow mutliple file upload fields
 	@UseBefore(multer(imgUploadOptions).fields([
 		{ maxCount: 1, name: "img"},
@@ -114,7 +116,6 @@ export class GamesController
 		@Body() newGame : GameAddRequest,
         //@CurrentUser({ required: true }) user : DiscordProfile
 		@Req() req : Request)
-	: Promise<GameAddResponse>
 	{
 		// const siteUser = await SiteUser.findFromProfile(user, "committee");
 		// if(!siteUser) throw new ForbiddenError("You are not a member of the Society's main committee.");
@@ -159,13 +160,13 @@ export class GamesController
 
 		Game.reorder(game.uuid);
 
-		return {
-			uuid: game.uuid,
-			nameShort: game.nameShort,
-			brief: game.brief,
-			tagline: game.tagline,
-			icon: game.iconBase64
-		};
+		// return {
+		// 	uuid: game.uuid,
+		// 	nameShort: game.nameShort,
+		// 	brief: game.brief,
+		// 	tagline: game.tagline,
+		// 	icon: game.iconBase64
+		// };
 	}
 
 	@Post("/edit")
