@@ -49,7 +49,7 @@
 					<input type="file" id="scFiles" class="form-control">
 				</div>
 
-				<button class="btn btn-primary w-100" onclick="updateUser(event, this.form, '{{endpoint}}')">Add
+				<button class="btn btn-primary w-100" onclick="sendForm(event, this.form, '{{endpoint}}')">Add
 					{{peopleGroup}}
 				</button>
 			</div>
@@ -58,9 +58,11 @@
 </div>
 
 <div class="container">
-	<h2>Edit existing {{peopleGroup}}s</h2>
 	<ol id="sortable">
 		{{#each people}}
+		{{#if (eq @index 0)}}
+		<h2>Edit existing {{../peopleGroup}}s</h2>
+		{{/if}}
 		<li>
 			<h3>{{ user.name }}</h3>
 			<form id="{{this.user.name}}_form">
@@ -111,11 +113,11 @@
 						</div>
 
 						<button class="btn btn-primary w-100"
-							onclick="updateUser(event, this.form, '{{../endpoint}}/edit')">Update
+							onclick="sendForm(event, this.form, '{{../endpoint}}/edit')">Update
 							{{../peopleGroup}}
 						</button>
 						<button class="btn btn-danger py-2 my-2 w-100"
-							onClick="delUser(event, this.form.uuid.value, '{{../endpoint}}/del')">
+							onClick="sendUuid(event, this.form.uuid.value, '{{../endpoint}}/del')">
 							Delete {{../peopleGroup}}
 						</button>
 					</div>
@@ -128,63 +130,11 @@
 
 
 
+{{!-- Basically prototypes for the intellisense --}}
+
 {{!-- <script>
-	function updateUser(event, form, endpoint) {
-		console.log(`Updating user with endpoint ${endpoint}.`);
-		event.preventDefault();
-
-		const formData = new FormData(form);
-		for (const d of formData) {
-			console.log(d);
-		}
-
-		$.ajax({
-			url: `${endpoint}`,
-			type: "post",
-			data: formData,
-			// https://stackoverflow.com/questions/11071100/jquery-uncaught-typeerror-illegal-invocation-at-ajax-request-several-eleme
-			processData: false,
-			enctype: "multipart/form-data",
-			contentType: false,
-			success: function (res) {
-				console.log("User successfully updated:");
-				console.log(res.toString());
-				//location.search = "";
-			},
-			error: function (jqXHR, textStatus, errorThrown) {
-				console.log(textStatus, errorThrown);
-				//location.search = "";
-			}
-		});
-	}
-
-	function delUser(event, uuid, endpoint) {
-		console.log(`Deleting user with uuid ${uuid}.`);
-		event.preventDefault();
-
-		const formData = new FormData();
-		formData.append("uuid", uuid);
-		for (const d of formData) {
-			console.log(d);
-		}
-
-		$.ajax({
-			url: `${endpoint}`,
-			type: "post",
-			data: formData,
-			// https://stackoverflow.com/questions/11071100/jquery-uncaught-typeerror-illegal-invocation-at-ajax-request-several-eleme
-			processData: false,
-			enctype: "multipart/form-data",
-			contentType: false,
-			success: function (res) {
-				console.log("User successfully deleted");
-				console.log(res.toString());
-				//location.search = "";
-			},
-			error: function (jqXHR, textStatus, errorThrown) {
-				console.log(textStatus, errorThrown);
-				//location.search = "";
-			}
-		});
-	}
+	function sendForm(event, form, endpoint) { }
+</script> --}}
+{{!-- <script>
+	function sendUuid(event, uuid, endpoint) { }
 </script> --}}

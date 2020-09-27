@@ -1,20 +1,4 @@
-// function updateUser(event, form, endpoint)
-// {
-// 	console.log(`Updating user with endpoint ${endpoint}.`);
-// 	event.preventDefault();
-
-// 	const formData = new FormData(form);
-// 	for (const d of formData) {
-// 		console.log(d);
-// 	}
-
-// 	const req = new XMLHttpRequest();
-// 	req.open("POST", endpoint);
-// 	//req.setRequestHeader("Content-Type", "multipart/form-data");
-// 	req.send(formData);
-// }
-
-function updateUser(event, form, endpoint)
+function sendForm(event, form, endpoint)
 {
 	console.log(`Updating user with endpoint ${endpoint}.`);
 	event.preventDefault();
@@ -33,9 +17,9 @@ function updateUser(event, form, endpoint)
 		enctype: "multipart/form-data",
 		contentType: false,
 		success: function (res) {
-			console.log("User successfully updated:");
+			console.log("Form successfully sent:");
 			console.log(res.toString());
-			//location.search = "";
+			location.search = "";
 		},
 		error: function (jqXHR, textStatus, errorThrown) {
 			console.log(textStatus, errorThrown);

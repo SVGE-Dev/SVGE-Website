@@ -66,7 +66,10 @@ export class CommitteeController
 			userIsCommittee: isCommittee,
             //custom_css: [ "/css/jquery-sortable.css" ],
 			//custom_scripts: [ "/js/jquery-sortable.js" ],
-			custom_scripts: [ "/js/api/updateUser.js" ],
+			custom_scripts: [
+				"/js/sendForm.js",
+				"/js/sendUuid.js"
+			],
 			peopleGroup: "Committee Member",
 			endpoint: "/committee"
         };
@@ -79,7 +82,7 @@ export class CommitteeController
 		@UploadedFile("avatar", { required: false, options: imgUploadOptions }) avatar : File)
 		: Promise<UserAddResponse>
 	{
-		console.log("Adding committee member!");
+		console.log(`Adding committee member with username "${newCommittee.username}"!`);
 		const committeeProfile = DiscordBot.Utils.getGuildMemberFromName(newCommittee.username);
 		let committeeMember = await SiteUser.findOne({
 			where: {
@@ -113,7 +116,7 @@ export class CommitteeController
 		@UploadedFile("avatar", { required: false, options: imgUploadOptions }) avatar : File)
 		: Promise<UserUpdateResponse>
 	{
-		console.log("Editing committee member!");
+		console.log(`Updating committee member with uuid "${updateCommittee.uuid}".`);
 		let committee = await SiteUser.findOne({
 			where: {
 				group: "committee",
@@ -195,7 +198,8 @@ export class CommitteeController
 		@Body() delCommittee : UserDeleteRequest)
 		: Promise<UserDeleteResponse>
 	{
-		console.log("Deleting committee member :(");
+		console.log(`Deleting committee member with uuid:`);
+		console.log(delCommittee.uuid);
 		const committee = await SiteUser.findOne({
 			where: {
 				group: "committee",

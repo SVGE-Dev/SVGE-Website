@@ -36,5 +36,6 @@ export class UserUpdateRequest
 
 	// whether or not we're resetting to their Discord pic
 	@IsBoolean()
+	@IsOptional()
 	resetAvatar : boolean = false;
 }
