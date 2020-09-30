@@ -1,5 +1,5 @@
 import { Transform } from "class-transformer";
-import { IsBoolean, IsOptional, IsPositive, IsUUID } from "class-validator";
+import { IsBoolean, IsOptional, IsPositive, IsUUID, ValidateIf } from "class-validator";
 import { IsShorterThan } from "../validators/IsShorterThan";
 
 export class UserUpdateRequest
@@ -31,7 +31,8 @@ export class UserUpdateRequest
 
 	// a much longer piece of text, such as about them, about what they can do for you, etc
 	@IsShorterThan(1024)
-	@IsOptional()
+	@ValidateIf((userAddRequest : UserUpdateRequest) =>
+		userAddRequest.message !== undefined && userAddRequest.message != "")
 	message? : string | undefined;
 
 	// whether or not we're resetting to their Discord pic
