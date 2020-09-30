@@ -75,11 +75,18 @@ export class GamesController
 		});
 
 		let isCommittee = false;
-		let gamesUserIsRepFor : string[] = [];
+		let gamesUserIsRepFor : string[] | undefined;
 		
 		if(!!currentUser)
 		{
-			isCommittee = !!(await SiteUser.find({ group: "committee", discordId: currentUser.id }));
+			isCommittee = !!(await SiteUser.findFromProfile(currentUser, "committee"));
+
+			if(!isCommittee)
+			{
+				isCommittee = DiscordBot.Utils.CheckForRole(currentUser.id, process.env.DISCORD_GUILD_ID, [
+					process.env.ADMIN_ROLE_NAME,
+				]);
+			}
 
 			if(!isCommittee)
 			{
@@ -91,8 +98,12 @@ export class GamesController
 				});
 
 				gamesUserIsRepFor = (await Promise.all(reps)).filter((r) => !!r);
+				if(gamesUserIsRepFor.length < 1) gamesUserIsRepFor = undefined;
 			}
 		}
+
+		console.log(`Can edit all: ${isCommittee}`);
+		console.log(`Can edit some: ${gamesUserIsRepFor}`);
 		
         return {
 			page: "games",
@@ -120,11 +131,11 @@ export class GamesController
 	]))
 	private async addGame(
 		@Body() newGame : GameAddRequest,
-        //@CurrentUser({ required: true }) user : DiscordProfile
+        @CurrentUser({ required: true }) currentUser : DiscordProfile,
 		@Req() req : Request)
 	{
-		// const siteUser = await SiteUser.findFromProfile(user, "committee");
-		// if(!siteUser) throw new ForbiddenError("You are not a member of the Society's main committee.");
+		const siteUser = await SiteUser.findFromProfile(currentUser, "committee");
+		if(!siteUser) throw new ForbiddenError("You are not a member of the Society's main committee.");
 
 		let game = await Game.findOne({
 			where: [ // using array means "OR"
@@ -166,13 +177,13 @@ export class GamesController
 
 		Game.reorder(game.uuid);
 
-		// return {
-		// 	uuid: game.uuid,
-		// 	nameShort: game.nameShort,
-		// 	brief: game.brief,
-		// 	tagline: game.tagline,
-		// 	icon: game.iconBase64
-		// };
+		return {
+			uuid: game.uuid,
+			nameShort: game.nameShort,
+			brief: game.brief,
+			tagline: game.tagline,
+			icon: game.iconBase64
+		};
 	}
 
 	@Post("/edit")
@@ -184,12 +195,12 @@ export class GamesController
 	]))
 	private async updateGame(
 		@Body() gameUpdate : GameUpdateRequest,
-		@Req() req : Request,)
-		//@CurrentUser({ required: true }) currentUser : DiscordProfile)
+		@Req() req : Request,
+		@CurrentUser({ required: true }) currentUser : DiscordProfile)
 		: Promise<GameUpdateResponse>
 	{
-		// const usersInfoes = await SiteUser.findFromProfile(currentUser) as any as SiteUser[];
-		// if(!usersInfoes || usersInfoes.length == 0) throw new ForbiddenError("Your details do not exist on our system. Please stop probing our API.");
+		const usersInfoes = await SiteUser.findFromProfile(currentUser) as any as SiteUser[];
+		if(!usersInfoes || usersInfoes.length == 0) throw new ForbiddenError("Your details do not exist on our system. Please stop probing our API.");
 
 		const game = await Game.findOne({
 			where: {
@@ -208,10 +219,10 @@ export class GamesController
 			]
 		});
 
-		// if(!usersInfoes.find((u) => u.group == "committee") && !reps.find((r) => r.discordId == currentUser.id))
-		// {
-		// 	throw new ForbiddenError("You are not a committee member, nor are you the rep for this game!");
-		// }
+		if(!usersInfoes.find((u) => u.group == "committee") && !reps.find((r) => r.discordId == currentUser.id))
+		{
+			throw new ForbiddenError("You are not a committee member, nor are you the rep for this game!");
+		}
 
 		const img : File | undefined = !!req.files["img"] ? req.files["img"][0] : undefined;
 		const icon : File | undefined = !!req.files["icon"] ? req.files["icon"][0] : undefined;
@@ -356,6 +367,7 @@ export class GamesController
 				group: `${game.url}_reps`
 			},
 			select: [
+				"uuid",
 				"discordId",
 				"avatar",
 				"name",
@@ -379,17 +391,27 @@ export class GamesController
 		}
 
 		let isCommittee = false;
-		let canEditSelf : string | null = null;
+		let canEditSelf : string | undefined;
 		if(!!currentUser)
 		{
-			isCommittee = !!(await SiteUser.find({ group: "committee", discordId: currentUser.id }));
+			isCommittee = !!(await SiteUser.findFromProfile(currentUser, "committee"));
+
+			if(!isCommittee)
+			{
+				isCommittee = DiscordBot.Utils.CheckForRole(currentUser.id, process.env.DISCORD_GUILD_ID, [
+					process.env.ADMIN_ROLE_NAME,
+				]);
+			}
 
 			if(!isCommittee)
 			{
 				const rep = reps.find((r) => r.discordId == currentUser.id);
-				canEditSelf = !!rep ? rep.uuid : null;
+				canEditSelf = !!rep ? rep.uuid : undefined;
 			}
 		}
+
+		console.log(isCommittee);
+		console.log(canEditSelf);
 
         return {
 			page: "games",
@@ -406,13 +428,17 @@ export class GamesController
 	}
 	
 	@Post("/:game/rep")
+	@Redirect("/games/:url")
 	private async addRep(
 		@Param("game") gameUrl : string,
 		@Body() newRep : UserAddRequest,
-        //@CurrentUser({ required: true }) currentUser : DiscordProfile,
+        @CurrentUser({ required: true }) currentUser : DiscordProfile,
 		@UploadedFile("avatar", { required: false, options: imgUploadOptions }) avatar : File)
 		: Promise<UserAddResponse>
 	{
+		const siteUser = await SiteUser.findFromProfile(currentUser, "committee");
+		if(!siteUser) throw new ForbiddenError("You are not a member of the Society's main committee.");
+
 		const game = await Game.findOne({ url: gameUrl });
 		if(!game) throw new NotFoundError("That game does not exist. Please stop probing our API.");
 
@@ -440,11 +466,13 @@ export class GamesController
 			title : rep.title,
 			desc : rep.desc,
 			message : rep.message,
-			avatarBase64 : rep.avatarBase64
+			avatarBase64 : rep.avatarBase64,
+			url: gameUrl
 		};
 	}
 
 	@Post("/:game/rep/edit")
+	@Redirect("/games/:url")
 	private async updateRep(
 		@Param("game") gameUrl : string,
 		@Body() repUpdate : UserUpdateRequest,
@@ -541,15 +569,22 @@ export class GamesController
 			title: rep.title,
 			desc: rep.desc,
 			message: rep.message,
-			avatarBase64: rep.avatarBase64
+			avatarBase64: rep.avatarBase64,
+			url: gameUrl
 		};
 	}
 
 	@Post("/:game/rep/del")
+	@Redirect("/games/:url")
 	private async delRep(
 		@Param("game") gameUrl : string,
 		@Body() rep : UserDeleteRequest,
-		@CurrentUser({ required: false }) currentUser : DiscordProfile)
+		@CurrentUser({ required: true }) currentUser : DiscordProfile,
+		/**
+		 * The form includes files when invoked from the page so the data is received with enctype="multipart/form-data"
+		 * we have to include the UploadedFiles decorator here to make sure it's parsed correctly
+		 */ 
+		@UploadedFiles("", { required: false}) imgs : File[])
 		: Promise<UserDeleteResponse>
 	{
 		// check they're committee
@@ -567,6 +602,8 @@ export class GamesController
 		await repEntity.remove();
 		await SiteUser.reorder(`${gameUrl}_reps`);
 
-		return;
+		return {
+			url: gameUrl
+		};
 	}
 }

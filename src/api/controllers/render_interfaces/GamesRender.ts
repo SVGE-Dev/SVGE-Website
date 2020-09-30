@@ -8,5 +8,5 @@ export interface GamesRender extends RenderRequest
 		icon : string // base64 encoding, Handlebars doesn't like getters
 	}>;
 	canEditAll : boolean;
-	canEditSome : string[]; // UUIDs of games that this user can edit the info for
+	canEditSome : string[] | undefined; // UUIDs of games that this user can edit the info for
 }

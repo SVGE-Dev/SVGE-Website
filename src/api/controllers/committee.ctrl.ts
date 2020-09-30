@@ -39,7 +39,7 @@ export class CommitteeController
 {
     @Get("/")
     @Render("committee")
-    private async getCommittee(@CurrentUser({ required: false }) user : DiscordProfile) : Promise<CommitteeRender>
+    private async getCommittee(@CurrentUser({ required: false }) currentUser : DiscordProfile) : Promise<CommitteeRender>
     {
 		const committee = await SiteUser.find({
 			where: {
@@ -50,8 +50,14 @@ export class CommitteeController
 			}
 		});
 
-		// TEST STUFF EDIT OUT LATER!!
-		const isCommittee = true; //!!user && !!committee.find((c) => c.discordId == user.id);
+		let isCommittee = false;
+		if(!!currentUser)
+		{
+			isCommittee = DiscordBot.Utils.CheckForRole(currentUser.id, process.env.DISCORD_GUILD_ID, [
+				process.env.ADMIN_ROLE_NAME,
+				process.env.COMMITTEE_ROLE_NAME
+			]);
+		}
 
         return {
 			page: "committee",
@@ -64,7 +70,8 @@ export class CommitteeController
 					avatar: c.avatarBase64
 				};
 			}),
-			userIsCommittee: isCommittee,
+			canEditAll: isCommittee,
+			canEditSelf: undefined, // committee can edit all committee
             //custom_css: [ "/css/jquery-sortable.css" ],
 			//custom_scripts: [ "/js/jquery-sortable.js" ],
 			custom_scripts: [
@@ -78,7 +85,7 @@ export class CommitteeController
 
 	@Post("/")
 	@Redirect("/committee") // Redirect is relative to site root
-	//@Authorized([ process.env.COMMITTEE_ROLE_NAME, process.env.ADMIN_ROLE_NAME ])
+	@Authorized([ process.env.COMMITTEE_ROLE_NAME, process.env.ADMIN_ROLE_NAME ])
 	private async addCommittee(
 		@Body() newCommittee : UserAddRequest,
 		@UploadedFile("avatar", { required: false, options: imgUploadOptions }) avatar : File)
@@ -113,7 +120,7 @@ export class CommitteeController
 
 	@Post("/edit")
 	@Redirect("/committee") // Redirect is relative to site root
-	//@Authorized([ process.env.COMMITTEE_ROLE_NAME, process.env.ADMIN_ROLE_NAME ])
+	@Authorized([ process.env.COMMITTEE_ROLE_NAME, process.env.ADMIN_ROLE_NAME ])
 	private async updateCommittee(
 		@Body() updateCommittee : UserUpdateRequest,
 		@UploadedFile("avatar", { required: false, options: imgUploadOptions }) avatar : File)
@@ -197,7 +204,7 @@ export class CommitteeController
 
 	@Post("/del")
 	@Redirect("/committee") // Redirect is relative to site root
-	//@Authorized([ process.env.COMMITTEE_ROLE_NAME, process.env.ADMIN_ROLE_NAME ])
+	@Authorized([ process.env.COMMITTEE_ROLE_NAME, process.env.ADMIN_ROLE_NAME ])
 	private async deleteCommittee(
 		@Body() delCommittee : UserDeleteRequest,
 		/**

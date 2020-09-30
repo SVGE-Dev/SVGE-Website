@@ -9,4 +9,7 @@ export interface UserManageableRender extends RenderRequest
 	}>;
 	peopleGroup : string; //e.g. game rep, committee member etc
 	endpoint : string;
+	
+	canEditAll : boolean;
+	canEditSelf : string | null; // their UUID
 }

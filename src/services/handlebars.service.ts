@@ -24,7 +24,8 @@ export namespace Handlebars
 			or() {
 				return Array.prototype.slice.call(arguments, 0, -1).some(Boolean);
 			},
-			multipleOf: (val : number, divider : number) => val % divider == 0
+			multipleOf: (val : number, divider : number) => val % divider == 0,
+			contains: (arr : any[], val : any) => !!arr ? arr.includes(val) : false
 		}
 	};
 	

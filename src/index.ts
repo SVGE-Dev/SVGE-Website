@@ -9,6 +9,10 @@ import { createConnection } from 'typeorm';
 import { useExpressServer } from 'routing-controllers';
 import * as express from 'express';
 
+console.log(`Discord bot token: ${process.env.DISCORD_BOT_TOKEN}`);
+console.log(`Discord client id: ${process.env.DISCORD_CLIENT_ID}`);
+console.log(`Discord client secret: ${process.env.DISCORD_CLIENT_SECRET}`);
+
 // don't use routing-controllers's "createExpressServer" as routes should be done
 // after auth and engine middlewares else it messes things up
 const app = express();

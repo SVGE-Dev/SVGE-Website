@@ -1,4 +1,5 @@
 <div class="container mb-5">
+	{{#if canEditAll}}
 	<h2>Add new {{peopleGroup}}</h2>
 	<form id="new_site_user" method="POST" enctype="multipart/form-data" action="{{endpoint}}">
 		<div class="row">
@@ -63,8 +64,8 @@
 				</div>
 
 				<div class="form-group">
-					<label for="scFiles">Avatar image</label>
-					<input type="file" id="scFiles" class="form-control">
+					<label for="avatar">Avatar image</label>
+					<input type="file" id="avatar" name="avatar" class="form-control">
 					<small id="iconHelp" class="form-text text-muted">
 						.png or .jpg file type, as close to 1024x1024 as you can get it
 					</small>
@@ -77,6 +78,7 @@
 			</div>
 		</div>
 	</form>
+	{{/if}}
 </div>
 
 <div class="container">
@@ -85,9 +87,11 @@
 		{{#if (eq @index 0)}}
 		<h2>Edit existing {{../peopleGroup}}s</h2>
 		{{/if}}
+		{{#if (or ../canEditAll (eq ../canEditSelf user.uuid))}}
 		<li>
 			<h3>{{ user.name }}</h3>
-			<form id="{{this.user.name}}_form" enctype="multipart/form-data" action="{{../endpoint}}/edit" method="POST">
+			<form id="{{this.user.name}}_form" enctype="multipart/form-data" action="{{../endpoint}}/edit"
+				method="POST">
 				<div class="row">
 					<div class="col-md-12 col-lg-7">
 
@@ -145,8 +149,8 @@
 						</div>
 
 						<div class="form-group">
-							<label for="scFiles">Avatar image</label>
-							<input type="file" id="scFiles" class="form-control">
+							<label for="avatar">Avatar image</label>
+							<input type="file" id="avatar" name="avatar" class="form-control">
 							<small id="iconHelp" class="form-text text-muted">
 								.png or .jpg file type, as close to 1024x1024 as you can get it
 							</small>
@@ -158,13 +162,16 @@
 						<button class="btn btn-primary w-100" type="submit">
 							Update {{../peopleGroup}}
 						</button>
+						{{#if ../canEditAll}}
 						<button class="btn btn-danger py-2 my-2 w-100" type="submit" formaction="{{../endpoint}}/del">
 							Delete {{../peopleGroup}}
 						</button>
+						{{/if}}
 					</div>
 				</div>
 			</form>
 		</li>
+		{{/if}}
 		{{/each}}
 	</ol>
 </div>

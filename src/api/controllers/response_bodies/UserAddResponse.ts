@@ -8,4 +8,6 @@ export interface UserAddResponse
 	desc : string;
 	message : string;
 	avatarBase64 : string;
+	// for use in redirects, if needed
+	url? : string;
 }

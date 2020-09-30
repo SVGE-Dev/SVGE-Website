@@ -5,6 +5,7 @@
 		width: 100%;
 		margin-bottom: 5px;
 	}
+
 	@media (min-width: 992px) {
 		img.game {
 			width: calc(100% / 2);
@@ -22,24 +23,26 @@
 			<img src="{{img}}" alt="Image" class="game float-lg-right">
 			{{{game.text}}}
 		</div>
-		{{#if reps}}
-			<div class="site-section-heading text-left mt-5 w-border row" data-aos="fade-up" data-aos-delay="100">
-				<h2>Reps</h2>
+		{{#each people}}
+		{{#if (eq @index 0)}}
+		<div class="site-section-heading text-left mt-5 w-border row" data-aos="fade-up" data-aos-delay="100">
+			<h2>Reps</h2>
+		</div>
+		{{/if}}
+		<div class="d-block d-md-flex podcast-entry bg-dark mb-5" data-aos="fade-up">
+			<div class="image" style="background-image: url({{ avatar }});"></div>
+			<div class="text">
+				<h3 class="font-weight-light"><a href="#">{{ user.title }}</a></h3>
+				<div class=" mb-3 text-white"><span class="text-black-opacity-05"><small>{{ user.name }}<span
+								class="sep">|</span>{{ user.discordUsername }}</small></span></div>
+				<p class="mb-4 text-white lead">{{ user.desc }}</p>
+				<p class="mb-4 text-white">{{ user.message }}</p>
 			</div>
-			{{#each reps}}
-				<div class="d-block d-md-flex podcast-entry bg-dark mb-5" data-aos="fade-up">
-					<div class="image" style="background-image: url('{{this.icon}}');"></div>
-					<div class="text">
-						<h3 class="font-weight-light"><a href="#">{{this.rep.name}}</a></h3>
-						<div class="mb-3 text-white">
-							<span class="text-black-opacity-05"><small>
-								{{this.rep.discordUsername}} <span class="sep">&vert;</span>
-							</small></span>
-						</div>
-						<p class="mb-4 text-white">{{this.rep.message}}</p>
-					</div>
-				</div>
-			{{/each}}
+		</div>
+		{{/each}}
+
+		{{#if (or (eq canEditAll true) (ne canEditSelf undefined))}}
+		{{> user-manager}}
 		{{/if}}
 	</div>
 </div>
