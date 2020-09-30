@@ -1,5 +1,5 @@
 import { Transform } from "class-transformer";
-import { IsInt, IsOptional, IsPositive } from "class-validator";
+import { IsInt, IsPositive, ValidateIf } from "class-validator";
 import { IsDiscordUsername } from "../validators/IsDiscordUsername";
 import { IsLongerThan } from "../validators/IsLongerThan";
 import { IsShorterThan } from "../validators/IsShorterThan";
@@ -33,6 +33,7 @@ export class UserAddRequest
 	// a much longer piece of text, such as about them, about what they can do for you, etc
 	@IsLongerThan(64)
 	@IsShorterThan(256)
-	@IsOptional()
+	@ValidateIf((userAddRequest : UserAddRequest) =>
+		userAddRequest.message !== undefined && userAddRequest.message != "")
 	message : string | undefined;
 }
