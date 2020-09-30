@@ -374,7 +374,8 @@ export class GamesController
 				"discordUsername",
 				"title",
 				"desc",
-				"message"
+				"message",
+				"position"
 			],
 			order: {
 				position: "ASC"
@@ -418,7 +419,12 @@ export class GamesController
 			tab_title: `SVGE | ${game.nameShort}`,
 			page_title: game.name,
 			game: game,
-			people: reps.filter((r) => r.show).map((r) => ({user: r, avatar: r.avatarBase64})),
+			people: reps.filter((r) => r.show).map((r) => {
+				return {
+					user: r,
+					avatar: r.avatarBase64
+				};
+			}),
 			img: game.imgBase64,
 			canEditAll: isCommittee,
 			canEditSelf: canEditSelf,
