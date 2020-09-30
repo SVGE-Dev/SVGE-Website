@@ -1,6 +1,8 @@
-import { Controller, Render, Get } from "routing-controllers";
+import { Controller, Render, Get, UseBefore } from "routing-controllers";
+import { NoSeoIndexing } from "../middlewares/NoSeoIndexing.mdlw";
 
 
+@UseBefore(NoSeoIndexing)
 @Controller("/pacman")
 export class PacmanController
 {
