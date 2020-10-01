@@ -419,7 +419,7 @@ export class GamesController
 			tab_title: `SVGE | ${game.nameShort}`,
 			page_title: game.name,
 			game: game,
-			people: reps.filter((r) => r.show).map((r) => {
+			people: reps.map((r) => {
 				return {
 					user: r,
 					avatar: r.avatarBase64

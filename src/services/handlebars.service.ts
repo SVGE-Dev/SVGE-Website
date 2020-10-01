@@ -1,7 +1,7 @@
 import * as express from 'express';
 import { Express as ExpressApp } from "express-serve-static-core";
 import * as hbs from 'express-handlebars';
-
+import { SiteUser } from '../api/entities/siteUser.ent';
 
 
 export namespace Handlebars
@@ -25,7 +25,8 @@ export namespace Handlebars
 				return Array.prototype.slice.call(arguments, 0, -1).some(Boolean);
 			},
 			multipleOf: (val : number, divider : number) => val % divider == 0,
-			contains: (arr : any[], val : any) => !!arr ? arr.includes(val) : false
+			contains: (arr : any[], val : any) => !!arr ? arr.includes(val) : false,
+			visibleUsers: (persons : {user : SiteUser}[], opts : any) => persons.filter((p) => p.user.show)
 		}
 	};
 	

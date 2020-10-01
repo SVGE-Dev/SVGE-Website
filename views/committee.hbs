@@ -18,7 +18,7 @@
 			</div>
 		</div>
 		<div class="row">
-			{{#each people }}
+			{{#each (visibleUsers people) }}
 			{{#if (multipleOf @index 2) }}
 			<div class="d-block d-md-flex podcast-entry bg-dark mb-5" data-aos="fade-up">
 				<div class="image" style="background-image: url({{ avatar }});"></div>

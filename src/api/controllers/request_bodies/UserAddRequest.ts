@@ -1,5 +1,5 @@
 import { Transform } from "class-transformer";
-import { IsInt, IsPositive, ValidateIf } from "class-validator";
+import { IsBoolean, IsInt, IsPositive, ValidateIf } from "class-validator";
 import { IsDiscordUsername } from "../validators/IsDiscordUsername";
 import { IsLongerThan } from "../validators/IsLongerThan";
 import { IsShorterThan } from "../validators/IsShorterThan";
@@ -36,4 +36,8 @@ export class UserAddRequest
 	@ValidateIf((userAddRequest : UserAddRequest) =>
 		userAddRequest.message !== undefined && userAddRequest.message != "")
 	message : string | undefined;
+
+	@IsBoolean()
+	@Transform((s) => Boolean(s))
+	show : boolean = true;
 }

@@ -39,4 +39,9 @@ export class UserUpdateRequest
 	@IsBoolean()
 	@IsOptional()
 	resetAvatar : boolean = false;
+
+	// whether they should show in the list of site users
+	@IsBoolean()
+	@Transform((s) => Boolean(s))
+	show : boolean = true;
 }

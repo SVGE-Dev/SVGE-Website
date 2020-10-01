@@ -23,7 +23,7 @@
 			<img src="{{img}}" alt="Image" class="game float-lg-right">
 			{{{game.text}}}
 		</div>
-		{{#each people}}
+		{{#each (visibleUsers people) }}
 		{{#if (eq @index 0)}}
 		<div class="site-section-heading text-left mt-5 w-border row" data-aos="fade-up" data-aos-delay="100">
 			<h2>Reps</h2>
