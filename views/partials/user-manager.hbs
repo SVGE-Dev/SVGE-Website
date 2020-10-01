@@ -4,34 +4,63 @@
 	<form id="new_site_user" method="POST" enctype="multipart/form-data" action="{{endpoint}}">
 		<div class="row">
 			<div class="col-md-12 col-lg-7">
-
-				<div class="form-group">
-					<label for="username">Discord Username</label>
-					<input type="text" class="form-control" name="username" id="username" placeholder="Bot#101"
-						required />
-					<small id="iconHelp" class="form-text text-muted">
-						right-click them, go to profile, copy and paste with the #1234 discriminator
-					</small>
+				<div class="row">
+					<div class="col-md-6 col-lg-6">
+						<div class="form-group">
+							<label for="username">Discord Username</label>
+							<input type="text" class="form-control" name="username" id="username" placeholder="Bot#101"
+								required />
+							<small id="iconHelp" class="form-text text-muted">
+								right-click them, go to profile, copy and paste with the #1234 discriminator
+							</small>
+						</div>
+					</div>
+					<div class="col-md-6 col-lg-6">
+						<div class="form-group">
+							<label for="name">Name (IRL or pseudonym)</label>
+							<input type="text" class="form-control" name="name" id="name" minlength="1" maxlength="24"
+								placeholder="Joe Bloggs" required />
+							<small id="iconHelp" class="form-text text-muted">
+								Can be whatever name the {{peopleGroup}} would like to show (1-24 characters)
+							</small>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6 col-lg-6">
+						<div class="form-group">
+							<label for="position">Position</label>
+							<input type="number" min=1 class="form-control" name="position" id="position" placeholder=1
+								required />
+							<small id="iconHelp" class="form-text text-muted">
+								This is the order in which the user will show up in the list above
+							</small>
+						</div>
+					</div>
+					<div class="col-md-6 col-lg-6">
+						<div class="form-group">
+							<label for="position">Show in List?</label>
+							<input type="number" min=0 max=1 class="form-control" name="show" id="show" value=1
+								required />
+							<small id="iconHelp" class="form-text text-muted">
+								Setting this to 0 means the user will not show in the list above, but will retain the
+								website permissions associated with the role
+							</small>
+						</div>
+					</div>
 				</div>
 
 				<div class="form-group">
-					<label for="name">Name (IRL or pseudonym)</label>
-					<input type="text" class="form-control" name="name" id="name" minlength="1" maxlength="24"
-						placeholder="Joe Bloggs" required />
+					<label for="message">User Message</label>
+					<textarea name="message" class="form-control" id="message" maxlength="256" minlength="64"
+						placeholder="A personal message from the user" rows="3"></textarea>
 					<small id="iconHelp" class="form-text text-muted">
-						Can be whatever name the {{peopleGroup}} would like to show (1-24 characters)
+						The slightly longer message from the user (64-256 characters), optional
 					</small>
 				</div>
+			</div>
 
-				<div class="form-group">
-					<label for="position">Position</label>
-					<input type="number" min=1 class="form-control" name="position" id="position" placeholder=1
-						required />
-					<small id="iconHelp" class="form-text text-muted">
-						This is the order in which the user will show up in the list above
-					</small>
-				</div>
-
+			<div class="col-lg-5 ml-auto">
 				<div class="form-group">
 					<label for="title">Role Title</label>
 					<input type="text" class="form-control" name="title" id="title" maxlength="32" minlength="1"
@@ -41,25 +70,12 @@
 					</small>
 				</div>
 
-			</div>
-
-			<div class="col-lg-5 ml-auto">
-
 				<div class="form-group">
 					<label for="desc">Role Description</label>
 					<textarea name="desc" class="form-control" id="desc" minlength="32" maxlength="90"
 						placeholder="Description of their role" required></textarea>
 					<small id="iconHelp" class="form-text text-muted">
 						A short description of their role. (32-90 characters)
-					</small>
-				</div>
-
-				<div class="form-group">
-					<label for="message">User Message</label>
-					<textarea name="message" class="form-control" id="message" maxlength="256" minlength="64"
-						placeholder="A personal message from the user"></textarea>
-					<small id="iconHelp" class="form-text text-muted">
-						The slightly longer message from the user (64-256 characters)
 					</small>
 				</div>
 
@@ -94,7 +110,6 @@
 				method="POST">
 				<div class="row">
 					<div class="col-md-12 col-lg-7">
-
 						{{!-- <div class="form-group">
 							<label for="uuid">UUID</label> --}}
 						<input type="hidden" class="form-control" name="uuid" id="uuid" value="{{ user.uuid }}" />
