@@ -20,8 +20,10 @@
 			<h2>{{game.heading}}</h2>
 		</div>
 		<div class="row" data-aos="fade-up" data-aos-delay="100">
-			<img src="{{img}}" alt="Image" class="game float-lg-right">
-			{{{game.text}}}
+			<p>
+				<img src="{{img}}" alt="Image" class="game float-right">
+				{{{game.text}}}
+			</p>
 		</div>
 		{{#each (visibleUsers people) }}
 		{{#if (eq @index 0)}}

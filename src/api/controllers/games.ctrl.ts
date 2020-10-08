@@ -382,15 +382,6 @@ export class GamesController
 			}
 		});
 
-		if(game.text.includes("<p>")) // they rep has used markup for this
-		{
-			game.text = game.text.replace("<p>", '<p class="lead">'); // make first paragraph the "lead" paragraph
-		}
-		else // they haven't, so we need to manually enclose in paragraph tags
-		{
-			game.text = `<p class="lead">${game.text}</p>`;
-		}
-
 		let isCommittee = false;
 		let canEditSelf : string | undefined;
 		if(!!currentUser)
