@@ -38,6 +38,6 @@ export class UserAddRequest
 	message : string | undefined;
 
 	@IsBoolean()
-	@Transform((s) => Boolean(s))
+	@Transform((s) => Boolean(s != 0))
 	show : boolean = true;
 }

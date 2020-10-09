@@ -164,21 +164,10 @@ export class CommitteeController
 			changed = true;
 			committee.message = updateCommittee.message;
 		}
-		if(updateCommittee.resetAvatar)
+		if(committee.show != updateCommittee.show)
 		{
-			if(committee.avatarIsCustom)
-			{
-				changed = true;
-				await committee.setAvatar(); // reset it
-			}
-		}
-		else
-		{
-			if(!!avatar)
-			{
-				changed = true;
-				await committee.setAvatar(avatar);
-			}
+			changed = true;
+			committee.show = updateCommittee.show;
 		}
 
 		if(changed)

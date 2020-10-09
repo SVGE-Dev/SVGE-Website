@@ -43,7 +43,6 @@ import { GameDeleteResponse } from "./response_bodies/GameDeleteResponse";
 import { UserAddResponse } from "./response_bodies/UserAddResponse";
 import { UserUpdateResponse } from "./response_bodies/UserUpdateResponse";
 import { UserDeleteResponse } from "./response_bodies/UserDeleteResponse";
-import { MIME_PNG } from "jimp";
 
 
 
@@ -133,6 +132,7 @@ export class GamesController
 		@Body() newGame : GameAddRequest,
         @CurrentUser({ required: true }) currentUser : DiscordProfile,
 		@Req() req : Request)
+		: Promise<GameAddResponse>
 	{
 		const siteUser = await SiteUser.findFromProfile(currentUser, "committee");
 		if(!siteUser) throw new ForbiddenError("You are not a member of the Society's main committee.");
@@ -161,7 +161,6 @@ export class GamesController
 		const gameImage = await cropAndResize(1920, 1080, img.buffer);
 		const gameIcon = await cropAndResize(480, 480, icon.buffer);
 
-		//@ts-ignore Ignoring the fact that we're not setting the ID (TypeORM will handle that for us)
 		game = new Game();
 		game.name = newGame.name,
 		game.nameShort = newGame.nameShort,
@@ -532,21 +531,10 @@ export class GamesController
 			changed = true;
 			rep.message = repUpdate.message;
 		}
-		if(repUpdate.resetAvatar)
+		if(rep.show != repUpdate.show)
 		{
-			if(rep.avatarIsCustom)
-			{
-				changed = true;
-				await rep.setAvatar(); // reset it
-			}
-		}
-		else
-		{
-			if(!!avatar)
-			{
-				changed = true;
-				await rep.setAvatar(avatar);
-			}
+			changed = true;
+			rep.show = repUpdate.show;
 		}
 
 		if(changed)

@@ -35,13 +35,8 @@ export class UserUpdateRequest
 		userAddRequest.message !== undefined && userAddRequest.message != "")
 	message? : string | undefined;
 
-	// whether or not we're resetting to their Discord pic
-	@IsBoolean()
-	@IsOptional()
-	resetAvatar : boolean = false;
-
 	// whether they should show in the list of site users
 	@IsBoolean()
-	@Transform((s) => Boolean(s))
+	@Transform((s) => Boolean(s != 0))
 	show : boolean = true;
 }

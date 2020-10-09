@@ -106,37 +106,74 @@
 		{{#if (or ../canEditAll (eq ../canEditSelf user.uuid))}}
 		<li>
 			<h3>{{ user.name }}</h3>
-			<form id="{{this.user.name}}_form" enctype="multipart/form-data" action="{{../endpoint}}/edit"
+			<form id="{{this.user.username}}_form" enctype="multipart/form-data" action="{{../endpoint}}/edit"
 				method="POST">
 				<div class="row">
 					<div class="col-md-12 col-lg-7">
 						{{!-- <div class="form-group">
 							<label for="uuid">UUID</label> --}}
-						<input type="hidden" class="form-control" name="uuid" id="uuid" value="{{ user.uuid }}" />
+						<input type="hidden" class="form-control" name="uuid" id="uuid" value="{{ user.uuid }}"
+							readonly />
 						{{!-- </div> --}}
 
-						<div class="form-group">
-							<label for="name">Name (IRL or pseudonym)</label>
-							<input type="text" class="form-control" name="name" id="name" value="{{ user.name }}"
-								minlength="1" maxlength="24" placeholder="Name of {{../peopleGroup}}" />
-							<small id="iconHelp" class="form-text text-muted">
-								Can be whatever name the {{peopleGroup}} would like to show (1-24 characters)
-							</small>
+						<div class="row">
+							<div class="col-md-6 col-lg-6">
+								<div class="form-group">
+									<label for="username">Discord Username</label>
+									<input type="text" class="form-control" name="username" id="username"
+										value="{{ user.discordUsername }}" readonly />
+								</div>
+							</div>
+							<div class="col-md-6 col-lg-6">
+								<div class="form-group">
+									<label for="name">Name (IRL or pseudonym)</label>
+									<input type="text" class="form-control" name="name" id="name" minlength="1"
+										maxlength="24" value="{{user.name}}" required />
+									<small id="iconHelp" class="form-text text-muted">
+										Can be whatever name the {{../peopleGroup}} would like to show (1-24 characters)
+									</small>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6 col-lg-6">
+								<div class="form-group">
+									<label for="position">Position</label>
+									<input type="number" min=1 class="form-control" name="position" id="position"
+										value={{user.position}} {{#if ../canEditAll}}required{{else}}readonly{{/if}} />
+									<small id="iconHelp" class="form-text text-muted">
+										This is the order in which the user will show up in the list above
+									</small>
+								</div>
+							</div>
+							<div class="col-md-6 col-lg-6">
+								<div class="form-group">
+									<label for="position">Show in List?</label>
+									<input type="number" min=0 max=1 class="form-control" name="show" id="show"
+										value={{#if user.show}}1{{else}}0{{/if}} required />
+									<small id="iconHelp" class="form-text text-muted">
+										Setting this to 0 means the user will not show in the list above, but will
+										retain the website permissions associated with the role
+									</small>
+								</div>
+							</div>
 						</div>
 
 						<div class="form-group">
-							<label for="position">Position in List</label>
-							<input value={{user.position}} type="number" min=1 class="form-control" name="position"
-								id="position" placeholder={{ user.position }} required />
+							<label for="message">User Message</label>
+							<textarea name="message" class="form-control" id="message" maxlength="256" minlength="64"
+								rows="3">{{user.message}}</textarea>
 							<small id="iconHelp" class="form-text text-muted">
-								This is the order in which the user will show up in the list above
+								The slightly longer message from the user (64-256 characters), optional
 							</small>
 						</div>
+					</div>
 
+					<div class="col-lg-5 ml-auto">
 						<div class="form-group">
 							<label for="title">Role Title</label>
-							<input type="text" class="form-control" name="title" id="title" value="{{ user.title }}"
-								minlength="1" maxlength="32" placeholder="Tole Name" />
+							<input type="text" class="form-control" name="title" id="title" maxlength="32" minlength="1"
+								value="{{user.title}}" {{#if ../canEditAll}}required{{else}}readonly{{/if}} />
 							<small id="iconHelp" class="form-text text-muted">
 								The name of their role, such as President, Lol Rep etc. (1-32 characters)
 							</small>
@@ -145,21 +182,9 @@
 						<div class="form-group">
 							<label for="desc">Role Description</label>
 							<textarea name="desc" class="form-control" id="desc" minlength="32" maxlength="90"
-								placeholder="Role Description">{{ user.desc }}</textarea>
+								required>{{user.desc}}</textarea>
 							<small id="iconHelp" class="form-text text-muted">
 								A short description of their role. (32-90 characters)
-							</small>
-						</div>
-
-					</div>
-					<div class="col-lg-5 ml-auto">
-
-						<div class="form-group">
-							<label for="message">User Message</label>
-							<textarea name="message" class="form-control" id="message" maxlength="256" minlength="64"
-								placeholder="A personal message from the user">{{ user.message }}</textarea>
-							<small id="iconHelp" class="form-text text-muted">
-								The slightly longer personal from the user (64-256 characters)
 							</small>
 						</div>
 
@@ -170,12 +195,16 @@
 								.png or .jpg file type, as close to 1024x1024 as you can get it
 							</small>
 							<small id="iconHelp" class="form-text text-muted">
-								if ommitted, defaults to their Discord profile picture
+								resetting sets this to their Discord avatar
 							</small>
 						</div>
 
 						<button class="btn btn-primary w-100" type="submit">
 							Update {{../peopleGroup}}
+						</button>
+						<button class="btn btn-secondary py-2 my-2 w-100" type="submit"
+							formaction="{{../endpoint}}/reset-image">
+							Reset Picture
 						</button>
 						{{#if ../canEditAll}}
 						<button class="btn btn-danger py-2 my-2 w-100" type="submit" formaction="{{../endpoint}}/del">
@@ -186,6 +215,7 @@
 				</div>
 			</form>
 		</li>
+		<br />
 		{{/if}}
 		{{/each}}
 	</ol>

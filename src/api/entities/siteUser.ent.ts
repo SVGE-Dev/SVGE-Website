@@ -22,6 +22,7 @@ export class SiteUser extends BaseEntity
 		this.title = user.title;
 		this.desc = user.desc;
 		this.message = user.message;
+		this.show = user.show;
 		await this.setAvatar(avatar);
 
 		return this;
