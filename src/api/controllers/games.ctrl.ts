@@ -43,6 +43,7 @@ import { GameDeleteResponse } from "./response_bodies/GameDeleteResponse";
 import { UserAddResponse } from "./response_bodies/UserAddResponse";
 import { UserUpdateResponse } from "./response_bodies/UserUpdateResponse";
 import { UserDeleteResponse } from "./response_bodies/UserDeleteResponse";
+import { UserImageResetResponse } from "./response_bodies/UserImageResetResponse";
 
 
 
@@ -536,6 +537,11 @@ export class GamesController
 			changed = true;
 			rep.show = repUpdate.show;
 		}
+		if(!!avatar)
+		{
+			changed = true;
+			rep.setAvatar(avatar);
+		}
 
 		if(changed)
 		{
@@ -586,6 +592,49 @@ export class GamesController
 
 		await repEntity.remove();
 		await SiteUser.reorder(`${gameUrl}_reps`);
+
+		return {
+			url: gameUrl
+		};
+	}
+
+	@Post("/:game/rep/reset-image")
+	@Redirect("/games/:url")
+	private async resetImage(
+		@Param("game") gameUrl : string,
+		@Body() repUpdate : UserUpdateRequest,
+        @CurrentUser({ required: true }) currentUser : DiscordProfile,
+		@UploadedFile("avatar", { required: false, options: imgUploadOptions }) avatar : File)
+		: Promise<UserImageResetResponse>
+	{
+		const users = await SiteUser.findFromProfile(currentUser) as any as SiteUser[];
+		if(!users || users.length == 0) throw new ForbiddenError("Your details do not exist on our system. Please stop probing our API.");
+
+		const game = await Game.findOne({
+			where: {
+				url: gameUrl
+			},
+			select: [
+				"url"
+			]
+		});
+		if(!game) throw new NotFoundError("Game not found. Please stop probing our API.");
+
+		const rep = await SiteUser.findOne({
+			where: {
+				group: `${game.url}_reps`,
+				uuid: repUpdate.uuid
+			}
+		});
+		if(!rep) throw new BadRequestError("That rep does not exist for this game. Please stop probing our API.");
+
+		const isCommittee = !!users.find((u) => u.group == "committee");
+		const isSelf = rep.discordId == currentUser.id;
+
+		if(!isCommittee && !isSelf) throw new ForbiddenError("You are not a member of the committee nor the owner of this rep position. Please stop probing our API.");
+
+		await rep.setAvatar();
+		await rep.save();
 
 		return {
 			url: gameUrl

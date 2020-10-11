@@ -29,6 +29,7 @@ import { UserDeleteRequest } from "./request_bodies/UserDeleteRequest";
 import { UserAddResponse } from "./response_bodies/UserAddResponse";
 import { UserUpdateResponse } from "./response_bodies/UserUpdateResponse";
 import { UserDeleteResponse } from "./response_bodies/UserDeleteResponse";
+import { UserImageResetRequest } from './request_bodies/UserImageResetRequest';
 
 
 
@@ -169,6 +170,11 @@ export class CommitteeController
 			changed = true;
 			committee.show = updateCommittee.show;
 		}
+		if(!!avatar)
+		{
+			changed = true;
+			committee.setAvatar(avatar);
+		}
 
 		if(changed)
 		{
@@ -215,6 +221,31 @@ export class CommitteeController
 
 		await committee.remove();
 		await SiteUser.reorder("committee");
+
+		return;
+	}
+
+	@Post("/reset-image")
+	@Redirect("/committee")
+	@Authorized([ process.env.COMMITTEE_ROLE_NAME, process.env.ADMIN_ROLE_NAME ])
+	private async resetPicture(
+		@Body() user : UserImageResetRequest,
+		@UploadedFiles("", { required: false}) imgs : File[]
+	) : Promise<void>
+	{
+		console.log(`Resetting image for committee member with uuid:`);
+		console.log(user.uuid);
+
+		const committee = await SiteUser.findOne({
+			where: {
+				group: "committee",
+				uuid: user.uuid
+			}
+		});
+		if(!committee) throw new BadRequestError("That committee member does not exist. Please stop probing our API.");
+
+		await committee.setAvatar();
+		await committee.save();
 
 		return;
 	}
