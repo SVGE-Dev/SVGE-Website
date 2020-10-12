@@ -1,4 +1,4 @@
-import { Controller, ForbiddenError, Get, InternalServerError, Render } from "routing-controllers";
+import { Controller, Get, Render } from "routing-controllers";
 import { IndexRender } from "./render_interfaces/IndexRender";
 
 @Controller("/")
