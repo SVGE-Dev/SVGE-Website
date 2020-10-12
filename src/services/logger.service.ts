@@ -1,7 +1,7 @@
 import { Express as ExpressApp} from "express-serve-static-core";
-import * as morgan from 'morgan';
-import * as chalk from 'chalk';
-import { Request, Response } from 'express';
+import * as morgan from "morgan";
+import * as chalk from "chalk";
+import { Request, Response } from "express";
 
 
 
@@ -9,20 +9,23 @@ export namespace Logger
 {
 	export const init = (app : ExpressApp) =>
 	{
-		const nltab = "\n\t";
-
 		app.use(
 			morgan((tokens : any, req : Request, res : Response) : string =>
 			{
-				const successColor = chalk.hex('#2ed573').bold;
-				const failColor = chalk.hex('#ff5252').bold;
-				const redirectColor = chalk.hex('#f08400').bold;
-				const infoColor = chalk.hex("#2f78ed").bold;
+				const blue = "#2ed573";
+				const yellow = "#f08400";
+				const purple = "#2f78ed";
+				const informationalColor = chalk.magenta.bold; // 100 "Informational" HTTP codes
+				const successColor = chalk.green.bold; // 200 "Success" HTTP codes
+				const redirectColor = chalk.hex(blue).bold; // 300 "Redirection" HTTP codes
+				const clientFailColor = chalk.hex(yellow).bold; // 400 "Client Error" HTTP codes
+				const serverFailColor = chalk.red.bold; // 500 "Server Error" HTTP codes
+				const infoColor = chalk.hex(purple).bold;
 
 				const status = tokens.status(req, res);
 				const method = tokens.method(req, res);
 				const endpoint = tokens.url(req, res);
-				const resTime = tokens["response-time"](req, res);
+				const resTime = tokens["response-time"](req, res) || 0;
 				const title = [
 					"[" + status + "]",
 					method,
@@ -30,8 +33,13 @@ export namespace Logger
 					resTime + " ms"
 				].join(" ");
 
-				const statusColor = (200 <= status && status < 300) ? successColor : 
-					(300 <= status && status < 400) ? redirectColor : failColor;
+				const statusCode = parseInt(status);
+				const statusColor =
+					(200 <= statusCode && statusCode < 300) ? successColor
+					: (300 <= statusCode && statusCode < 400) ? redirectColor
+					: (400 <= statusCode && statusCode < 500) ? clientFailColor
+					: (500 <= statusCode) ? serverFailColor
+					: informationalColor;
 
 				const date = [
 					"\n  time:",
@@ -39,13 +47,13 @@ export namespace Logger
 				].join(" ");
 				const from = [
 					"\n  from:",
-					tokens['remote-addr'](req, res),
+					tokens["remote-addr"](req, res),
 					"-",
 					tokens.referrer(req, res)
 				].join(" ");
 				const userAgent = [
 					"\n  user-agent:",
-					tokens['user-agent'](req, res)
+					tokens["user-agent"](req, res)
 				].join(" ");
 
 

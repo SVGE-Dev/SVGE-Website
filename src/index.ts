@@ -9,16 +9,9 @@ import { createConnection } from 'typeorm';
 import { useExpressServer } from 'routing-controllers';
 import * as express from 'express';
 
-console.log(`Discord bot token: ${process.env.DISCORD_BOT_TOKEN}`);
-console.log(`Discord client id: ${process.env.DISCORD_CLIENT_ID}`);
-console.log(`Discord client secret: ${process.env.DISCORD_CLIENT_SECRET}`);
-
 // don't use routing-controllers's "createExpressServer" as routes should be done
 // after auth and engine middlewares else it messes things up
-const app = express();
-Services.Handlebars.init(app);
-Services.Auth.init(app);
-Services.Logger.init(app); // log express with Morgan (must go after routes are setup)
+//
 
 
 const main = async() =>
@@ -26,11 +19,21 @@ const main = async() =>
 	debug(`Attempting to connect to database on ${Configs.data.host}:${Configs.data.port}...`);
 	const dbConnection = await createConnection(Configs.data.conenctionOptions);
 
-	debug(`Connected! Starting Discord bot...`);
+	debug(`Starting Discord bot`);
 	Services.DiscordBot.init();
 
-	debug("Starting Express server...");
-	const server = useExpressServer(app, Configs.server.settings).listen(Configs.server.port);
+	debug("Creating express app");
+	const app = express();
+
+	debug("Registering auth service, logger and render engine");
+	Services.Handlebars.init(app);
+	Services.Auth.init(app);
+	Services.Logger.init(app); // log express with Morgan (must go after routes are setup)
+
+	debug("Registering routes");
+	const server = useExpressServer(app, Configs.server.settings);
+	
+	server.listen(Configs.server.port);
 	debug(`Express server listening on port ${Configs.server.port}.`);        
 };
 main();

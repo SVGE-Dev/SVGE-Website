@@ -1,7 +1,7 @@
 import { SiteUser } from "../../entities/siteUser.ent";
-import { RenderRequest } from "./RenderRequest";
+import { RenderResponse } from "./RenderResponse";
 
-export interface UserManageableRender extends RenderRequest
+export interface UserManageableRender extends RenderResponse
 {
 	people : Array<{
 		user : SiteUser;

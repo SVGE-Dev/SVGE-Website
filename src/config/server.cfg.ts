@@ -6,10 +6,11 @@ import { GamesController } from "../api/controllers/games.ctrl";
 import { GmodSplashController } from "../api/controllers/gmod.ctrl";
 import { IndexController } from "../api/controllers/index.ctrl";
 import { PacmanController } from "../api/controllers/pacman.ctrl";
+import { InternalServerErrorHandler, NotFoundErrorHandler } from "../api/middlewares/ErrorHandler.mdlw";
 
 export namespace server
 {
-	export const port = parseInt(process.env.EXPRESS_PORT || "3000");
+	export const port = parseInt(process.env.EXPRESS_PORT || "8080");
 	export const settings : RoutingControllersOptions = {
 		controllers: [
 			AuthController,
@@ -19,10 +20,13 @@ export namespace server
 			IndexController,
 			PacmanController
 		],
-		//middlewares: [__dirname + "/../api/middlewares/**/*.mdlw.{ts,js}"],
-		//cors: true,
+		middlewares: [
+			InternalServerErrorHandler,
+			NotFoundErrorHandler
+		],
 		cors: false,
 		authorizationChecker: Auth.authCheck,
-		currentUserChecker: Auth.userCheck
+		currentUserChecker: Auth.userCheck,
+		defaultErrorHandler: false
 	};
 }

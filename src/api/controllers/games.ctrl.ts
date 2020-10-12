@@ -207,7 +207,7 @@ export class GamesController
 				uuid: gameUpdate.uuid
 			}
 		});
-		if(!game) throw new NotFoundError("Game not found. Please stop probing our API.");
+		if(!game) throw new BadRequestError("Game not found. Please stop probing our API.");
 
 		const reps = await SiteUser.find({
 			where: {
@@ -437,7 +437,7 @@ export class GamesController
 		if(!siteUser) throw new ForbiddenError("You are not a member of the Society's main committee.");
 
 		const game = await Game.findOne({ url: gameUrl });
-		if(!game) throw new NotFoundError("That game does not exist. Please stop probing our API.");
+		if(!game) throw new BadRequestError("That game does not exist. Please stop probing our API.");
 
 		const repProfile = DiscordBot.Utils.getGuildMemberFromName(newRep.username);
 		let rep = await SiteUser.findOne({
@@ -488,7 +488,7 @@ export class GamesController
 				"url"
 			]
 		});
-		if(!game) throw new NotFoundError("Game not found. Please stop probing our API.");
+		if(!game) throw new BadRequestError("Game not found. Please stop probing our API.");
 
 		const rep = await SiteUser.findOne({
 			where: {
@@ -588,7 +588,7 @@ export class GamesController
 				uuid: rep.uuid
 			}
 		});
-		if(!repEntity) throw new NotFoundError("Failed to find the rep you wish to delete. Please stop probing our API.");
+		if(!repEntity) throw new BadRequestError("Failed to find the rep you wish to delete. Please stop probing our API.");
 
 		await repEntity.remove();
 		await SiteUser.reorder(`${gameUrl}_reps`);
@@ -618,7 +618,7 @@ export class GamesController
 				"url"
 			]
 		});
-		if(!game) throw new NotFoundError("Game not found. Please stop probing our API.");
+		if(!game) throw new BadRequestError("Game not found. Please stop probing our API.");
 
 		const rep = await SiteUser.findOne({
 			where: {

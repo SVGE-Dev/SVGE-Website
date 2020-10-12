@@ -1,4 +1,4 @@
-export interface RenderRequest
+export interface RenderResponse
 {
 	page : string;
 	tab_title : string;

@@ -1,7 +1,7 @@
 import { Game } from "../../entities/game.ent";
-import { RenderRequest } from "./RenderRequest";
+import { RenderResponse } from "./RenderResponse";
 
-export interface GamesRender extends RenderRequest
+export interface GamesRender extends RenderResponse
 {
 	games : Array<{
 		game : Game,

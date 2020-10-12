@@ -51,14 +51,19 @@
 		<div class="row align-items-center justify-content-center">
 			<div class="col-md-7 text-center" data-aos="fade-up" data-aos-delay="400">
 				<h1 class="mb-4" style="font-size: 6.5vw;">
-					<strong>Southampton</strong><br />Video Games and Esports Society
+					<strong>{{page_title}}</strong><br />{{page_subtitle}}
 				</h1>
-				<p><a href="https://discord.gg/n5rC5Jy" class="btn btn-primary px-4 py-3" target="_blank">Join us on
+				{{#each buttons}}
+				<p>
+					<a href="{{link}}" class="btn btn-primary px-4 py-3" target="_blank">{{text}}</a>
+				</p>
+				{{/each}}
+				{{!-- <p><a href="https://discord.gg/n5rC5Jy" class="btn btn-primary px-4 py-3" target="_blank">Join us on
 						Discord</a>
 				</p>
 				<p><a href="https://www.susu.org/groups/southampton-university-esports-society"
 						class="btn btn-primary px-4 py-3" target="_blank">Become a Member</a>
-				</p>
+				</p> --}}
 			</div>
 		</div>
 	</div>
