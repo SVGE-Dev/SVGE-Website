@@ -80,32 +80,6 @@ export class SiteUser extends BaseEntity
 	private discordProfile : DiscordProfile;
 	public set profile(p : DiscordProfile) { this.discordProfile = p; }
 
-	public static async findFromProfile(profile : DiscordProfile, group? : string) : Promise<SiteUser | SiteUser[]>
-	{
-		if(!!group)
-		{
-			const user = await SiteUser.findOne({
-				discordId: profile.id,
-				group: group
-			});
-			if(!!user) user.profile = profile;
-			return user;
-		}
-		else
-		{
-			const users = await SiteUser.find({
-				discordId: profile.id
-			});
-			if(!!users)
-			{
-				for(const user of users)
-				{
-					user.profile = profile;
-				}
-			}
-			return users;
-		}
-	}
 
 
 	public async setAvatar(img? : File) : Promise<boolean>
@@ -147,6 +121,43 @@ export class SiteUser extends BaseEntity
 		if(!!this.discordGuildMember) this.discordUsername = this.discordGuildMember.user.username;
 	}
 
+	public static async findFromProfile(profile : DiscordProfile, group? : string) : Promise<SiteUser | SiteUser[]>
+	{
+		if(!!group)
+		{
+			const user = await SiteUser.findOne({
+				discordId: profile.id,
+				group: group
+			});
+			if(!!user) user.profile = profile;
+			return user;
+		}
+		else
+		{
+			const users = await SiteUser.find({
+				discordId: profile.id
+			});
+			if(!!users)
+			{
+				for(const user of users)
+				{
+					user.profile = profile;
+				}
+			}
+			return users;
+		}
+	}
+
+	public static async updateAllSiteUsers()
+	{
+		const users = await SiteUser.find();
+		for(const user of users)
+		{
+			user.updateDiscordUser();
+			user.discordUsername = user.discordGuildMember.user.username;
+			if(!user.avatarIsCustom) user.setAvatar();
+		}
+	}
 
 	/**
 	 * Re-orders the Site Users in a give group.

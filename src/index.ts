@@ -8,6 +8,8 @@ import 'reflect-metadata';
 import { createConnection } from 'typeorm';
 import { useExpressServer } from 'routing-controllers';
 import * as express from 'express';
+import * as schedule from "node-schedule";
+import { SiteUser } from "./api/entities/siteUser.ent";
 
 // don't use routing-controllers's "createExpressServer" as routes should be done
 // after auth and engine middlewares else it messes things up
@@ -21,6 +23,9 @@ const main = async() =>
 
 	debug(`Starting Discord bot`);
 	Services.DiscordBot.init();
+
+	debug("Scheduling daily SiteUser update");
+	schedule.scheduleJob("30 4 * * *", SiteUser.updateAllSiteUsers);
 
 	debug("Creating express app");
 	const app = express();
