@@ -72,13 +72,7 @@ export class CommitteeController
 				};
 			}),
 			canEditAll: isCommittee,
-			canEditSelf: undefined, // committee can edit all committee
-            //custom_css: [ "/css/jquery-sortable.css" ],
-			//custom_scripts: [ "/js/jquery-sortable.js" ],
-			custom_scripts: [
-				"/js/sendForm.js",
-				"/js/sendUuid.js"
-			],
+			canEditSelf: undefined, // committee can edit all committee so unneeded
 			peopleGroup: "Committee Member",
 			endpoint: "/committee"
         };
