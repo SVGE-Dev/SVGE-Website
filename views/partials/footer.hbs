@@ -92,7 +92,12 @@
 			<div class="col-md-12">
 				<p>
 					<a href="https://drive.google.com/file/d/1K2lONIxJVdPcEXs_VyaznGIcgryToTcz/view">Privacy Policy</a>
-					&vert; <a href="/auth/login">Committee Login</a>
+					&vert;
+					{{#if user_logged_in}}
+					<a href="/auth/logout">Logout</a>
+					{{else}}
+					<a href="/auth/login">Committee Login</a>
+					{{/if}}
 				</p>
 				<p>
 					Copyright Southampton Video Games and Esports Society &copy;

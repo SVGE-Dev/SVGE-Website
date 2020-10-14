@@ -118,7 +118,8 @@ export class GamesController
 				};
 			}),
 			canEditAll: isCommittee,
-			canEditSome: gamesUserIsRepFor
+			canEditSome: gamesUserIsRepFor,
+			user_logged_in: !!currentUser
         };
 	}
 	
@@ -420,7 +421,8 @@ export class GamesController
 			canEditAll: isCommittee,
 			canEditSelf: canEditSelf,
 			peopleGroup: "Game Rep",
-			endpoint: `/games/${gameUrl}/rep`
+			endpoint: `/games/${gameUrl}/rep`,
+			user_logged_in: !!currentUser
 		};
 	}
 	

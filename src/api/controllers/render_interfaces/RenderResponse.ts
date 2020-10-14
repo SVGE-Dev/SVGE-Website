@@ -7,4 +7,5 @@ export interface RenderResponse
 	custom_css? : string[];
 	custom_scripts? : string[];
 	layout? : boolean;
+	user_logged_in? : boolean;
 }

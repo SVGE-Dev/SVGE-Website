@@ -40,7 +40,7 @@ export class CommitteeController
 {
     @Get("/")
     @Render("committee")
-    private async getCommittee(@CurrentUser({ required: false }) currentUser : DiscordProfile) : Promise<CommitteeRender>
+    private async getCommittee(@CurrentUser({ required: false }) currentUser? : DiscordProfile) : Promise<CommitteeRender>
     {
 		const committee = await SiteUser.find({
 			where: {
@@ -74,7 +74,8 @@ export class CommitteeController
 			canEditAll: isCommittee,
 			canEditSelf: undefined, // committee can edit all committee so unneeded
 			peopleGroup: "Committee Member",
-			endpoint: "/committee"
+			endpoint: "/committee",
+			user_logged_in: !!currentUser
         };
     }
 
