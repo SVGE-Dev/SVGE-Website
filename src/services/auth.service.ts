@@ -5,7 +5,6 @@ import cookieSession = require('cookie-session');
 import { Action } from "routing-controllers";
 import { VerifyCallback } from 'passport-oauth2';
 import { Profile as DiscordProfile } from 'passport-discord';
-import { Request } from "express";
 import { DiscordBot } from "./bot.service";
 
 const debug = require('debug')("auth");
@@ -58,14 +57,11 @@ export namespace Auth
 			const allowed = DiscordBot.Utils.CheckForRole(
 				user.id, process.env.DISCORD_GUILD_ID!, roles
 			);
-			resolve(allowed);
+			return resolve(allowed);
 		}
 		else
 		{
-			const req = action.request as Request;
-			req.session!.oauth2return = req.route.path;
-
-			passport.authenticate('discord', {}, (err : Error, user : DiscordProfile) =>
+			const callback = (err : Error, user : DiscordProfile) =>
 			{
 				if (err) return reject(err);
 				action.request.user = user;
@@ -75,7 +71,8 @@ export namespace Auth
 				);
 				return resolve(allowed);
 
-			})(action.request, action.response, action.next);
+			};
+			passport.authenticate('discord', {}, callback)(action.request, action.response, action.next);
 		}
 	});
 

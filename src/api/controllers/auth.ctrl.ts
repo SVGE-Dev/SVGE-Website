@@ -1,4 +1,4 @@
-import { Controller, Get, UseBefore, Redirect, Req, CurrentUser, Res, Authorized } from 'routing-controllers';
+import { Controller, Get, UseBefore, Redirect, Req, CurrentUser, Res, Authorized, Param, QueryParam } from 'routing-controllers';
 import { Profile as DiscordProfile } from 'passport-discord';
 import * as passport from 'passport';
 import { Request, Response } from 'express';
@@ -17,15 +17,16 @@ export class AuthController
 	
 	@Get("/redirect")
 	@UseBefore(passport.authenticate("discord"))
-	private async redirect(@Req() req : Request, @Res() res : Response)
+	@Redirect("/")
+	private async redirect(@Req() req : Request)
 	{
-		// this throws an exception as Passport tries to set the
-		// redirect header a second time
-		const redirect = req.session.oauth2return || "/";
-		res.redirect(redirect);
+		const redirectPath = req.session.oauth2return || "/";
+		console.log(`Redirect: ${req.session.oauth2return} == ${ redirectPath }`);
+		return redirectPath; // overrides Redirect url
 	}
 
 	@Get("/logout")
+	@Redirect("/")
 	private async logout(@CurrentUser() profile : DiscordProfile, @Req() req : Request, @Res() res : Response)
 	{
 		if(profile)
@@ -33,6 +34,5 @@ export class AuthController
 			debugAuth(`${profile.username}#${profile.discriminator} has logged out.`);
 			req.logOut();
 		}
-		res.redirect("/");
 	}
 }
