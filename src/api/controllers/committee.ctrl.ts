@@ -77,8 +77,7 @@ export class CommitteeController
 			endpoint: "/committee",
 			user_logged_in: !!currentUser,
 			canonical: `${process.env.DOMAIN || "https://svge.uk"}/committee`,
-			desc: "The University of Southampton Video Games and Esports Society's \
-			committee are committed to providing our members with the absolute best gaming experience.",
+			desc: "The University of Southampton Video Games and Esports Society's committee are committed to providing our members with the absolute best gaming experience.",
 			ogImage: "/images/hero_bg_1.jpg"
         };
     }

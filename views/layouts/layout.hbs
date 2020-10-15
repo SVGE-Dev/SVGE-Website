@@ -14,13 +14,19 @@
 
 	<!-- SEO and Open Graph --->
 	<title>{{ tab_title }}</title>
-	<meta name="description" content="{{seo_desc}}" />
-	<link rel="canonical" href="{{canonical}}" />
 	<meta property="og:title" content="{{ tab_title }}" />
-	<meta property="og:url" content="{{ canonical }}" />
 	<meta property="og:type" content="website" />
-	<meta property="og:description" content="{{seo_desc}}" />
+	{{#if desc}}
+	<meta name="description" content="{{desc}}" />
+	<meta property="og:description" content="{{desc}}" />
+	{{/if}}
+	{{#if canonical}}
+	<link rel="canonical" href="{{canonical}}" />
+	<meta property="og:url" content="{{ canonical }}" />
+	{{/if}}
+	{{#if ogImage}}
 	<meta property="og:image" content="{{ogImage}}" />
+	{{/if}}
 
 
 	<meta charset="utf-8">

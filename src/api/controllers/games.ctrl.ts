@@ -121,9 +121,7 @@ export class GamesController
 			canEditSome: gamesUserIsRepFor,
 			user_logged_in: !!currentUser,
 			canonical: `${process.env.DOMAIN || "https://svge.uk"}/games`,
-			desc: "Here at SVGE, we play all manner of games, both casual and competitive. So whether you're looking to \
-			get into esports tournaments, or just find some new friends to play your favourite games with, we're \
-			open to anyone playing anything.",
+			desc: "Here at SVGE, we play all manner of games, both casual and competitive. So whether you're looking to get into esports tournaments, or just find some new friends to play your favourite games with, we're open to anyone playing anything.",
 			ogImage: "/images/hero_bg_1.jpg"
         };
 	}

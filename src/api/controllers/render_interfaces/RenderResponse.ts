@@ -10,7 +10,7 @@ export interface RenderResponse
 	user_logged_in? : boolean;
 
 	// SEO and OpenGraph
-	canonical : string;
-	desc : string;
-	ogImage : string;
+	canonical? : string;
+	desc? : string;
+	ogImage? : string;
 }
