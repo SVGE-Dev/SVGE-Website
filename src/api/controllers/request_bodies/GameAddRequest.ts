@@ -11,10 +11,10 @@ export class GameAddRequest
 	@IsShorterThan(32)
 	nameShort : string;
 
-	@IsShorterThan(32)
+	@IsShorterThan(42)
 	brief : string;
 
-	@IsShorterThan(32)
+	@IsShorterThan(42)
 	tagline : string;
 
 	@IsShorterThan(32)
