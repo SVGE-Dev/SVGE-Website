@@ -210,9 +210,9 @@ export class SiteUser extends BaseEntity
 			}
 		});
 
-		for(let i = 1; i <= users.length; i++)
+		for(let i = 0; i < users.length; i++)
 		{
-			users[i].position = i;
+			users[i].position = i + 1;
 		}
 	}
 }

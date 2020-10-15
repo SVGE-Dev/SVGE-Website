@@ -103,9 +103,9 @@ export class Game extends BaseEntity
 			}
 		});
 
-		for(let i = 1; i <= games.length; i++)
+		for(let i = 0; i < games.length; i++)
 		{
-			games[i].position = i;
+			games[i].position = i + 1;
 		}
 	}
 }
