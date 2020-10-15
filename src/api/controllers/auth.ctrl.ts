@@ -18,11 +18,9 @@ export class AuthController
 	@Get("/redirect")
 	@UseBefore(passport.authenticate("discord"))
 	@Redirect("/")
-	private async redirect(@Req() req : Request)
+	private async redirect(@CurrentUser() profile : DiscordProfile)
 	{
-		const redirectPath = req.session.oauth2return || "/";
-		console.log(`Redirect: ${req.session.oauth2return} == ${ redirectPath }`);
-		return redirectPath; // overrides Redirect url
+		if(profile) debugAuth(`${profile.username}#${profile.discriminator} has logged in.`);
 	}
 
 	@Get("/logout")
