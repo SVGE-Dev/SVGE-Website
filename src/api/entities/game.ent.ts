@@ -78,9 +78,7 @@ export class Game extends BaseEntity
 		for(const game of games)
 		{
 			if(pos == this.position) pos++; // skip over this position value, as it belongs to the pivot SiteUser
-			console.log(`Pos A: ${pos}`);
 			if(!posTooHigh && game.uuid == this.uuid) continue; // don't need to set its position again
-			console.log(`Pos B: ${pos}`);
 			game.position = pos++;
 		}
 
@@ -107,5 +105,7 @@ export class Game extends BaseEntity
 		{
 			games[i].position = i + 1;
 		}
+
+		await Game.save(games);
 	}
 }

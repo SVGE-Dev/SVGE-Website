@@ -70,11 +70,11 @@ export class SiteUser extends BaseEntity
 
 	// so we don't update it from Discord
 	@Column({ type: "boolean" })
-	avatarIsCustom : boolean = false;
+	avatarIsCustom : boolean;
 
 	// flag for whether a user should be shown or not
 	@Column({ type: "boolean" })
-	show : boolean = true;
+	show : boolean;
 
 	private discordGuildMember : GuildMember | undefined;
 	private discordProfile : DiscordProfile;
@@ -181,13 +181,11 @@ export class SiteUser extends BaseEntity
 		let pos = 1;
 		for(const user of users)
 		{
+			console.log(`User defined? ${!!user}`);
 			if(pos == this.position) pos++; // skip over this position value, as it belongs to the pivot SiteUser
-			console.log(`Pos A: ${pos}`);
 			if(!posTooHigh && user.uuid == this.uuid) continue; // don't need to set its position again
-			console.log(`Pos B: ${pos}`);
 			user.position = pos++;
 		}
-
 		await SiteUser.save(users);
 	}
 
@@ -212,7 +210,10 @@ export class SiteUser extends BaseEntity
 
 		for(let i = 0; i < users.length; i++)
 		{
+			console.log(`User defined? ${!!users[i]}`);
 			users[i].position = i + 1;
 		}
+
+		await SiteUser.save(users);
 	}
 }
