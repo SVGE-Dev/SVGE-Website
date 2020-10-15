@@ -58,13 +58,10 @@ export class Game extends BaseEntity
 	}
 
 	// This function is something that could possibly be moved to a utils function so that both SiteUser and Game can use it.
-	// Would probably require changing the primary column for one of the two though
-	/**
-	 * Re-orders the games.
-	 * 
-	 * @param {string} splitGameId The ID of the element to being re-ordering from
+		/**
+	 * Re-orders the Site Users in this user's group.
 	 */
-	public static async reorder(splitGameId? : string)
+	public async reorderAroundGame()
 	{
 		const games = await Game.find({
 			select: [
@@ -76,30 +73,39 @@ export class Game extends BaseEntity
 			}
 		});
 
-		if(!!splitGameId)
+		const posTooHigh : boolean = (this.position > games.length);
+		let pos = 1;
+		for(const game of games)
 		{
-
-			const splitGame = games.find((u) => u.uuid == splitGameId);
-			if(!splitGame) return;
-
-			const splitPosition = splitGame.position;
-
-			const sortedGames = games.filter((u) => u.uuid != splitGameId && u.position >= splitGame.position);
-			for(const sortedUser of sortedGames)
-			{
-				sortedUser.position += 1;
-			}
-
-			await Game.save(sortedGames);
+			if(pos == this.position) pos++; // skip over this position value, as it belongs to the pivot SiteUser
+			console.log(`Pos A: ${pos}`);
+			if(!posTooHigh && game.uuid == this.uuid) continue; // don't need to set its position again
+			console.log(`Pos B: ${pos}`);
+			game.position = pos++;
 		}
-		else
-		{
-			let pos = 1;
-			for(const game of games)
-			{
-				game.position = pos++;
+
+		await Game.save(games);
+	}
+
+	/**
+	 * Re-orders the Site Users in a given group.
+	 * 
+	 * @param {string} group The group to re-order
+	 */
+	public static async reorderGames()
+	{
+		const games = await Game.find({
+			select: [
+				"position"
+			],
+			order: {
+				position: "ASC"
 			}
-			await Game.save(games);
+		});
+
+		for(let i = 1; i <= games.length; i++)
+		{
+			games[i].position = i;
 		}
 	}
 }

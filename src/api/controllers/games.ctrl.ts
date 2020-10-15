@@ -174,9 +174,9 @@ export class GamesController
 		game.icon = await gameIcon.getBufferAsync(icon.mimetype);
 		game.position = newGame.position;
 		game.url = newGame.nameShort.toLowerCase().replace(/ /g, "-");
-		game = await game.save();
 
-		Game.reorder(game.uuid);
+		game = await game.save();
+		game.reorderAroundGame();
 
 		return {
 			uuid: game.uuid,
@@ -263,6 +263,13 @@ export class GamesController
 			game.text = gameUpdate.text;
 			gameChanged = true;
 		}
+		let positionChanged = false;
+		if(!!gameUpdate.position && game.position != gameUpdate.position)
+		{
+			game.position = gameUpdate.position;
+			positionChanged = true;
+			gameChanged = true;
+		}
 		if(!!img)
 		{
 			game.img = await (await cropAndResize(1280, 720, img.buffer)).getBufferAsync(img.mimetype);
@@ -276,9 +283,9 @@ export class GamesController
 		if(gameChanged)
 		{
 			await game.save();
-			if(!!gameUpdate.position && game.position != gameUpdate.position)
+			if(positionChanged)
 			{
-				await Game.reorder(game.uuid);
+				await game.reorderAroundGame();
 			}
 		}
 		
@@ -329,7 +336,7 @@ export class GamesController
 
 		await game.remove();
 		await SiteUser.remove(reps);
-		await Game.reorder();
+		await Game.reorderGames();
 
 		return {};
 	}
@@ -458,7 +465,7 @@ export class GamesController
 		rep = await new SiteUser().newUser(newRep, avatar, group, repProfile.id);
 		rep = await rep.save();
 
-		await SiteUser.reorder(group, rep.uuid);
+		await rep.reorderAroundUser();
 
 		return {
 			uuid : rep.uuid,
@@ -553,7 +560,7 @@ export class GamesController
 			await rep.save();
 			if(positionChanged)
 			{
-				await SiteUser.reorder(`${game.url}_reps`, rep.uuid);
+				await rep.reorderAroundUser();
 			}
 		}
 
@@ -596,7 +603,7 @@ export class GamesController
 		if(!repEntity) throw new BadRequestError("Failed to find the rep you wish to delete. Please stop probing our API.");
 
 		await repEntity.remove();
-		await SiteUser.reorder(`${gameUrl}_reps`);
+		await SiteUser.reorderGroup(`${gameUrl}_reps`);
 
 		return {
 			url: gameUrl

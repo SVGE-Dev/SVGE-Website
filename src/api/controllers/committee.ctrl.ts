@@ -92,28 +92,28 @@ export class CommitteeController
 	{
 		console.log(`Adding committee member with username "${newCommittee.username}"!`);
 		const committeeProfile = DiscordBot.Utils.getGuildMemberFromName(newCommittee.username);
-		let committeeMember = await SiteUser.findOne({
+		let commMember = await SiteUser.findOne({
 			where: {
 				discordId: committeeProfile.id,
 				group: "committee"
 			}
 		});
 
-		if(!!committeeMember) throw new BadRequestError("That user is already registered as a committee member.");
+		if(!!commMember) throw new BadRequestError("That user is already registered as a committee member.");
 
-		committeeMember = await new SiteUser().newUser(newCommittee, avatar, "committee", committeeProfile.id);
-		await committeeMember.save();
-		await SiteUser.reorder("committee", committeeMember.uuid);
+		commMember = await new SiteUser().newUser(newCommittee, avatar, "committee", committeeProfile.id);
+		await commMember.save();
+		await commMember.reorderAroundUser();
 
 		return {
-			uuid : committeeMember.uuid,
-			discordUsername : committeeMember.discordUsername,
-			name : committeeMember.name,
-			position : committeeMember.position,
-			title : committeeMember.title,
-			desc : committeeMember.desc,
-			message : committeeMember.message || "",
-			avatarBase64 : committeeMember.avatarBase64
+			uuid : commMember.uuid,
+			discordUsername : commMember.discordUsername,
+			name : commMember.name,
+			position : commMember.position,
+			title : commMember.title,
+			desc : commMember.desc,
+			message : commMember.message || "",
+			avatarBase64 : commMember.avatarBase64
 		};
 	}
 
@@ -126,72 +126,72 @@ export class CommitteeController
 		: Promise<UserUpdateResponse>
 	{
 		console.log(`Updating committee member with uuid "${updateCommittee.uuid}".`);
-		let committee = await SiteUser.findOne({
+		let commMember = await SiteUser.findOne({
 			where: {
 				group: "committee",
 				uuid: updateCommittee.uuid
 			}
 		});
-		if(!committee) throw new BadRequestError("That committee member does not exist. Please stop probing our API.");
+		if(!commMember) throw new BadRequestError("That committee member does not exist. Please stop probing our API.");
 
 		// could move this lot into the SiteUser class
 		let changed = false;
-		if(!!updateCommittee.name && committee.name != updateCommittee.name)
+		if(!!updateCommittee.name && commMember.name != updateCommittee.name)
 		{
 			changed = true;
-			committee.name = updateCommittee.name;
+			commMember.name = updateCommittee.name;
 		}
 		let positionChanged = false;
-		if(!!updateCommittee.position && committee.position != updateCommittee.position)
+		if(!!updateCommittee.position && commMember.position != updateCommittee.position)
 		{
 			changed = true;
 			positionChanged = true;
-			committee.position = updateCommittee.position;
+			commMember.position = updateCommittee.position;
 		}
-		if(!!updateCommittee.title && committee.title != updateCommittee.title)
+		if(!!updateCommittee.title && commMember.title != updateCommittee.title)
 		{
 			changed = true;
-			committee.title = updateCommittee.title;
+			commMember.title = updateCommittee.title;
 		}
-		if(!!updateCommittee.desc && committee.desc != updateCommittee.desc)
+		if(!!updateCommittee.desc && commMember.desc != updateCommittee.desc)
 		{
 			changed = true;
-			committee.desc = updateCommittee.desc;
+			commMember.desc = updateCommittee.desc;
 		}
-		if(!!updateCommittee.message && committee.message != updateCommittee.message)
+		if(!!updateCommittee.message && commMember.message != updateCommittee.message)
 		{
 			changed = true;
-			committee.message = updateCommittee.message;
+			commMember.message = updateCommittee.message;
 		}
-		if(committee.show != updateCommittee.show)
+		if(commMember.show != updateCommittee.show)
 		{
 			changed = true;
-			committee.show = updateCommittee.show;
+			commMember.show = updateCommittee.show;
 		}
 		if(!!avatar)
 		{
 			changed = true;
-			committee.setAvatar(avatar);
+			commMember.setAvatar(avatar);
 		}
 
 		if(changed)
 		{
-			await committee.save();
+			await commMember.save();
 			if(positionChanged)
 			{
-				await SiteUser.reorder("committee", committee.uuid);
+				await commMember.reorderAroundUser();
 			}
 		}
 
 		return {
-			uuid: committee.uuid,
-			discordUsername: committee.discordUsername,
-			name: committee.name,
-			position: committee.position,
-			title: committee.title,
-			desc: committee.desc,
-			message: committee.message,
-			avatarBase64: committee.avatarBase64
+			uuid: commMember.uuid,
+			discordUsername: commMember.discordUsername,
+			name: commMember.name,
+			position: commMember.position,
+			title: commMember.title,
+			desc: commMember.desc,
+			message: commMember.message,
+			avatarBase64: commMember.avatarBase64
 		};
 	}
 
@@ -218,7 +218,7 @@ export class CommitteeController
 		if(!committee) throw new BadRequestError("That committee member does not exist. Please stop probing our API.");
 
 		await committee.remove();
-		await SiteUser.reorder("committee");
+		await SiteUser.reorderGroup("committee");
 
 		return;
 	}

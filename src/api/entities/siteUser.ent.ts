@@ -160,16 +160,13 @@ export class SiteUser extends BaseEntity
 	}
 
 	/**
-	 * Re-orders the Site Users in a give group.
-	 * 
-	 * @param {string} group The group to re-order
-	 * @param {string | undefined} splitUser The UUID of the element to being re-ordering from. If ommitted, elements will be re-ordered 1,2,3...
+	 * Re-orders the Site Users in this user's group.
 	 */
-	public static async reorder(group : string, splitUserUuid? : string)
+	public async reorderAroundUser()
 	{
 		const users = await SiteUser.find({
 			where: {
-				group: group
+				group: this.group
 			},
 			select: [
 				"uuid",
@@ -180,31 +177,42 @@ export class SiteUser extends BaseEntity
 			}
 		});
 
-		if(!!splitUserUuid)
+		const posTooHigh : boolean = (this.position > users.length);
+		let pos = 1;
+		for(const user of users)
 		{
-			// this needs to be smarter than just adding one, especially since
-			// there's currently nothing stopping someone puting 65535 as the position
-			const splitUser = users.find((u) => u.uuid == splitUserUuid);
-			if(!splitUser) return;
-
-			const splitPosition = splitUser.position;
-
-			const sortedUsers = users.filter((u) => u.uuid != splitUserUuid && u.position >= splitUser.position);
-			for(const sortedUser of sortedUsers)
-			{
-				sortedUser.position += 1;
-			}
-
-			await SiteUser.save(sortedUsers);
+			if(pos == this.position) pos++; // skip over this position value, as it belongs to the pivot SiteUser
+			console.log(`Pos A: ${pos}`);
+			if(!posTooHigh && user.uuid == this.uuid) continue; // don't need to set its position again
+			console.log(`Pos B: ${pos}`);
+			user.position = pos++;
 		}
-		else
-		{
-			let pos = 1;
-			for(const user of users)
-			{
-				user.position = pos++;
+
+		await SiteUser.save(users);
+	}
+
+	/**
+	 * Re-orders the Site Users in a given group.
+	 * 
+	 * @param {string} group The group to re-order
+	 */
+	public static async reorderGroup(group : string)
+	{
+		const users = await SiteUser.find({
+			where: {
+				group: group
+			},
+			select: [
+				"position"
+			],
+			order: {
+				position: "ASC"
 			}
-			await SiteUser.save(users);
+		});
+
+		for(let i = 1; i <= users.length; i++)
+		{
+			users[i].position = i;
 		}
 	}
 }
