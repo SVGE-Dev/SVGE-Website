@@ -18,7 +18,12 @@ export class IndexController
 				{ text: "Join us on Discord", link: "https://discord.gg/n5rC5Jy" },
 				{ text: "Become a Member", link: "https://www.susu.org/groups/southampton-university-esports-society" }
 			],
-			user_logged_in: !!currentUser
+			user_logged_in: !!currentUser,
+			canonical: `${process.env.DOMAIN || "https://svge.uk"}`,
+			desc: "Southampton Video Games and Esports Society (SVGE) is the home of gaming at the University of Southampton. \
+			We play everything from chill, casual games with some friends to ranked games and competitive tournaments, \
+			on both PC and console.",
+			ogImage: "/images/hero_bg_1.jpg"
         };
     }
 }

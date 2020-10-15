@@ -8,4 +8,9 @@ export interface RenderResponse
 	custom_scripts? : string[];
 	layout? : boolean;
 	user_logged_in? : boolean;
+
+	// SEO and OpenGraph
+	canonical : string;
+	desc : string;
+	ogImage : string;
 }

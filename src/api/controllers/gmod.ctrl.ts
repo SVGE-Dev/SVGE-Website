@@ -1,4 +1,4 @@
-import { Controller, Get, Render, Authorized, Post, QueryParam, QueryParams, UploadedFiles, UploadOptions } from "routing-controllers";
+import { Controller, Get, Render, Authorized, Post, QueryParam, QueryParams, UploadedFiles, UseBefore } from "routing-controllers";
 import { GmodQuote } from "../entities/gmodQuotes.ent";
 import { readdirSync } from "fs";
 import { join, basename } from "path";
@@ -9,10 +9,12 @@ import Jimp from 'jimp';
 // tslint:disable-next-line: no-var-requires
 const jimp : Jimp = require('jimp');
 import { cropAndResize } from "../../utils/cropAndResize";
+import { NoSeoIndexing } from "../middlewares/NoSeoIndexing.mdlw";
 
 
 
 @Controller("/gmod-splash")
+@UseBefore(NoSeoIndexing)
 export class GmodSplashController
 {
     SCREENSHOT_DIR = "public/images/gmod";

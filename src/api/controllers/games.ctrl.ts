@@ -119,7 +119,12 @@ export class GamesController
 			}),
 			canEditAll: isCommittee,
 			canEditSome: gamesUserIsRepFor,
-			user_logged_in: !!currentUser
+			user_logged_in: !!currentUser,
+			canonical: `${process.env.DOMAIN || "https://svge.uk"}/games`,
+			desc: "Here at SVGE, we play all manner of games, both casual and competitive. So whether you're looking to \
+			get into esports tournaments, or just find some new friends to play your favourite games with, we're \
+			open to anyone playing anything.",
+			ogImage: "/images/hero_bg_1.jpg"
         };
 	}
 	
@@ -376,7 +381,7 @@ export class GamesController
 				"title",
 				"desc",
 				"message",
-				"position"
+				"position",
 			],
 			order: {
 				position: "ASC"
@@ -422,7 +427,10 @@ export class GamesController
 			canEditSelf: canEditSelf,
 			peopleGroup: "Game Rep",
 			endpoint: `/games/${gameUrl}/rep`,
-			user_logged_in: !!currentUser
+			user_logged_in: !!currentUser,
+			canonical: `${process.env.DOMAIN || "https://svge.uk"}/games/${game.url}`, // not using path param incase it has other crap in it
+			desc: `${game.text.substr(0, 100)}`,
+			ogImage: game.imgBase64
 		};
 	}
 	
