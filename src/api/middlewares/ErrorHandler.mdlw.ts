@@ -3,7 +3,7 @@ import { ExpressErrorMiddlewareInterface, ExpressMiddlewareInterface, Middleware
 import { ErrorRender } from "../controllers/render_interfaces/ErrorRender";
 
 
-type ExpressError = { httpCode : number, name : string, message : string };
+type ExpressError = { httpCode? : number, name? : string, message? : string };
 
 const httpErrors : Record<number, {page_subtitle : string, info : string}> = 
 {
@@ -36,17 +36,17 @@ export class InternalServerErrorHandler implements ExpressErrorMiddlewareInterfa
 {
 	error : ErrorRequestHandler = (err : ExpressError, req : Request, res : Response, next : NextFunction) =>
 	{
-		res.status(err.httpCode);
+		res.status(err.httpCode || 500);
 		console.error(err);
 
 		if(req.headers.accept?.includes("text/html"))
 		{
-			const errorInfo : {page_subtitle : string, info? : string} = httpErrors[err.httpCode] || {page_subtitle: "Error"};
+			const errorInfo : {page_subtitle : string, info? : string} = httpErrors[err.httpCode || 500] || {page_subtitle: "Error"};
 			const pageData : ErrorRender = {
 				...errorInfo,
-				page: err.httpCode.toString(),
-				tab_title: `SVGE | ${err.httpCode}`,
-				page_title: err.httpCode.toString()
+				page: err.httpCode?.toString() || "500",
+				tab_title: `SVGE | ${err.httpCode?.toString() || "500"}`,
+				page_title: err.httpCode?.toString() || "500"
 			};
 
 			res.render("error", pageData);
