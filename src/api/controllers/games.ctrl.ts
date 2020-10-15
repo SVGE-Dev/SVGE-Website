@@ -101,9 +101,6 @@ export class GamesController
 				if(gamesUserIsRepFor.length < 1) gamesUserIsRepFor = undefined;
 			}
 		}
-
-		console.log(`Can edit all: ${isCommittee}`);
-		console.log(`Can edit some: ${gamesUserIsRepFor}`);
 		
         return {
 			page: "games",
