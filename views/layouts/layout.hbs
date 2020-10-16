@@ -23,19 +23,21 @@
 	<meta property="og:site_name" content="{{ tab_title }}" />
 	<meta property="og:description" content="{{#if desc}}{{desc}}{{/if}}" />
 	<meta property="og:url" content="{{#if canonical}}{{canonical}}{{/if}}" />
-	<meta property="og:image" content="{{#if ogImage}}{{ogImage}}{{else}}/images/hero_bg_1.jpg{{/if}}" />
-	<meta property="og:image:secure" content="{{#if ogImage}}{{ogImage}}{{else}}/images/hero_bg_1.jpg{{/if}}" />
-	<meta property="og:image:secure_url" content="{{#if ogImage}}{{ogImage}}{{else}}/images/hero_bg_1.jpg{{/if}}" />
-	<meta property="og:image:width" content="1280" />
-	<meta property="og:image:height" content="720" />
+	<meta property="og:image" content="{{#if ogImage}}{{ogImage}}{{else}}https://svge.uk/images/logo.png{{/if}}" />
+	<meta property="og:image:secure"
+		content="{{#if ogImage}}{{ogImage}}{{else}}https://svge.uk/images/logo.png{{/if}}" />
+	<meta property="og:image:secure_url"
+		content="{{#if ogImage}}{{ogImage}}{{else}}https://svge.uk/images/logo.png{{/if}}" />
+	{{!-- <meta property="og:image:width" content="1920" />
+	<meta property="og:image:height" content="1080" /> --}}
 
 	<!-- Twitter Embeds -->
-	<meta name="twitter:card" content="website" />
+	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:site" content="@UoSVGE" />
 	<meta name="twitter:creator" content="@UoSVGE" />
 	<meta name="twitter:description" content="{{#if desc}}{{desc}}{{/if}}" />
 	<meta name="twitter:title" content="{{ tab_title }}" />
-	<meta name="twitter:image" content="{{#if ogImage}}{{ogImage}}{{else}}/images/hero_bg_1.jpg{{/if}}" />
+	<meta name="twitter:image" content="{{#if ogImage}}{{ogImage}}{{else}}https://svge.uk/images/logo.png{{/if}}" />
 	<meta name="twitter:image:alt" content="Embed image" />
 
 	<!-- oEmbed -->
