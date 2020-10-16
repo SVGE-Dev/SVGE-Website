@@ -410,9 +410,6 @@ export class GamesController
 			}
 		}
 
-		console.log(isCommittee);
-		console.log(canEditSelf);
-
         return {
 			page: "games",
 			tab_title: `SVGE | ${game.nameShort}`,
