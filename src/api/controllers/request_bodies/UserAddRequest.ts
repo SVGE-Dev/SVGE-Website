@@ -7,6 +7,7 @@ import { IsShorterThan } from "../validators/IsShorterThan";
 export class UserAddRequest
 {
 	@IsDiscordUsername()
+	@Transform((u : string) => u.trim().replace(/[ ]*#/, "#"))
 	username : string;
 
 	// the person's name that they want to show on the site
