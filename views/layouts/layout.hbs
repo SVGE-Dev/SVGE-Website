@@ -12,21 +12,21 @@
 	</script>
 
 
-	<!-- SEO and Open Graph --->
+	<!-- SEO --->
 	<title>{{ tab_title }}</title>
+	<meta name="description" content="{{#if desc}}{{desc}}{{/if}}" />
+	<link rel="canonical" href="{{#if canonical}}{{canonical}}{{/if}}" />
+
+	<!-- Open Graph --->
 	<meta property="og:title" content="{{ tab_title }}" />
 	<meta property="og:type" content="website" />
-	{{#if desc}}
-	<meta name="description" content="{{desc}}" />
-	<meta property="og:description" content="{{desc}}" />
-	{{/if}}
-	{{#if canonical}}
-	<link rel="canonical" href="{{canonical}}" />
-	<meta property="og:url" content="{{ canonical }}" />
-	{{/if}}
-	{{#if ogImage}}
-	<meta property="og:image" content="{{ogImage}}" />
-	{{/if}}
+	<meta property="og:site_name" content="{{ tab_title }}" />
+	<meta property="og:description" content="{{#if desc}}{{desc}}{{/if}}" />
+	<meta property="og:url" content="{{#if canonical}}{{canonical}}{{/if}}" />
+	<meta property="og:image" content="{{#if ogImage}}{{ogImage}}{{else}}/images/hero_bg_1.jpg{{/if}}" />
+
+	<!-- oEmbed -->
+	<link type="application/json+oembed" href="data:application/json+oembed;base64,{{b64 tab_title canonical}}" />
 
 
 	<meta charset="utf-8">

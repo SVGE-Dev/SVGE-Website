@@ -26,7 +26,17 @@ export namespace Handlebars
 			},
 			multipleOf: (val : number, divider : number) => val % divider == 0,
 			contains: (arr : any[], val : any) => !!arr ? arr.includes(val) : false,
-			visibleUsers: (persons : {user : SiteUser}[], opts : any) => persons.filter((p) => p.user.show)
+			visibleUsers: (persons : {user : SiteUser}[], opts : any) => persons.filter((p) => p.user.show),
+			b64: (title : string, url : string, opts : any) : string => {
+				const oEmbed = {
+					title: title,
+					author_name: "Southampton Video Games and Esports Society",
+					author_url: url,
+					provider_name : "Southampton Video Games and Esports Society",
+					provider_url: url
+				};
+				return Buffer.from(JSON.stringify(oEmbed)).toString("base64");
+			}
 		}
 	};
 	
