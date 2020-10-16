@@ -201,7 +201,9 @@ export class SiteUser extends BaseEntity
 				group: group
 			},
 			select: [
-				"position"
+				"uuid",
+				"position",
+				"discordId"
 			],
 			order: {
 				position: "ASC"

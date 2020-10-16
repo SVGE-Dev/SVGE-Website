@@ -94,6 +94,7 @@ export class Game extends BaseEntity
 	{
 		const games = await Game.find({
 			select: [
+				"uuid",
 				"position"
 			],
 			order: {
