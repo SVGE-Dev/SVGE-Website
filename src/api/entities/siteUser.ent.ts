@@ -62,7 +62,7 @@ export class SiteUser extends BaseEntity
 
 	// a much longer piece of text, such as about them, about what they can do for you, etc
 	@Column({ type: "varchar", length: 1024 })
-	message : string = "";
+	message : string;
 
 	// either a custom photo or their Discord avatar
 	@Column({ type: "mediumblob" })
