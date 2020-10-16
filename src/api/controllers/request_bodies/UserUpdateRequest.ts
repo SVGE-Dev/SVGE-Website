@@ -1,5 +1,6 @@
 import { Transform } from "class-transformer";
 import { IsBoolean, IsOptional, IsPositive, IsUUID, ValidateIf } from "class-validator";
+import { SanitizeHtml } from "../transformers/SanitizeHtml";
 import { IsShorterThan } from "../validators/IsShorterThan";
 
 export class UserUpdateRequest
@@ -11,6 +12,7 @@ export class UserUpdateRequest
 	// the person's name that they want to show on the site
 	@IsShorterThan(24) // might need to be longer depending on people's names
 	@IsOptional()
+	@SanitizeHtml()
 	name? : string;
 
 	// position in which users in this group will be listed
@@ -27,12 +29,14 @@ export class UserUpdateRequest
 	// a slightly longer piece of text, such as the description of a committee position
 	@IsShorterThan(128)
 	@IsOptional()
+	@SanitizeHtml()
 	desc? : string;
 
 	// a much longer piece of text, such as about them, about what they can do for you, etc
 	@IsShorterThan(1024)
 	@ValidateIf((userAddRequest : UserUpdateRequest) =>
 		userAddRequest.message !== undefined && userAddRequest.message != "")
+	@SanitizeHtml()
 	message? : string | undefined;
 
 	// whether they should show in the list of site users
