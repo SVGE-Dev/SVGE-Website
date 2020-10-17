@@ -7,6 +7,7 @@ import { DiscordBot } from "../../services/_services";
 import { cropAndResize } from "../../utils/cropAndResize";
 import { Profile as DiscordProfile } from 'passport-discord';
 import { UserAddRequest } from "../controllers/request_bodies/UserAddRequest";
+import { UserUpdateRequest } from "../controllers/request_bodies/UserUpdateRequest";
 
 
 @Entity()
@@ -24,6 +25,59 @@ export class SiteUser extends BaseEntity
 		this.message = user.message;
 		this.show = user.show;
 		await this.setAvatar(avatar);
+
+		return this;
+	}
+
+	public async UpdateFromForm(userUpdate : UserUpdateRequest, avatar? : File) : Promise<this>
+	{
+		let changed = false;
+		if(!!userUpdate.name && this.name != userUpdate.name)
+		{
+			changed = true;
+			this.name = userUpdate.name;
+		}
+		let positionChanged = false;
+		if(!!userUpdate.position && this.position != userUpdate.position)
+		{
+			changed = true;
+			positionChanged = true;
+			this.position = userUpdate.position;
+		}
+		if(!!userUpdate.title && this.title != userUpdate.title)
+		{
+			changed = true;
+			this.title = userUpdate.title;
+		}
+		if(!!userUpdate.desc && this.desc != userUpdate.desc)
+		{
+			changed = true;
+			this.desc = userUpdate.desc;
+		}
+		if(!!userUpdate.message && this.message != userUpdate.message)
+		{
+			changed = true;
+			this.message = userUpdate.message;
+		}
+		if(this.show != userUpdate.show)
+		{
+			changed = true;
+			this.show = userUpdate.show;
+		}
+		if(!!avatar)
+		{
+			changed = true;
+			this.setAvatar(avatar);
+		}
+
+		if(changed)
+		{
+			await this.save();
+			if(positionChanged)
+			{
+				await this.reorderAroundUser();
+			}
+		}
 
 		return this;
 	}

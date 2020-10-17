@@ -134,54 +134,7 @@ export class CommitteeController
 		});
 		if(!commMember) throw new BadRequestError("That committee member does not exist. Please stop probing our API.");
 
-		// could move this lot into the SiteUser class
-		let changed = false;
-		if(!!updateCommittee.name && commMember.name != updateCommittee.name)
-		{
-			changed = true;
-			commMember.name = updateCommittee.name;
-		}
-		let positionChanged = false;
-		if(!!updateCommittee.position && commMember.position != updateCommittee.position)
-		{
-			changed = true;
-			positionChanged = true;
-			commMember.position = updateCommittee.position;
-		}
-		if(!!updateCommittee.title && commMember.title != updateCommittee.title)
-		{
-			changed = true;
-			commMember.title = updateCommittee.title;
-		}
-		if(!!updateCommittee.desc && commMember.desc != updateCommittee.desc)
-		{
-			changed = true;
-			commMember.desc = updateCommittee.desc;
-		}
-		if(!!updateCommittee.message && commMember.message != updateCommittee.message)
-		{
-			changed = true;
-			commMember.message = updateCommittee.message;
-		}
-		if(commMember.show != updateCommittee.show)
-		{
-			changed = true;
-			commMember.show = updateCommittee.show;
-		}
-		if(!!avatar)
-		{
-			changed = true;
-			commMember.setAvatar(avatar);
-		}
-
-		if(changed)
-		{
-			await commMember.save();
-			if(positionChanged)
-			{
-				await commMember.reorderAroundUser();
-			}
-		}
+		commMember = await commMember.UpdateFromForm(updateCommittee, avatar);
 
 		return {
 			uuid: commMember.uuid,

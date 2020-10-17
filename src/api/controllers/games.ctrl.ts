@@ -374,17 +374,6 @@ export class GamesController
 			where: {
 				group: `${game.url}_reps`
 			},
-			select: [
-				"uuid",
-				"discordId",
-				"avatar",
-				"name",
-				"discordUsername",
-				"title",
-				"desc",
-				"message",
-				"position",
-			],
 			order: {
 				position: "ASC"
 			}
@@ -499,7 +488,7 @@ export class GamesController
 		});
 		if(!game) throw new BadRequestError("Game not found. Please stop probing our API.");
 
-		const rep = await SiteUser.findOne({
+		let rep = await SiteUser.findOne({
 			where: {
 				group: `${game.url}_reps`,
 				uuid: repUpdate.uuid
@@ -512,54 +501,7 @@ export class GamesController
 
 		if(!isCommittee && !isSelf) throw new ForbiddenError("You are not a member of the committee nor the owner of this rep position. Please stop probing our API.");
 
-		// could move this lot into the SiteUser class
-		let changed = false;
-		if(!!repUpdate.name && rep.name != repUpdate.name)
-		{
-			changed = true;
-			rep.name = repUpdate.name;
-		}
-		let positionChanged = false;
-		if(!!repUpdate.position && rep.position != repUpdate.position)
-		{
-			changed = true;
-			positionChanged = true;
-			rep.position = repUpdate.position;
-		}
-		if(!!repUpdate.title && rep.title != repUpdate.title)
-		{
-			changed = true;
-			rep.title = repUpdate.title;
-		}
-		if(!!repUpdate.desc && rep.desc != repUpdate.desc)
-		{
-			changed = true;
-			rep.desc = repUpdate.desc;
-		}
-		if(!!repUpdate.message && rep.message != repUpdate.message)
-		{
-			changed = true;
-			rep.message = repUpdate.message;
-		}
-		if(rep.show != repUpdate.show)
-		{
-			changed = true;
-			rep.show = repUpdate.show;
-		}
-		if(!!avatar)
-		{
-			changed = true;
-			rep.setAvatar(avatar);
-		}
-
-		if(changed)
-		{
-			await rep.save();
-			if(positionChanged)
-			{
-				await rep.reorderAroundUser();
-			}
-		}
+		rep = await rep.UpdateFromForm(repUpdate, avatar);
 
 		return {
 			uuid: rep.uuid,
