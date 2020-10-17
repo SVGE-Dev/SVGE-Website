@@ -176,7 +176,7 @@ export class GamesController
 		game.url = newGame.nameShort.toLowerCase().replace(/ /g, "-");
 
 		game = await game.save();
-		game.reorderAroundGame();
+		await game.reorderAroundGame();
 
 		return {
 			uuid: game.uuid,
