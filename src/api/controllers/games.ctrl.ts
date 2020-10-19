@@ -198,11 +198,7 @@ export class GamesController
 		const reps = await SiteUser.find({
 			where: {
 				group: `${game.url}_reps`
-			},
-			select: [
-				"group",
-				"discordId"
-			]
+			}
 		});
 
 		if(!usersInfoes.find((u) => u.group == "committee") && !reps.find((r) => r.discordId == currentUser.id))
