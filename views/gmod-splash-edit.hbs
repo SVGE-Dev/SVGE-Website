@@ -43,7 +43,6 @@
 				</form>
 			</div>
 
-
 			<div class="col-lg-4 ml-auto">
 				<div class="team-member">
 					<img src="/images/BLOBBY.jpg" alt="Image" class="img-fluid">
@@ -53,7 +52,41 @@
 					</div>
 				</div>
 			</div>
+		</div>
 
+
+		<h3 class="text-white mb-3">Current Quotes</h3>
+		<div class="row">
+			<table>
+				{{#each quotes}}
+				<tr>
+					<td class="mr-2">
+						<form method="POST" action="/gmod-splash/edit/quote/del/{{uuid}}" id="del_quote_${{uuid}}">
+							<button class="btn btn-danger py-2 my-2 w-100" type="submit">Delete Quote</button>
+						</form>
+					</td>
+					<td class="align-middle">&nbsp;&nbsp;{{quote}} - {{author}}</td>
+				</tr>
+				{{/each}}
+			</table>
+		</div>
+
+		<br />
+		<h3 class="text-white mb-3">Current Screenshots</h3>
+		<div class="row">
+			{{#each screenshots}}
+			<div class="col-md-6 col-lg-4 mb-5 mb-lg-5">
+				<div class="team-member">
+					<img src="{{image}}" alt="Image" class="img-fluid">
+					<div class="text">
+						<form method="POST" action="/gmod-splash/edit/screenshot/del/{{uuid}}" id="del_image_${{uuid}}">
+							<button class="btn btn-danger py-2 my-2 w-100" type="submit">Delete Screenshot</button>
+						</form>
+					</div>
+					</a>
+				</div>
+			</div>
+			{{/each}}
 		</div>
 	</div>
 </div>

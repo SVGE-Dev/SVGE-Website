@@ -1,9 +1,9 @@
-import { Get, Render, Authorized, Post, QueryParam, UploadedFiles, UseBefore, Body, JsonController, UploadedFile, Redirect } from "routing-controllers";
+import { Get, Render, Authorized, Post, QueryParam, UploadedFiles, UseBefore, Body, JsonController, UploadedFile, Redirect, Param, BadRequestError } from "routing-controllers";
 import { GmodQuote } from "../entities/gmodQuote.ent";
 import { File, imgUploadOptions } from "../../config/_configs";
 
 // Jimp is a little retarded
-import Jimp from 'jimp';
+import Jimp, { posterize } from 'jimp';
 // tslint:disable-next-line: no-var-requires
 const jimp : Jimp = require('jimp');
 import { NoSeoIndexing } from "../middlewares/NoSeoIndexing.mdlw";
@@ -22,7 +22,7 @@ export class GmodSplashController
 
     @Get("/")
     @Render("gmod-splash")
-	public async GetGmodSplash(@QueryParam("map") mapName : string, @QueryParam("steamid") steamId : string) : Promise<GmodSplashRender>
+	private async GetGmodSplash(@QueryParam("map") mapName : string, @QueryParam("steamid") steamId : string) : Promise<GmodSplashRender>
     {
         // parse steam ID:
         // https://wiki.facepunch.com/gmod/Loading_URL
@@ -70,7 +70,7 @@ export class GmodSplashController
     @Get("/edit")
     @Render("gmod-splash-edit")
     @Authorized(["GMod Rep", process.env.COMMITTEE_ROLE_NAME, process.env.ADMIN_ROLE_NAME ])
-    public async EditGmodSplash() : Promise<GmodSplashEditRender>
+    private async EditGmodSplash() : Promise<GmodSplashEditRender>
     {
 		const screenshots = await GmodImage.find();
 		const quotes = await GmodQuote.find();
@@ -85,7 +85,7 @@ export class GmodSplashController
             screenshots: screenshots.map((sc) => {
 				return {
 					uuid: sc.uuid,
-					b64: sc.screenshotBase64
+					image: sc.screenshotBase64
 				};
 			})
         };
@@ -94,7 +94,7 @@ export class GmodSplashController
     @Post("/edit/screenshot")
 	@Authorized(["GMod Rep", process.env.COMMITTEE_ROLE_NAME, process.env.ADMIN_ROLE_NAME ])
 	@Redirect("/gmod-splash/edit")
-    public async AddScreenshot(@UploadedFiles("newScreenshotFiles", { required: true, options: imgUploadOptions }) files : File[])
+    private async AddScreenshot(@UploadedFiles("newScreenshotFiles", { required: true, options: imgUploadOptions }) files : File[])
     {
 		const screenshots = new Array<Promise<GmodImage>>();
 		for(const file of files)
@@ -103,12 +103,31 @@ export class GmodSplashController
 		}
 
 		return GmodImage.save(await Promise.all(screenshots));
-    }
+	}
+	
+	@Post("/edit/screenshot/del/:uuid")
+	@Authorized(["GMod Rep", process.env.COMMITTEE_ROLE_NAME, process.env.ADMIN_ROLE_NAME ])
+	@Redirect("/gmod-splash/edit")
+    private async DelScreenshot(@Param("uuid") uuid : string)
+    {
+		const screenshot = await GmodImage.findOne({
+			where: {
+				uuid: uuid
+			},
+			select: [
+				"uuid" // no point loading the whole buffer
+			]
+		});
+
+		if(!screenshot) throw new BadRequestError("That screenshot does not exist.");
+
+		return screenshot.remove();
+	}
 
     @Post("/edit/quote")
 	@Authorized(["GMod Rep", process.env.COMMITTEE_ROLE_NAME, process.env.ADMIN_ROLE_NAME ])
 	@Redirect("/gmod-splash/edit")
-    public async AddQuote(
+    private async AddQuote(
 		@Body() newQuote : GmodQuoteAddRequest,
 		@UploadedFile("", {required: false}) f : File) // only needed so Routing Controllers sets up the route properly
     {
@@ -117,5 +136,22 @@ export class GmodSplashController
         gmodQuote.author = newQuote.author;
 
         return gmodQuote.save();
-    }
+	}
+	
+	@Post("/edit/quote/del/:uuid")
+	@Authorized(["GMod Rep", process.env.COMMITTEE_ROLE_NAME, process.env.ADMIN_ROLE_NAME ])
+	@Redirect("/gmod-splash/edit")
+	private async DelQuote(@Param("uuid") uuid : string)
+	{
+		const quote = await GmodQuote.findOne({
+			where: {
+				uuid: uuid
+			}
+		});
+
+		if(!quote) throw new BadRequestError("That quote doesn't exist.");
+
+		return quote.remove();
+	}
+
 }

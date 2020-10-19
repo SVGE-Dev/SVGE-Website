@@ -5,7 +5,7 @@ export interface GmodSplashEditRender extends RenderResponse
 {
 	screenshots : Array<{
 		uuid : string;
-		b64 : string; // Handlebars doesn't like getters
+		image : string; // Handlebars doesn't like getters
 	}>;
 
 	quotes : GmodQuote[];
