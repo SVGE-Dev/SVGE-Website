@@ -173,7 +173,7 @@ export class GamesController
 		game.img = await gameImage.getBufferAsync(img.mimetype),
 		game.icon = await gameIcon.getBufferAsync(icon.mimetype);
 		game.position = newGame.position;
-		game.url = newGame.nameShort.toLowerCase().replace(/ /g, "-");
+		game.url = newGame.nameShort.toLowerCase().trim().replace(/\s/g, "-").replace(/[^a-zA-Z\d-]/g, "");
 
 		game = await game.save();
 		await game.reorderAroundGame();
@@ -238,7 +238,7 @@ export class GamesController
 		if(!!gameUpdate.nameShort && game.nameShort != gameUpdate.nameShort)
 		{
 			game.nameShort = gameUpdate.nameShort;
-			game.url = gameUpdate.nameShort.toLowerCase().replace(/ /g, "-");
+			game.url = gameUpdate.nameShort.toLowerCase().trim().replace(/\s/g, "-").replace(/[^a-zA-Z\d-]/g, "");
 			reps.forEach((rep) => rep.group = `${game.url}_reps`);
 			gameChanged = true;
 			repsChanged = true;
