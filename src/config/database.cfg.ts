@@ -1,7 +1,8 @@
 import { ConnectionOptions } from "typeorm";
-import { GmodQuote } from "../api/entities/gmodQuotes.ent";
+import { GmodQuote } from "../api/entities/gmodQuote.ent";
 import { Game } from "../api/entities/game.ent";
 import { SiteUser } from "../api/entities/siteUser.ent";
+import { GmodImage } from "../api/entities/gmodImage.ent";
 
 
 export namespace data
@@ -21,6 +22,7 @@ export namespace data
         logger: "debug",
         entities: [ 
 			GmodQuote,
+			GmodImage,
 			//GmodStats,
 			Game,
 			SiteUser

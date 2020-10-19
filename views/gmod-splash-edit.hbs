@@ -1,93 +1,61 @@
 {{> header-small }}
 
 <div class="site-section">
-  <div class="container">
-    <div class="row">
+	<div class="container">
+		<div class="row">
 
-      <div class="col-md-12 col-lg-7 mb-5">
-        <h2 class="text-white mb-3">Quotes and Screenshots</h2>
+			<div class="col-md-12 col-lg-7 mb-5">
+				<h2 class="text-white mb-3">Quotes and Screenshots</h2>
 
-        <form action="/gmod-splash/edit/quote" class="contact-form">
-          <label class="font-weight-bold" for="quote">Quote</label>
-          <div class="row form-group">
-            <div class="col-md-12 mb-3 mb-md-0">
-              <input type="text" id="quote" name="quote" class="form-control" placeholder="The quote">
-            </div>
-          </div>
+				<form action="/gmod-splash/edit/quote" class="contact-form" id="new_gmod_quote" method="POST"
+					enctype="multipart/form-data">
+					<label class="font-weight-bold" for="quote">Quote</label>
+					<div class="row form-group">
+						<div class="col-md-12 mb-3 mb-md-0">
+							<input type="text" id="quote" name="quote" class="form-control" placeholder="The quote">
+						</div>
+					</div>
 
-          <label class="font-weight-bold" for="author">Author</label>
-          <div class="row form-group">
-            <div class="col-md-8">
-              <input type="text" id="author" name="author" class="form-control" placeholder="Person who said the quote">
-            </div>
-            <div class="col-md-4">
-              <input type="button" value="Save New Quote" class="btn btn-primary py-2 px-4" onClick="saveQuote()">
-            </div>
-          </div>
-        </form>
+					<label class="font-weight-bold" for="author">Author</label>
+					<div class="row form-group">
+						<div class="col-md-8">
+							<input type="text" id="author" name="author" class="form-control"
+								placeholder="Person who said the quote">
+						</div>
+						<div class="col-md-4">
+							<button class="btn btn-primary w-100" type="submit">Save Quote</button>
+						</div>
+					</div>
+				</form>
 
-        <form action="#" class="contact-form">
-          <label class="font-weight-bold" for="author">Screenshots</label>
-          <div class="row form-group">
-            <div class="col-md-8">
-              <input type="file" id="scFiles" class="form-control" placeholder="Click to select files" multiple>
-            </div>
-            <div class="col-md-4">
-              <input type="submit" value="Save Screenshot" class="btn btn-primary py-2 px-4" onClick="saveScreenshot()">
-            </div>
-          </div>
-        </form>
-      </div>
+				<form action="/gmod-splash/edit/screenshot" class="contact-form" method="POST"
+					enctype="multipart/form-data" id="new_gmod_screenshot">
+					<label class="font-weight-bold" for="author">Screenshots</label>
+					<div class="row form-group">
+						<div class="col-md-8">
+							<input type="file" id="newScreenshotFiles" name="newScreenshotFiles" class="form-control"
+								placeholder="Click to select files" multiple>
+						</div>
+						<div class="col-md-4">
+							<button class="btn btn-primary w-100" type="submit">Save Screenshot</button>
+						</div>
+					</div>
+				</form>
+			</div>
 
 
-      <div class="col-lg-4 ml-auto">
-        <div class="team-member">
-          <img src="/images/BLOBBY.jpg" alt="Image" class="img-fluid">
-          <div class="text">
-            <h1 class="mb-4">BLOBBY BLOBBY BLOBBY</h1><br />
-            <h2 class="mb-2 font-weight-light h4">Mr. Blobby KBE</h2>
-          </div>
-        </div>
-      </div>
+			<div class="col-lg-4 ml-auto">
+				<div class="team-member">
+					<img src="/images/BLOBBY.jpg" alt="Image" class="img-fluid">
+					<div class="text">
+						<h1 class="mb-4">BLOBBY BLOBBY BLOBBY</h1><br />
+						<h2 class="mb-2 font-weight-light h4">Mr. Blobby KBE</h2>
+					</div>
+				</div>
+			</div>
 
-    </div>
-  </div>
+		</div>
+	</div>
 </div>
-
-<script>
-  const saveQuote = () => {
-    const quote = document.getElementById("quote").value;
-    const author = document.getElementById("author").value;
-    console.log(`Quote: ${quote}, author: ${author}`);
-    const url = `/gmod-splash/edit/quote?quote=${quote}&author=${author}`
-
-    $.ajax({
-      type: "POST",
-      url: url,
-      success: (msg) => {
-        console.log(msg);
-      }
-    });
-  }
-
-  const saveScreenshot = () => {
-    const files = document.getElementById("scFiles").files;
-    const formData = new FormData();
-    for (let i = 0; i < files.length; i++) {
-      formData.append("newScreenshots", files[i]);
-    }
-
-    const ajax = new XMLHttpRequest();
-    ajax.open("POST", "/gmod-splash/edit/screenshot");
-    ajax.onreadystatechange = () => {
-      if (ajax.readyState === 4) // "done" state
-      {
-        console.log(ajax.response);
-      }
-    }
-    ajax.responseType = "json";
-    ajax.send(formData);
-  }
-</script>
 
 {{> footer }}

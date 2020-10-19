@@ -6,8 +6,8 @@ import { IsString } from "class-validator";
 @Entity()
 export class GmodQuote extends BaseEntity
 {
-    @PrimaryGeneratedColumn()
-    id : number;
+    @PrimaryGeneratedColumn("uuid")
+    uuid : string;
 
     @Column({type: "varchar", length: 32})
     @IsString()

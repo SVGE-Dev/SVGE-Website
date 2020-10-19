@@ -1,3 +1,5 @@
+// https://wiki.facepunch.com/gmod/Loading_URL
+
 /*
 Called when the client starts downloading a file.
 

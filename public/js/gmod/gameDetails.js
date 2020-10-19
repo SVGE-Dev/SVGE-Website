@@ -1,3 +1,5 @@
+// https://wiki.facepunch.com/gmod/Loading_URL
+
 /*
 Called at the start, when the loading screen finishes loading all assets:
 

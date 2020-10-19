@@ -1,19 +1,20 @@
-import { Controller, Get, Render, Authorized, Post, QueryParam, QueryParams, UploadedFiles, UseBefore } from "routing-controllers";
-import { GmodQuote } from "../entities/gmodQuotes.ent";
-import { readdirSync } from "fs";
-import { join, basename } from "path";
+import { Get, Render, Authorized, Post, QueryParam, UploadedFiles, UseBefore, Body, JsonController, UploadedFile, Redirect } from "routing-controllers";
+import { GmodQuote } from "../entities/gmodQuote.ent";
 import { File, imgUploadOptions } from "../../config/_configs";
 
 // Jimp is a little retarded
 import Jimp from 'jimp';
 // tslint:disable-next-line: no-var-requires
 const jimp : Jimp = require('jimp');
-import { cropAndResize } from "../../utils/cropAndResize";
 import { NoSeoIndexing } from "../middlewares/NoSeoIndexing.mdlw";
+import { GmodImage } from "../entities/gmodImage.ent";
+import { GmodSplashRender } from "./render_interfaces/GmodSplashRender";
+import { GmodSplashEditRender } from "./render_interfaces/GmodSplashEditRender";
+import { GmodQuoteAddRequest } from "./request_bodies/GmodQuoteAddRequest";
 
 
 
-@Controller("/gmod-splash")
+@JsonController("/gmod-splash")
 @UseBefore(NoSeoIndexing)
 export class GmodSplashController
 {
@@ -21,7 +22,7 @@ export class GmodSplashController
 
     @Get("/")
     @Render("gmod-splash")
-    public async GetGmodSplash(@QueryParam("map") mapName : string, @QueryParam("steamid") steamId : string)
+	public async GetGmodSplash(@QueryParam("map") mapName : string, @QueryParam("steamid") steamId : string) : Promise<GmodSplashRender>
     {
         // parse steam ID:
         // https://wiki.facepunch.com/gmod/Loading_URL
@@ -31,25 +32,33 @@ export class GmodSplashController
         const quotes = await GmodQuote.find({
             select: [ "quote", "author" ],
         });
-        const randQuote = (!!quotes && quotes.length > 0) ? quotes[Math.floor(Math.random()*quotes.length)] : undefined;
+		const randQuote = (!!quotes && quotes.length > 0)
+			? quotes[Math.floor(Math.random()*quotes.length)]
+			: undefined;
 
         // get a random screenshot
-        const screenshots = readdirSync(this.SCREENSHOT_DIR);
-		const screenshot = (!!screenshots && screenshots.length > 0)
-			? basename( screenshots[Math.floor( Math.random() * screenshots.length )])
-			: "";
+        const screenshots = await GmodImage.find({
+			select: [ "screenshot" ]
+		});
+		const randScreenshot = (!!screenshots && screenshots.length > 0)
+			? screenshots[Math.floor(Math.random()*screenshots.length)].screenshotBase64
+			: undefined;
         
         return {
+			page: "gmod-splash",
+			tab_title: "Garry's Mod Splash",
+			page_title: "Garry's Mod Splash",
+
             mapName: mapName || "mapname_here",
             steamId: parsedSteamInfoIdk || "6969",
 
             quote: randQuote?.quote || "This is a quote",
             quote_author: randQuote?.author || "This is an author",
-            screenshot: screenshot,
+            screenshot: randScreenshot,
 			stats: "Ollie needs to get writing some LUA :)",
 			
             custom_scripts: [
-				"/js/gmod/downlingFile.js",
+				"/js/gmod/downloadingFile.js",
 				"/js/gmod/gameDetails.js",
 				"/js/gmod/setFilesNeeded.js",
 				"/js/gmod/setFilesTotal.js",
@@ -61,59 +70,52 @@ export class GmodSplashController
     @Get("/edit")
     @Render("gmod-splash-edit")
     @Authorized(["GMod Rep", process.env.COMMITTEE_ROLE_NAME, process.env.ADMIN_ROLE_NAME ])
-    public async EditGmodSplash()
+    public async EditGmodSplash() : Promise<GmodSplashEditRender>
     {
-        const quotes = (await GmodQuote.find()).map((gq) => { return {id: gq.id, quote: gq.quote, author: gq.author}; });
-        const screenshots = readdirSync(this.SCREENSHOT_DIR).map((gs_path) => basename(gs_path));
+		const screenshots = await GmodImage.find();
+		const quotes = await GmodQuote.find();
 
         return {
-            tab_title: "Edit GMod Splash",
+			page: "gmod-slash-configurator",
+            tab_title: "GMod Splash Configurator",
             page_title: "Garry's Mod",
-            page_subtitle: "Splash Screen Configurator",
+			page_subtitle: "Splash Screen Configurator",
+			
             quotes: quotes,
-            screenshots: screenshots
+            screenshots: screenshots.map((sc) => {
+				return {
+					uuid: sc.uuid,
+					b64: sc.screenshotBase64
+				};
+			})
         };
     }
 
     @Post("/edit/screenshot")
-    @Authorized(["GMod Rep", process.env.COMMITTEE_ROLE_NAME, process.env.ADMIN_ROLE_NAME ])
-    public async AddScreenshot(@UploadedFiles("newScreenshots", { required: true, options: imgUploadOptions }) files : File[])
+	@Authorized(["GMod Rep", process.env.COMMITTEE_ROLE_NAME, process.env.ADMIN_ROLE_NAME ])
+	@Redirect("/gmod-splash/edit")
+    public async AddScreenshot(@UploadedFiles("newScreenshotFiles", { required: true, options: imgUploadOptions }) files : File[])
     {
-        const imageProcessing = new Array<Promise<string>>();
-        files.forEach(async (file : File) =>
-        {
-            if(file)
-            {
-                imageProcessing.push(this.processFile(file));
-            }
-            else
-            {
-                // throw an error? Idk
-                // probably means Multer wouldn't accept the file for some reason
-            }
-        });
+		const screenshots = new Array<Promise<GmodImage>>();
+		for(const file of files)
+		{
+			if(!!file) screenshots.push(GmodImage.Create(file)); 
+		}
 
-        return Promise.all(imageProcessing);
+		return GmodImage.save(await Promise.all(screenshots));
     }
 
     @Post("/edit/quote")
-    @Authorized(["GMod Rep", process.env.COMMITTEE_ROLE_NAME, process.env.ADMIN_ROLE_NAME ])
-    public async AddQuote(@QueryParams() q : any)
+	@Authorized(["GMod Rep", process.env.COMMITTEE_ROLE_NAME, process.env.ADMIN_ROLE_NAME ])
+	@Redirect("/gmod-splash/edit")
+    public async AddQuote(
+		@Body() newQuote : GmodQuoteAddRequest,
+		@UploadedFile("", {required: false}) f : File) // only needed so Routing Controllers sets up the route properly
     {
-        const quote = new GmodQuote();
-        quote.quote =  q.quote;
-        quote.author = q.author;
+        const gmodQuote = new GmodQuote();
+        gmodQuote.quote =  newQuote.quote;
+        gmodQuote.author = newQuote.author;
 
-        return quote.save();
-    }
-
-    private async processFile(file : File)
-    {
-        const image = await cropAndResize(1280, 720, file.buffer);
-        
-
-        const newName : string = file.originalname.replace(/ /g, '_');
-        image.write(join(this.SCREENSHOT_DIR, newName));
-        return newName;
+        return gmodQuote.save();
     }
 }
