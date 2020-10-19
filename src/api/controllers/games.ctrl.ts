@@ -57,18 +57,6 @@ export class GamesController
 		: Promise<GamesRender>
     {
 		const games = await Game.find({
-			select: [
-				"url",
-				"brief",
-				"tagline",
-				"nameShort",
-				"icon",
-				"name",
-				"text",
-				"heading",
-				"position",
-				"uuid"
-			],
 			order: {
 				"position": "ASC"
 			}
@@ -160,9 +148,6 @@ export class GamesController
 			throw new BadRequestError("Images for the game icon and page image must be provided.");
 		}
 
-		const gameImage = await cropAndResize(1920, 1080, img.buffer);
-		const gameIcon = await cropAndResize(480, 480, icon.buffer);
-
 		game = new Game();
 		game.name = newGame.name,
 		game.nameShort = newGame.nameShort,
@@ -170,10 +155,10 @@ export class GamesController
 		game.tagline = newGame.tagline,
 		game.heading = newGame.heading,
 		game.text = newGame.text,
-		game.img = await gameImage.getBufferAsync(img.mimetype),
-		game.icon = await gameIcon.getBufferAsync(icon.mimetype);
 		game.position = newGame.position;
 		game.url = newGame.nameShort.toLowerCase().trim().replace(/\s/g, "-").replace(/[^a-zA-Z\d-]/g, "");
+		await game.SetImg(img);
+		await game.SetIcon(icon);
 
 		game = await game.save();
 		await game.reorderAroundGame();
@@ -272,12 +257,12 @@ export class GamesController
 		}
 		if(!!img)
 		{
-			game.img = await (await cropAndResize(1280, 720, img.buffer)).getBufferAsync(img.mimetype);
+			await game.SetImg(img);
 			gameChanged = true;
 		}
 		if(!!icon)
 		{
-			game.icon = await (await cropAndResize(480, 480, icon.buffer)).getBufferAsync(icon.mimetype);
+			await game.SetIcon(icon);
 			gameChanged = true;
 		}
 		if(gameChanged)
@@ -354,15 +339,7 @@ export class GamesController
 		const game = await Game.findOne({
 			where: {
 				url: gameUrl.toLowerCase()
-			},
-			select: [
-				"heading",
-				"text",
-				"img",
-				"name",
-				"nameShort",
-				"url"
-			]
+			}
 		});
 
 		if(!game)

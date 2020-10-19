@@ -1,4 +1,6 @@
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { File } from "../../config/_configs";
+import { cropAndResize } from "../../utils/cropAndResize";
 
 
 @Entity()
@@ -31,12 +33,18 @@ export class Game extends BaseEntity
 	text : string;
 
 	// this is the image on the game's main page, cropped to 1920x1080
-	@Column({type: "mediumblob"})
+	@Column({ type: "mediumblob" })
 	img : Buffer;
+
+	@Column({ type: "varchar", length: 16 })
+	imgMimeType : string;
 	
 	// this is the image that is used for the list of games, cropper to 1024x1024
-	@Column({type: "mediumblob"})
+	@Column({ type: "mediumblob" })
 	icon : Buffer;
+
+	@Column({ type: "varchar", length: 16 })
+	iconMimeType : string;
 
 	// position in list of games
 	@Column()
@@ -49,12 +57,26 @@ export class Game extends BaseEntity
 
 	public get imgBase64()
 	{
-		return `data:image/png;base64,${this.img.toString("base64")}`;
+		return `data:${this.imgMimeType || "image/png"};base64,${this.img.toString("base64")}`;
+	}
+
+	public async SetImg(file : File)
+	{
+		const cropped = await cropAndResize(1920, 1080, file.buffer);
+		this.img = await cropped.getBufferAsync(file.mimetype);
+		this.imgMimeType = file.mimetype;
 	}
 
 	public get iconBase64()
 	{
-		return `data:image/png;base64,${this.icon.toString("base64")}`;
+		return `data:${this.iconMimeType || "image/png"};base64,${this.icon.toString("base64")}`;
+	}
+
+	public async SetIcon(file : File)
+	{
+		const cropped = await cropAndResize(1920, 1080, file.buffer);
+		this.icon = await cropped.getBufferAsync(file.mimetype);
+		this.iconMimeType = file.mimetype;
 	}
 
 	// This function is something that could possibly be moved to a utils function so that both SiteUser and Game can use it.

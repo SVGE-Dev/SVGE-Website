@@ -122,6 +122,9 @@ export class SiteUser extends BaseEntity
 	@Column({ type: "mediumblob" })
 	avatar : Buffer;
 
+	@Column({ type: "varchar", length: 16 })
+	avatarMimeType : string;
+
 	// so we don't update it from Discord
 	@Column({ type: "boolean" })
 	avatarIsCustom : boolean;
@@ -141,16 +144,16 @@ export class SiteUser extends BaseEntity
 		const imgBuffer = img?.buffer || await this.discordAvatar();
 		if(!imgBuffer) return false;
 
-		const imgMimetype = !!img ? img.mimetype : "image/png";
+		this.avatarMimeType = !!img ? img.mimetype : "image/png";
 		this.avatarIsCustom = !!img;
 
 		const avatar = await cropAndResize(1024, 1024, imgBuffer);
-		this.avatar = await avatar.getBufferAsync(imgMimetype);
-		console.log(this.avatar.length);
+		this.avatar = await avatar.getBufferAsync(this.avatarMimeType);
+
 		if(this.avatar.length > 16000000)
 		{
 			avatar.quality(100 * (this.avatar.length / 16000000));
-			this.avatar = await avatar.getBufferAsync(imgMimetype);
+			this.avatar = await avatar.getBufferAsync(this.avatarMimeType);
 		}
 		return true;
 	}
@@ -166,7 +169,7 @@ export class SiteUser extends BaseEntity
 
 	public get avatarBase64()
 	{
-		return `data:image/png;base64,${this.avatar.toString("base64")}`;
+		return `data:${this.avatarMimeType || "image/png"};base64,${this.avatar.toString("base64")}`;
 	}
 
 	protected updateDiscordUser()
